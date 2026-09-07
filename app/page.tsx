@@ -1,15 +1,14 @@
 import TituloSeccion from '@/components/ui/TituloSeccion'
-import Glow from '@/components/bg/Glow'
+import Hero from '@/components/home/Hero'
 
 /** Home.
  *
- *  Las secciones reales se construyen desde la Fase 4. Por ahora quedan
- *  los contenedores con sus anclas, para que la navegación del header y
- *  del menú mobile se pueda probar de punta a punta.
+ *  El hero está terminado (Fase 4). El resto de las secciones son
+ *  contenedores con sus anclas, para que la navegación funcione de punta
+ *  a punta mientras se construyen.
  */
 
-const SECCIONES = [
-  { id: 'hero', titulo: 'Hero', nota: 'Fase 4' },
+const PENDIENTES = [
   { id: 'que-hacemos', titulo: 'Qué hacemos', nota: 'Fase 5' },
   { id: 'servicios', titulo: 'Servicios', nota: 'Fase 5' },
   { id: 'proceso', titulo: 'Proceso', nota: 'Fase 5' },
@@ -21,27 +20,14 @@ const SECCIONES = [
 export default function Home() {
   return (
     <>
-      <section className="relative flex min-h-svh items-center">
-        <Glow className="-right-32 top-10" tamano={760} />
-        <div className="contenedor">
-          <h1 className="text-hero font-semibold">
-            <span className="texto-degrade inline-block">Eteria</span>
-          </h1>
-          <p className="text-cuerpo-lg medida mt-6 text-mid">
-            Estructura del sitio en construcción. El chrome (header, menú, footer, WhatsApp y
-            capas de fondo) está terminado; las secciones llegan a partir de la Fase 4.
-          </p>
-          <p className="text-label mt-8 text-low">
-            Design system en{' '}
-            <a className="text-violet-300 underline" href="/design-system">
-              /design-system
-            </a>
-          </p>
-        </div>
-      </section>
+      <Hero />
 
-      {SECCIONES.slice(1).map((s) => (
-        <section key={s.id} id={s.id} className="seccion relative scroll-mt-24 border-t border-hairline">
+      {PENDIENTES.map((s) => (
+        <section
+          key={s.id}
+          id={s.id}
+          className="seccion relative scroll-mt-24 border-t border-hairline"
+        >
           <div className="contenedor">
             <TituloSeccion>{s.titulo}</TituloSeccion>
             <p className="text-label mt-4 text-low">{s.nota}</p>

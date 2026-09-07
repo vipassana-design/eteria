@@ -77,6 +77,28 @@ export interface Landing {
   meta: { title: string; description: string }
 }
 
+/** Pantalla de placeholder para los mockups del hero.
+ *
+ *  Son UI dibujada con SVG, no imágenes: los mockups reales son un
+ *  pendiente del cliente (PLAN.md §1) y así el hero se puede juzgar
+ *  con contenido realista mientras tanto. */
+export type PantallaMockup = 'tienda' | 'panel' | 'sitio'
+
+/** Una de las tres ventanas de navegador del hero. */
+export interface MockupHero {
+  id: PantallaMockup
+  /** Texto de la barra de direcciones de la ventana. */
+  url: string
+  /** Descripción para lectores de pantalla. */
+  alt: string
+}
+
+/** Dato de prueba social del hero. */
+export interface DatoHero {
+  valor: string
+  etiqueta: string
+}
+
 /** Datos de marca y contacto. Los valores reales son pendientes del
  *  cliente (PLAN.md §1), así que están centralizados para reemplazarlos
  *  en un solo lugar. */

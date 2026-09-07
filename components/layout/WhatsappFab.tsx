@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
-import { gsap, ScrollTrigger, useGSAP } from '@/lib/gsap'
+import { gsap, useGSAP } from '@/lib/gsap'
 import { marca, ui } from '@/content/marca'
 
 /** WhatsApp flotante (PLAN.md §4.10).
@@ -15,29 +15,20 @@ export default function WhatsappFab() {
     const el = raiz.current
     if (!el) return
 
-    // Aparece una vez que se scrolleó el primer viewport: en el hero
-    // compite con el CTA principal. Una vez visible se queda, incluso
-    // al final del documento.
-    gsap.set(el, { opacity: 0, scale: 0.8, pointerEvents: 'none' })
+    // Visible desde el arranque: llega tráfico de ads y hay gente que
+    // consulta sin leer la página. Lo único que se anima es la entrada,
+    // al final de la secuencia del hero, para no pisarla.
+    const mm = gsap.matchMedia()
 
-    const mostrar = (visible: boolean) =>
-      gsap.to(el, {
-        opacity: visible ? 1 : 0,
-        scale: visible ? 1 : 0.8,
-        pointerEvents: visible ? 'auto' : 'none',
-        duration: 0.4,
-        ease: 'power3.out',
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.from(el, {
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.45,
+        delay: 1.3,
+        ease: 'back.out(1.6)',
       })
-
-    const st = ScrollTrigger.create({
-      start: 'top -60%',
-      // Sin `end` el trigger no se desactiva al llegar al final del
-      // documento, que es lo que hacía desaparecer el botón en el footer.
-      onEnter: () => mostrar(true),
-      onLeaveBack: () => mostrar(false),
     })
-
-    return () => st.kill()
   })
 
   return (

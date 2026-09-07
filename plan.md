@@ -177,6 +177,8 @@ Tres capas, todas sutiles, ninguna protagonista:
   /home
     Hero.tsx  QueHacemos.tsx  Servicios.tsx  Proceso.tsx
     Ejemplos.tsx  MockupModal.tsx  Stack.tsx  Contacto.tsx
+    VentanaMockup.tsx             marco de navegador de los mockups
+    PantallasMockup.tsx           pantallas SVG placeholder del hero
   /landing
     LandingHero.tsx  LandingBeneficios.tsx  LandingLayout.tsx
   /ui
@@ -194,6 +196,7 @@ Tres capas, todas sutiles, ninguna protagonista:
 /content
   servicios.ts  proceso.ts  mockups.ts  stack.ts  landings.ts
   marca.ts                      nombre, email, WhatsApp, navegación y footer
+  hero.ts                       títulos, CTAs y mockups del hero
   designSystem.ts               temporal, contenido de /design-system
 /public
   /fonts  /mockups  /og
@@ -251,6 +254,14 @@ Fijo. Al scrollear pasa de transparente a `--bg-elevated` con `backdrop-filter: 
 4. Partículas hacen fade-in al final
 
 **CTA primario:** "Cotizar mi proyecto" → scroll al formulario. Sin promesa de inmediatez.
+
+**Resuelto en la Fase 4.**
+
+- **Los mockups son SVG, no imágenes.** `PantallasMockup.tsx` dibuja tres pantallas con UI realista y a color: tienda de indumentaria (grilla de productos con precios y prendas), panel de administración (sidebar, métricas con delta, gráfico de área, tabla de pedidos con estados) y sitio institucional (hero editorial y servicios). Los mockups reales siguen siendo un pendiente del cliente; mientras tanto el hero se puede juzgar con contenido real en vez de cajas grises, y al escalar quedan nítidos sin peso de red. Cuando lleguen las imágenes se reemplaza el contenido de `VentanaMockup`.
+- **Los cortes de línea del H1 vienen del contenido**, no del ancho. A 76px de cuerpo "Desarrollamos" mide 560px y con la columna original el título caía en 4 líneas cortas, o dejaba "software" solo en una línea. `hero.titulo` guarda los cortes como arrays y el H1 los renderiza en bloques con `text-wrap: nowrap`.
+- **La columna de texto es 1.35fr contra 1fr** de los mockups, para respetar los dos tercios del layout. Los mockups se ensanchan al 132% de su columna y se desbordan hacia la derecha: el corte contra el borde es parte del efecto, y la capa `#capa-sitio` lo recorta sin generar scroll horizontal.
+- **Las dos ventanas de atrás llevan `brightness` reducido.** Sin eso competían con la de adelante en vez de leerse como profundidad.
+- Escalonado en diagonal a 19% vertical y 14% horizontal: con offsets menores las ventanas se tapaban entre sí y solo se leía la de adelante.
 
 ### 4.3 Qué hacemos
 
@@ -399,9 +410,11 @@ Link de privacidad chico, en `--text-low`, a la derecha. Sin redes sociales.
 
 ### 4.10 WhatsApp flotante
 
-Abajo a la derecha, `z-index` por debajo del modal. Círculo con el degradé de marca y glow suave. Abre chat directo sin mensaje precargado. En mobile se achica y se separa 16px de los bordes.
+Abajo a la derecha, **siempre visible**, `z-index` por debajo del modal. Círculo con el degradé de marca y glow suave. Abre chat directo sin mensaje precargado. En mobile se achica y se separa 16px de los bordes.
 
-**Ajustes de la Fase 3.** No está visible desde el arranque: aparece cuando se scrolleó el 60% del primer viewport, porque en el hero compite con el CTA principal. Una vez visible se queda, incluido el final del documento. Y se aparta mientras el menú mobile está abierto, donde tapaba el email del pie del overlay: el menú marca el body con `data-menu-abierto` y el botón lleva `data-flotante`, así el menú no necesita conocer a los flotantes.
+**Siempre visible, decidido por el cliente en la Fase 4.** En la Fase 3 se había probado que apareciera recién tras el primer viewport, para que no compitiera con el CTA del hero. Se descartó: llega tráfico de ads y hay gente que consulta sin leer la página. Lo único que queda animado es la entrada, con un delay de 1.3s para no pisar la secuencia del hero.
+
+Se aparta mientras el menú mobile está abierto, donde tapaba el email del pie del overlay: el menú marca el body con `data-menu-abierto` y el botón lleva `data-flotante`, así el menú no necesita conocer a los flotantes.
 
 ---
 
