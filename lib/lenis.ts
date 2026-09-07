@@ -46,6 +46,20 @@ export function scrollearA(selector: string): boolean {
   return true
 }
 
+/** Lleva el scroll al tope, sin animación.
+ *  Lo usa la transición de página: al cambiar de ruta el scroll vuelve
+ *  arriba antes del fade in (§6). */
+export function irArriba() {
+  if (typeof window === 'undefined') return
+
+  if (instancia) {
+    instancia.scrollTo(0, { immediate: true })
+  }
+  // También el scroll nativo: en mobile Lenis no está corriendo, y en
+  // desktop hace falta para que el navegador no restaure la posición.
+  window.scrollTo(0, 0)
+}
+
 /** Detiene o reanuda el scroll. Lo usa el menú mobile para bloquear el
  *  fondo mientras está abierto.
  *

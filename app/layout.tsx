@@ -3,6 +3,7 @@ import { clashDisplay, satoshi } from '@/lib/fuentes'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import SmoothScroll from '@/components/layout/SmoothScroll'
+import PageTransition from '@/components/layout/PageTransition'
 import WhatsappFab from '@/components/layout/WhatsappFab'
 import Grano from '@/components/bg/Grano'
 import Particulas from '@/components/bg/Particulas'
@@ -35,11 +36,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {/* Capa de recorte horizontal: contiene los glows sin usar
             overflow en body, que rompería position:sticky. */}
-        <div id="capa-sitio">
-          <Header />
-          <main id="contenido">{children}</main>
-          <Footer />
-        </div>
+        <PageTransition>
+          <div id="capa-sitio">
+            <Header />
+            <main id="contenido">{children}</main>
+            <Footer />
+          </div>
+        </PageTransition>
 
         <WhatsappFab />
       </body>

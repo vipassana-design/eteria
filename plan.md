@@ -196,6 +196,8 @@ Tres capas, todas sutiles, ninguna protagonista:
     LogosStack.tsx                logos SVG de las tecnologías
   /landing
     LandingHero.tsx  LandingBeneficios.tsx  LandingLayout.tsx
+    LandingProceso.tsx            version compacta del proceso
+    RollingText.tsx               palabra que rota en el titular
   /ui
     Boton.tsx  TituloSeccion.tsx  Campo.tsx  Reveal.tsx
   /bg
@@ -215,6 +217,7 @@ Tres capas, todas sutiles, ninguna protagonista:
   marca.ts                      nombre, email, WhatsApp, navegación y footer
   hero.ts                       títulos, CTAs y mockups del hero
   contacto.ts                   textos del formulario y tipos de proyecto
+  landings.ts                   contenido de las tres landings
   queHacemos.ts                 texto y datos de la sección
   servicios.ts  proceso.ts  stack.ts
   designSystem.ts               temporal, contenido de /design-system
@@ -487,11 +490,13 @@ Mismo header, mismo footer, misma línea gráfica. Más cortas y más directas a
 
 **Rolling text del hero:** el sustantivo del titular rota — la palabra sale hacia arriba con máscara y entra la siguiente desde abajo. Timeline en loop con `SplitText` + `yPercent`, 2.2s por palabra.
 
+**Titulares reescritos en la Fase 8.** Los originales ("construida para vender / escalar / durar") eran anteriores al criterio de copy de §1: prometían en vez de nombrar. Las palabras que rotan ahora nombran partes concretas del trabajo.
+
 | Landing | Titular | Palabras que rotan |
 |---|---|---|
-| `/ecommerce` | Tu tienda online, construida para **vender / escalar / durar** | vender, escalar, durar |
-| `/software-a-medida` | Software que resuelve tu **operación / proceso / problema** | operación, proceso, problema |
-| `/sitios-institucionales` | El sitio de tu empresa, **rápido / claro / tuyo** | rápido, claro, tuyo |
+| `/ecommerce` | Tiendas online con **catálogo / checkout / pagos / envíos** | catálogo, checkout, pagos, envíos |
+| `/software-a-medida` | Software para **gestión / operaciones / integraciones** | gestión, operaciones, integraciones |
+| `/sitios-institucionales` | Sitios institucionales para **empresas / estudios / instituciones** | empresas, estudios, instituciones |
 
 ---
 
@@ -502,6 +507,18 @@ Fade out (0.35s) → cambio de ruta → fade in (0.45s). La URL cambia realmente
 Implementación: componente `PageTransition` con `usePathname()`, overlay con el color base que hace fade. Sin wipes pesados ni cortinas — la transición tiene que sentirse instantánea, no lucirse.
 
 Al navegar, el scroll vuelve arriba antes del fade in.
+
+**Resuelto en la Fase 8.**
+
+**ScrollTriggers de la ruta anterior.** Al cambiar de ruta, `useGSAP` con scope mata los tweens de cada componente, pero los ScrollTrigger quedan registrados globalmente con las medidas de la página vieja. El síntoma es que al volver a la home los reveals no disparan o disparan en el lugar equivocado.
+
+`PageTransition` hace `ScrollTrigger.refresh()` después de cada cambio de ruta, en dos tiempos: uno inmediato y otro tras un `requestAnimationFrame`, para alcanzar a los componentes que React monta en ese mismo commit.
+
+Verificado con navegación de ida y vuelta a las tres landings, midiendo el apilado de las cards de servicios —que es lo que más depende de medidas— a mitad de recorrido. Los valores quedan idénticos al baseline de una home recién cargada: mismos `top` (124/136/556), mismas escalas (0.94/0.98/1) y mismas opacidades de velo. También se probó landing → landing sin pasar por la home.
+
+**El fade out va por intercepción de clicks**, no envolviendo cada `Link`: un listener en `document` toma cualquier enlace interno, anima el overlay y recién ahí llama a `router.push()`. Así funciona igual en el header, el footer y las cards, sin tocar cada componente. Respeta ctrl/cmd/click medio para abrir en pestaña nueva, y con `prefers-reduced-motion` navega sin animar.
+
+**El rolling text avanza con un índice propio, no con un timeline en loop.** Encadenar los tweens con `repeat: -1` dejaba a la última palabra saliendo mientras la primera ya había sido reposicionada por el repeat, y quedaban frames sin ninguna palabra visible. Además el estado inicial se aplica fuera del `matchMedia`: dentro, con reduced-motion quedaban las cuatro palabras superpuestas en vez de la primera sola.
 
 ---
 
