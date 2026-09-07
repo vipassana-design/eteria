@@ -7,6 +7,13 @@ export type LandingSlug = 'ecommerce' | 'sitios-institucionales' | 'software-a-m
 /** Opciones del campo "tipo de proyecto" del formulario. */
 export type TipoProyecto = 'ecommerce' | 'institucional' | 'webapp' | 'otro'
 
+/** Enlace de navegación. Los del header apuntan a secciones de la home
+ *  con ancla; los del footer pueden ir a rutas. */
+export interface EnlaceNav {
+  etiqueta: string
+  href: string
+}
+
 /** Una de las tres cards apiladas de la home. */
 export interface Servicio {
   id: LandingSlug
@@ -68,4 +75,18 @@ export interface Landing {
   beneficios: Beneficio[]
   mockup: { imagen: string; alt: string }
   meta: { title: string; description: string }
+}
+
+/** Datos de marca y contacto. Los valores reales son pendientes del
+ *  cliente (PLAN.md §1), así que están centralizados para reemplazarlos
+ *  en un solo lugar. */
+export interface Marca {
+  /** Nombre partido para el logo: la segunda mitad va con degradé. */
+  nombre: { inicio: string; fin: string }
+  descripcion: string
+  email: string
+  /** Número en formato internacional sin signos, para el enlace wa.me. */
+  whatsapp: string
+  /** Se muestra al usuario, con formato legible. */
+  whatsappVisible: string
 }

@@ -3,6 +3,9 @@ import { clashDisplay, satoshi } from '@/lib/fuentes'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import SmoothScroll from '@/components/layout/SmoothScroll'
+import WhatsappFab from '@/components/layout/WhatsappFab'
+import Grano from '@/components/bg/Grano'
+import Particulas from '@/components/bg/Particulas'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -24,13 +27,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es" className={`${clashDisplay.variable} ${satoshi.variable}`}>
       <body>
         <SmoothScroll />
+
+        {/* Capas de fondo (§2.5). Fijas y detrás de todo: van fuera de
+            la capa de recorte para cubrir el viewport completo. */}
+        <Particulas />
+        <Grano />
+
         {/* Capa de recorte horizontal: contiene los glows sin usar
             overflow en body, que rompería position:sticky. */}
         <div id="capa-sitio">
           <Header />
-          <main>{children}</main>
+          <main id="contenido">{children}</main>
           <Footer />
         </div>
+
+        <WhatsappFab />
       </body>
     </html>
   )

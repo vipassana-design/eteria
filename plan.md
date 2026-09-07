@@ -173,7 +173,7 @@ Tres capas, todas sutiles, ninguna protagonista:
 /components
   /layout
     Header.tsx  MobileMenu.tsx  Footer.tsx  WhatsappFab.tsx
-    PageTransition.tsx  SmoothScroll.tsx
+    PageTransition.tsx  SmoothScroll.tsx  Logo.tsx
   /home
     Hero.tsx  QueHacemos.tsx  Servicios.tsx  Proceso.tsx
     Ejemplos.tsx  MockupModal.tsx  Stack.tsx  Contacto.tsx
@@ -187,11 +187,13 @@ Tres capas, todas sutiles, ninguna protagonista:
   gsap.ts                       registro de plugins
   motion.ts                     tokens de ease/duración y helpers de media query
   fuentes.ts                    next/font/local de Clash Display y Satoshi
+  lenis.ts                      scroll a secciones y bloqueo de scroll
   animaciones.ts                helpers reutilizables
 /types
   index.ts                      tipos compartidos de contenido
 /content
   servicios.ts  proceso.ts  mockups.ts  stack.ts  landings.ts
+  marca.ts                      nombre, email, WhatsApp, navegación y footer
   designSystem.ts               temporal, contenido de /design-system
 /public
   /fonts  /mockups  /og
@@ -397,7 +399,9 @@ Link de privacidad chico, en `--text-low`, a la derecha. Sin redes sociales.
 
 ### 4.10 WhatsApp flotante
 
-Abajo a la derecha, siempre visible, `z-index` por debajo del modal. Círculo con el degradé de marca y glow suave. Abre chat directo sin mensaje precargado. En mobile se achica y se separa 16px de los bordes.
+Abajo a la derecha, `z-index` por debajo del modal. Círculo con el degradé de marca y glow suave. Abre chat directo sin mensaje precargado. En mobile se achica y se separa 16px de los bordes.
+
+**Ajustes de la Fase 3.** No está visible desde el arranque: aparece cuando se scrolleó el 60% del primer viewport, porque en el hero compite con el CTA principal. Una vez visible se queda, incluido el final del documento. Y se aparta mientras el menú mobile está abierto, donde tapaba el email del pie del overlay: el menú marca el body con `data-menu-abierto` y el botón lleva `data-flotante`, así el menú no necesita conocer a los flotantes.
 
 ---
 
@@ -460,6 +464,15 @@ El objetivo es que no pierda peso visual, solo carga.
 `ScrollSmoother` de GSAP (ahora gratis) o Lenis. Recomendación: **Lenis**, porque se lleva mejor con el App Router de Next y con `position: sticky`, que es justo lo que usan las cards apiladas. ScrollSmoother requiere una estructura de wrappers que complica el layout.
 
 Se desactiva en mobile — el scroll nativo táctil es mejor que cualquier suavizado.
+
+**Resuelto en la Fase 3.** Lenis se monta en `SmoothScroll` con `gsap.matchMedia()`, y avanza con el ticker de GSAP en vez de su propio `requestAnimationFrame`: así hay un solo rAF en la página y ScrollTrigger lee la misma posición en el mismo frame.
+
+La navegación a secciones vive en `/lib/lenis.ts`, que expone:
+
+- `scrollearA(selector)` — scrollea con Lenis si está activo, o con `scrollIntoView` nativo si no (mobile, reduced-motion), y deja el hash en la URL con `pushState` para que el enlace sea compartible. Verificado: **Lenis respeta `scroll-margin-top`**, así que el offset del header se resuelve con `scroll-mt` en las secciones y no hay que sumar un offset propio — hacerlo lo duplicaba.
+- `bloquearScroll(bool)` — lo usa el menú mobile. Detiene Lenis y además pone `overflow:hidden` en el body, porque en mobile Lenis no está corriendo. Marca el body con `data-menu-abierto`, que es la señal que usan los flotantes para apartarse.
+
+Las secciones de la home llevan `id` y `scroll-mt-24` (96px, contra los 81px del header).
 
 ### 8.2 GSAP
 

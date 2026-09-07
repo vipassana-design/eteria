@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import Lenis from 'lenis'
 import { gsap, ScrollTrigger } from '@/lib/gsap'
+import { registrarLenis } from '@/lib/lenis'
 import { BP_DESKTOP } from '@/lib/motion'
 
 /** Scroll suavizado con Lenis (PLAN.md §8.1).
@@ -28,6 +29,7 @@ export default function SmoothScroll() {
         if (!esDesktop || !movimientoOk) return
 
         const lenis = new Lenis({ duration: 1.1, smoothWheel: true })
+        registrarLenis(lenis)
 
         // Lenis avanza con el ticker de GSAP en vez de su propio rAF,
         // así ScrollTrigger y el scroll leen la misma posición en el
@@ -41,6 +43,7 @@ export default function SmoothScroll() {
         return () => {
           gsap.ticker.remove(avanzar)
           gsap.ticker.lagSmoothing(500, 33)
+          registrarLenis(null)
           lenis.destroy()
         }
       },

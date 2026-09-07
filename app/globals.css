@@ -198,6 +198,14 @@
   max-width: 68ch;
 }
 
+/* Con el menú mobile abierto, los flotantes se apartan: el botón de
+   WhatsApp tapa el pie del overlay. El !important es necesario porque
+   GSAP controla la opacidad del botón con estilo inline. */
+body[data-menu-abierto] [data-flotante] {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 /* ---------------------------------------------------------------
    Reduced motion (§2.4) — se respeta en toda animación
    --------------------------------------------------------------- */
