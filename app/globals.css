@@ -22,7 +22,7 @@
   /* Texto */
   --color-hi: #f4f2ff;
   --color-mid: #b9b3d6;
-  --color-low: #7b7499;
+  --color-low: #807a9f;
   --color-danger: #fca5a5;
 
   /* Bordes */
@@ -95,6 +95,18 @@
     /* El scroll suavizado lo maneja Lenis; sin esto pelean. */
     scroll-behavior: auto;
     -webkit-text-size-adjust: 100%;
+  }
+
+  /* Los glows son divs grandes y absolutos: si asoman por el costado
+     ensanchan el documento y aparece scroll horizontal, sobre todo en
+     mobile.
+
+     El recorte va acá y no en body: overflow-x en body o html rompe
+     position:sticky en varios navegadores, y las cards apiladas de
+     servicios dependen de sticky (PLAN.md §11). Con overflow-clip
+     sobre un contenedor intermedio, sticky sigue funcionando. */
+  #capa-sitio {
+    overflow-x: clip;
   }
 
   body {

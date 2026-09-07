@@ -24,9 +24,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es" className={`${clashDisplay.variable} ${satoshi.variable}`}>
       <body>
         <SmoothScroll />
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        {/* Capa de recorte horizontal: contiene los glows sin usar
+            overflow en body, que rompería position:sticky. */}
+        <div id="capa-sitio">
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   )

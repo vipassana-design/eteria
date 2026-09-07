@@ -63,7 +63,7 @@ Fondo con croma real, no negro neutro. Un negro puro con un solo acento brillant
 /* Texto */
 --text-hi:      #F4F2FF;  /* títulos */
 --text-mid:     #B9B3D6;  /* cuerpo */
---text-low:     #7B7499;  /* labels, metadatos */
+--text-low:     #807A9F;  /* labels, metadatos */
 
 /* Bordes */
 --border:       rgba(255,255,255,0.07);
@@ -136,6 +136,17 @@ export const dur = {
 - `prefers-reduced-motion` respetado en todo: los reveals pasan a opacidad simple, el rolling text se congela en la primera palabra, las partículas se apagan.
 - Todo GSAP dentro de `useGSAP()` de `@gsap/react` con scope, para cleanup automático.
 
+**Variantes de `Reveal`** (definidas en la Fase 2). El componente no tiene una sola animación: cada sección elige la que le corresponde, que es lo que evita el default genérico.
+
+| Variante | Movimiento | Dónde |
+|---|---|---|
+| `subir` | Fade + 24px desde abajo | El default contenido, para bloques de texto |
+| `escala` | Escala 0.96 → 1 con fade | Cards |
+| `mascara` | El contenido se descubre desde abajo | Títulos de sección |
+| `lateral` | Fade + desplazamiento horizontal | Filas con stagger, como el proceso |
+
+Con la prop `stagger` la animación pasa a los hijos directos en vez del bloque entero. Todas usan `ScrollTrigger` con `once: true` y arrancan al 85% del viewport.
+
 ### 2.5 Fondo vivo
 
 Tres capas, todas sutiles, ninguna protagonista:
@@ -156,6 +167,7 @@ Tres capas, todas sutiles, ninguna protagonista:
   /software-a-medida/page.tsx
   /sitios-institucionales/page.tsx
   /privacidad/page.tsx
+  /design-system/page.tsx       temporal, revisión visual — se elimina en la Fase 9
   not-found.tsx
   /api/contacto/route.ts        POST → envío de mail
 /components
@@ -173,13 +185,17 @@ Tres capas, todas sutiles, ninguna protagonista:
     Particulas.tsx  Glow.tsx  Grano.tsx
 /lib
   gsap.ts                       registro de plugins
+  motion.ts                     tokens de ease/duración y helpers de media query
+  fuentes.ts                    next/font/local de Clash Display y Satoshi
   animaciones.ts                helpers reutilizables
 /types
   index.ts                      tipos compartidos de contenido
 /content
   servicios.ts  proceso.ts  mockups.ts  stack.ts  landings.ts
+  designSystem.ts               temporal, contenido de /design-system
 /public
   /fonts  /mockups  /og
+  grano.png                     ruido tileable de 128px generado, no descargado
 ```
 
 Los objetos de `/content` se tipan contra las interfaces de `/types/index.ts` (`Servicio`, `EtapaProceso`, `Mockup`, `Tecnologia`, `Landing`). Es el lugar donde TypeScript más aporta en este proyecto: si se agrega un servicio sin algún campo, el error aparece al escribirlo y no al renderizar.
@@ -468,6 +484,17 @@ Dos detalles a tener presentes:
 
 Todos los componentes con GSAP llevan `'use client'`.
 
+### 8.2.1 Versiones y decisiones de la base
+
+Definido en la Fase 1:
+
+- Next 16.3 con App Router y Turbopack, React 19, Tailwind 4, GSAP 3.15.
+- Tailwind 4 usa configuración CSS-first: no hay `tailwind.config.js`. Los tokens se declaran en el bloque `@theme` de `app/globals.css` y quedan disponibles a la vez como utilidades (`text-hi`, `bg-surface`) y como variables CSS.
+- TypeScript estricto, más `noUncheckedIndexedAccess`, `noUnusedLocals`, `noUnusedParameters` y `noFallthroughCasesInSwitch`.
+- `agentRules: false` en `next.config.ts`. Sin esto, `next dev` reescribe `CLAUDE.md` en cada arranque con su propio bloque de instrucciones y pisa las reglas del proyecto.
+- Las fuentes se bajaron de la API de Fontshare en su versión variable y viven en `/public/fonts` (`ClashDisplay-Variable.woff2`, `Satoshi-Variable.woff2`). Next las sirve optimizadas vía `next/font/local`.
+- El PNG de grano se genera con un script de Node en vez de descargarse: 128px, ruido con semilla fija, escala de grises con alfa. Queda en 19KB y es reproducible.
+
 ### 8.3 Imágenes
 
 - `next/image` en todo, formato WebP.
@@ -499,7 +526,7 @@ Validación en el servidor además de en el cliente. Rate limit simple por IP.
 
 Piso mínimo, sin anunciarlo:
 
-- Contraste AA en todo el texto — verificar `--text-low` sobre `--bg-base`.
+- Contraste AA en todo el texto. `--text-low` se verificó en la Fase 2: el valor original `#7B7499` daba 4.48 sobre `--bg-base` y AA pide 4.5 para texto normal, que es justo el tamaño de los labels. Se subió a `#807A9F` (4.85), el cambio más chico que cruza el umbral manteniendo el matiz. El resto de los tokens de texto pasan con holgura (`--text-mid` 9.78, `--text-hi` 17.71).
 - Focus visible en todos los interactivos (anillo violeta).
 - Modal con focus trap y cierre por `Esc`.
 - `prefers-reduced-motion` respetado.
