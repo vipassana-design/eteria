@@ -12,7 +12,13 @@ export type TipoProyecto = 'ecommerce' | 'institucional' | 'webapp' | 'otro'
  *  Son UI dibujada con SVG, no imágenes: los mockups reales son un
  *  pendiente del cliente (PLAN.md §1) y así el hero se puede juzgar
  *  con contenido realista mientras tanto. */
-export type PantallaMockup = 'tienda' | 'panel' | 'sitio'
+export type PantallaMockup =
+  | 'tienda'
+  | 'panel'
+  | 'sitio'
+  | 'vinos'
+  | 'saas'
+  | 'corporativo'
 
 /** Enlace de navegación. Los del header apuntan a secciones de la home
  *  con ancla; los del footer pueden ir a rutas. */
@@ -46,15 +52,16 @@ export interface EtapaProceso {
   ilustracion: 'documento' | 'wireframe' | 'codigo' | 'check'
 }
 
-/** Mockup del carrusel de ejemplos. */
+/** Mockup del carrusel de ejemplos.
+ *  Mientras no haya imágenes reales del cliente, cada uno se dibuja con
+ *  la pantalla SVG que le corresponde. */
 export interface Mockup {
   id: string
   titulo: string
   rubro: string
-  /** Miniatura de la card del carrusel. */
-  imagen: string
-  /** Imagen larga que se carga al abrir el modal. */
-  imagenLarga: string
+  pantalla: PantallaMockup
+  /** Texto de la barra de direcciones del marco de navegador. */
+  url: string
   alt: string
 }
 

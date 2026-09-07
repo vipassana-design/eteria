@@ -65,6 +65,7 @@ Cuando actualices un archivo, editá la parte que corresponde. No lo reescribas 
 - Los tokens de diseño viven en el bloque `@theme` de `app/globals.css`. Tailwind 4 no usa `tailwind.config.js`: no lo crees.
 - Las variantes condicionales de animación van con `gsap.matchMedia()`, no con `window.matchMedia` a mano. Se revierte solo al desmontar.
 - El loop de cualquier animación por frame va en `gsap.ticker`, no en un `requestAnimationFrame` propio: así hay un solo rAF compartido con Lenis y ScrollTrigger.
+- Para animar con `Flip` hacia un elemento que se monta recién al abrirse: detener Lenis y capturar `Flip.getState` **en el handler del evento**, antes de que React re-renderice. Medir dentro del componente que aparece no funciona (todavía no está en el DOM), y con el scroll interpolando la medición queda desfasada y la transición salta.
 - Los nombres de componentes, props, variables y archivos de contenido van en español, igual que el copy.
 - Antes de cerrar una fase con trabajo visual, mirar el resultado en el navegador. Que compile no es que se vea bien.
 - Las capturas sirven para verificar cosas objetivas: layout, desbordes, contraste, estados de un componente. No las uses para mostrar animaciones ni timing: eso lo evalúa el cliente en el navegador. Si algo se juzga mirándolo correr, terminalo y avisá; no armes herramientas para capturarlo.

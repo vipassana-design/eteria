@@ -372,6 +372,19 @@ Carrusel horizontal con 6 mockups. Navegación por flechas + drag con inercia (`
 
 **Nota:** los mockups son imágenes de demostración. No se declara autoría ni se atribuye a clientes.
 
+**Resuelto en la Fase 6.**
+
+**Flip + Lenis: el orden importa.** La transición de la card al modal salta si no se resuelven dos cosas, las dos por el mismo motivo (Flip compara mediciones de `getBoundingClientRect()` tomadas en momentos distintos):
+
+1. **Lenis se detiene en el handler del click**, antes de que React re-renderice. Con el scroll interpolando, lo que Flip mide deja de ser válido en el frame siguiente.
+2. **El estado de la card se captura también en el click**, no dentro del modal. El modal devuelve `null` mientras está cerrado, así que cuando monta ya no hay forma de leer la posición de partida: `Flip.getState` ahí adentro mide un elemento que recién existe. El estado viaja al modal por un ref.
+
+Con el estado ya capturado, el modal hace `Flip.fit` para posar el marco sobre la card, guarda esa posición como partida, devuelve el marco a su lugar real y anima con `Flip.from`. Verificado por muestreo: el marco arranca en la posición exacta de la card (388, 144, 576px) e interpola hasta la del modal (103, 272, 896px).
+
+**Los seis mockups son pantallas SVG**, como los del hero: se sumaron tienda de vinos, landing SaaS y sitio corporativo a las tres que ya existían. Cada card del carrusel recorta la pantalla en 16:10 y el modal la muestra completa con scroll propio.
+
+**Snap y flechas comparten las mismas posiciones medidas.** `Draggable` con `inertia: true` usa una función de snap que busca la posición de card más cercana respetando el límite, y las flechas llaman al mismo cálculo. En mobile no hay flechas: solo drag, como pide §7.
+
 ### 4.7 Stack
 
 Grid estático de tecnologías con hover. Una línea de contexto arriba, sin explicación larga.

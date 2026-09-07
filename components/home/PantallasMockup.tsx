@@ -316,8 +316,284 @@ export function PantallaSitio() {
   )
 }
 
+/** Tienda de vinos: ecommerce de nicho, paleta vinosa, catálogo con
+ *  botellas y filtros por varietal. */
+export function PantallaVinos() {
+  const botellas = [
+    { x: 214, etiqueta: '#7A2E3E', anio: '2019', precio: '$12.400' },
+    { x: 334, etiqueta: '#5E3A6B', anio: '2021', precio: '$9.800' },
+    { x: 454, etiqueta: '#8A4A2E', anio: '2018', precio: '$18.600' },
+    { x: 574, etiqueta: '#4A5E3A', anio: '2022', precio: '$7.200' },
+  ]
+
+  return (
+    <Marco>
+      <rect width={720} height={460} fill="#FAF7F5" />
+
+      {/* Barra superior */}
+      <rect width={720} height={54} fill="#2B1A1F" />
+      <text x={40} y={33} fontSize={16} fontWeight={700} fill="#F0E6E0" letterSpacing={1.5}>
+        BODEGA
+      </text>
+      {['Tintos', 'Blancos', 'Espumantes', 'Cajas'].map((t, i) => (
+        <text key={t} x={230 + i * 84} y={33} fontSize={11} fill="#C4ADA6">
+          {t}
+        </text>
+      ))}
+      <circle cx={664} cy={27} r={12} fill="#7A2E3E" />
+      <text x={664} y={31} fontSize={9} fontWeight={700} fill="#F0E6E0" textAnchor="middle">
+        2
+      </text>
+
+      {/* Filtros laterales */}
+      <text x={40} y={92} fontSize={11} fontWeight={600} fill="#2B1A1F">
+        Varietal
+      </text>
+      {['Malbec', 'Cabernet', 'Merlot', 'Pinot noir', 'Blend'].map((v, i) => (
+        <g key={v}>
+          <rect
+            x={40}
+            y={104 + i * 26}
+            width={11}
+            height={11}
+            rx={2.5}
+            fill={i === 0 ? '#7A2E3E' : 'none'}
+            stroke={i === 0 ? '#7A2E3E' : '#C9BDB8'}
+            strokeWidth={1.2}
+          />
+          <text x={60} y={114 + i * 26} fontSize={10.5} fill={i === 0 ? '#2B1A1F' : '#7A6A65'}>
+            {v}
+          </text>
+        </g>
+      ))}
+      <line x1={172} y1={80} x2={172} y2={420} stroke="#E8DDD8" strokeWidth={1} />
+
+      {/* Encabezado del catálogo */}
+      <text x={214} y={92} fontSize={17} fontWeight={700} fill="#2B1A1F" letterSpacing={-0.3}>
+        Tintos de altura
+      </text>
+      <text x={640} y={92} fontSize={10.5} fill="#7A6A65" textAnchor="end">
+        24 etiquetas
+      </text>
+
+      {/* Botellas */}
+      {botellas.map((b) => (
+        <g key={b.x}>
+          <rect x={b.x} y={112} width={104} height={190} rx={7} fill="#F2EAE6" />
+          {/* Botella: cuello, hombro y cuerpo */}
+          <path
+            d={`M${b.x + 46} 138h12v22c0 4 9 10 9 22v78c0 4-3 7-7 7h-16c-4 0-7-3-7-7v-78c0-12 9-18 9-22v-22Z`}
+            fill="#2F3A2E"
+          />
+          <rect x={b.x + 40} y={196} width={24} height={34} rx={2} fill={b.etiqueta} />
+          <text x={b.x + 52} y={218} fontSize={7} fill="#F0E6E0" textAnchor="middle">
+            {b.anio}
+          </text>
+          <rect x={b.x} y={312} width={68} height={7} rx={3.5} fill="#DDD0CA" />
+          <text x={b.x} y={338} fontSize={12} fontWeight={700} fill="#7A2E3E">
+            {b.precio}
+          </text>
+        </g>
+      ))}
+
+      {/* Paginación */}
+      <rect x={214} y={366} width={26} height={26} rx={5} fill="#7A2E3E" />
+      <text x={227} y={383} fontSize={11} fontWeight={600} fill="#FFF" textAnchor="middle">
+        1
+      </text>
+      {['2', '3'].map((n, i) => (
+        <g key={n}>
+          <rect x={248 + i * 32} y={366} width={26} height={26} rx={5} fill="#F2EAE6" />
+          <text
+            x={261 + i * 32}
+            y={383}
+            fontSize={11}
+            fill="#7A6A65"
+            textAnchor="middle"
+          >
+            {n}
+          </text>
+        </g>
+      ))}
+    </Marco>
+  )
+}
+
+/** Landing de producto SaaS: hero con claim, precios y logos. */
+export function PantallaSaas() {
+  const planes = [
+    { x: 56, nombre: 'Base', precio: '$19', destacado: false },
+    { x: 268, nombre: 'Pro', precio: '$49', destacado: true },
+    { x: 480, nombre: 'Equipo', precio: '$99', destacado: false },
+  ]
+
+  return (
+    <Marco>
+      <rect width={720} height={460} fill="#0E1526" />
+
+      {/* Barra superior */}
+      <circle cx={44} cy={30} r={9} fill="#4F7FFF" />
+      <text x={62} y={35} fontSize={14} fontWeight={700} fill="#EAF0FF">
+        Fluxo
+      </text>
+      {['Producto', 'Precios', 'Docs'].map((t, i) => (
+        <text key={t} x={440 + i * 70} y={34} fontSize={11} fill="#8595B8">
+          {t}
+        </text>
+      ))}
+      <rect x={636} y={19} width={54} height={24} rx={12} fill="#4F7FFF" />
+      <text x={663} y={35} fontSize={10.5} fontWeight={600} fill="#FFF" textAnchor="middle">
+        Probar
+      </text>
+
+      {/* Hero */}
+      <text x={56} y={104} fontSize={30} fontWeight={700} fill="#EAF0FF" letterSpacing={-0.8}>
+        Automatizá tu
+      </text>
+      <text x={56} y={140} fontSize={30} fontWeight={700} fill="#4F7FFF" letterSpacing={-0.8}>
+        flujo de trabajo
+      </text>
+      <text x={56} y={170} fontSize={12} fill="#8595B8">
+        Conectá tus herramientas y dejá de copiar datos a mano.
+      </text>
+
+      {/* Planes */}
+      {planes.map((p) => (
+        <g key={p.nombre}>
+          <rect
+            x={p.x}
+            y={210}
+            width={184}
+            height={186}
+            rx={10}
+            fill={p.destacado ? '#16203A' : '#121B30'}
+            stroke={p.destacado ? '#4F7FFF' : '#1F2B49'}
+            strokeWidth={p.destacado ? 1.6 : 1}
+          />
+          {p.destacado && (
+            <>
+              <rect x={p.x + 124} y={224} width={46} height={19} rx={9.5} fill="#4F7FFF" />
+              <text x={p.x + 147} y={237} fontSize={9} fontWeight={600} fill="#FFF" textAnchor="middle">
+                Popular
+              </text>
+            </>
+          )}
+          <text x={p.x + 20} y={244} fontSize={12} fill="#8595B8">
+            {p.nombre}
+          </text>
+          <text x={p.x + 20} y={282} fontSize={30} fontWeight={700} fill="#EAF0FF">
+            {p.precio}
+          </text>
+          <text x={p.x + 20} y={300} fontSize={10} fill="#6B7B9E">
+            por mes
+          </text>
+          {[0, 1, 2].map((r) => (
+            <g key={r}>
+              <circle cx={p.x + 25} cy={324 + r * 22} r={5} fill="#1F2B49" />
+              <path
+                d={`m${p.x + 22} ${324 + r * 22}l2.4 2.4 4.2-4.4`}
+                fill="none"
+                stroke="#4F7FFF"
+                strokeWidth={1.4}
+                strokeLinecap="round"
+              />
+              <rect x={p.x + 38} y={320 + r * 22} width={92 - r * 16} height={6} rx={3} fill="#1F2B49" />
+            </g>
+          ))}
+        </g>
+      ))}
+
+      {/* Logos de confianza */}
+      <text x={56} y={432} fontSize={9.5} fill="#5B6A8C">
+        Usado por equipos en
+      </text>
+      {[0, 1, 2, 3].map((i) => (
+        <rect key={i} x={196 + i * 76} y={422} width={54} height={12} rx={3} fill="#1B2540" />
+      ))}
+    </Marco>
+  )
+}
+
+/** Sitio corporativo: multinacional, hero amplio con datos duros. */
+export function PantallaCorporativo() {
+  const datos = [
+    { x: 56, valor: '+40', etiqueta: 'países' },
+    { x: 232, valor: '1.200', etiqueta: 'empleados' },
+    { x: 408, valor: '35', etiqueta: 'años' },
+  ]
+
+  return (
+    <Marco>
+      <rect width={720} height={460} fill="#FFFFFF" />
+
+      {/* Barra superior */}
+      <rect width={720} height={58} fill="#0B3A5C" />
+      <rect x={40} y={22} width={26} height={14} rx={2} fill="#4FA3D9" />
+      <text x={76} y={34} fontSize={14} fontWeight={700} fill="#FFFFFF" letterSpacing={-0.2}>
+        Norvex
+      </text>
+      {['Compañía', 'Soluciones', 'Inversores', 'Prensa'].map((t, i) => (
+        <text key={t} x={356 + i * 76} y={34} fontSize={10.5} fill="#B3D2E6">
+          {t}
+        </text>
+      ))}
+
+      {/* Hero */}
+      <rect y={58} width={720} height={196} fill="#F2F7FB" />
+      <text x={56} y={124} fontSize={27} fontWeight={700} fill="#0B3A5C" letterSpacing={-0.7}>
+        Infraestructura
+      </text>
+      <text x={56} y={158} fontSize={27} fontWeight={700} fill="#4FA3D9" letterSpacing={-0.7}>
+        para la industria
+      </text>
+      <rect x={56} y={180} width={130} height={34} rx={4} fill="#0B3A5C" />
+      <text x={121} y={202} fontSize={11} fontWeight={600} fill="#FFF" textAnchor="middle">
+        Conocer más
+      </text>
+      {/* Gráfico de barras del hero */}
+      {[64, 96, 78, 118, 92, 138].map((h, i) => (
+        <rect
+          key={i}
+          x={470 + i * 34}
+          y={224 - h}
+          width={20}
+          height={h}
+          rx={2}
+          fill={i === 5 ? '#4FA3D9' : '#C9DEEC'}
+        />
+      ))}
+
+      {/* Datos duros */}
+      {datos.map((d) => (
+        <g key={d.etiqueta}>
+          <text x={d.x} y={310} fontSize={28} fontWeight={700} fill="#0B3A5C">
+            {d.valor}
+          </text>
+          <text x={d.x} y={330} fontSize={10.5} fill="#6E8698">
+            {d.etiqueta}
+          </text>
+        </g>
+      ))}
+      <line x1={56} y1={352} x2={664} y2={352} stroke="#E2EBF2" strokeWidth={1} />
+
+      {/* Notas de prensa */}
+      {[0, 1, 2].map((i) => (
+        <g key={i}>
+          <rect x={56 + i * 208} y={374} width={184} height={58} rx={5} fill="#F7FAFC" />
+          <rect x={70 + i * 208} y={388} width={40} height={7} rx={3.5} fill="#4FA3D9" />
+          <rect x={70 + i * 208} y={404} width={150} height={6} rx={3} fill="#D8E4ED" />
+          <rect x={70 + i * 208} y={416} width={112} height={6} rx={3} fill="#D8E4ED" />
+        </g>
+      ))}
+    </Marco>
+  )
+}
+
 export const PANTALLAS = {
   tienda: PantallaTienda,
   panel: PantallaPanel,
   sitio: PantallaSitio,
+  vinos: PantallaVinos,
+  saas: PantallaSaas,
+  corporativo: PantallaCorporativo,
 } as const
