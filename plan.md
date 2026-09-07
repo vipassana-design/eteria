@@ -76,7 +76,7 @@ Fondo con croma real, no negro neutro. Un negro puro con un solo acento brillant
 /* Texto */
 --text-hi:      #F4F2FF;  /* títulos */
 --text-mid:     #B9B3D6;  /* cuerpo */
---text-low:     #807A9F;  /* labels, metadatos */
+--text-low:     #8B85AD;  /* labels, metadatos */
 
 /* Bordes */
 --border:       rgba(255,255,255,0.07);
@@ -180,7 +180,7 @@ Tres capas, todas sutiles, ninguna protagonista:
   /software-a-medida/page.tsx
   /sitios-institucionales/page.tsx
   /privacidad/page.tsx
-  /design-system/page.tsx       temporal, revisión visual — se elimina en la Fase 9
+  /design-system/page.tsx       revisión visual — queda, con noindex
   not-found.tsx
   /api/contacto/route.ts        POST → envío de mail
 /components
@@ -220,7 +220,7 @@ Tres capas, todas sutiles, ninguna protagonista:
   landings.ts                   contenido de las tres landings
   queHacemos.ts                 texto y datos de la sección
   servicios.ts  proceso.ts  stack.ts
-  designSystem.ts               temporal, contenido de /design-system
+  designSystem.ts               contenido de /design-system
 /public
   /fonts  /mockups  /og
   grano.png                     ruido tileable de 128px generado, no descargado
@@ -656,7 +656,7 @@ Hoy `enviarConsulta()` simula el resultado con una demora de 1,2s, para que los 
 
 Piso mínimo, sin anunciarlo:
 
-- Contraste AA en todo el texto. `--text-low` se verificó en la Fase 2: el valor original `#7B7499` daba 4.48 sobre `--bg-base` y AA pide 4.5 para texto normal, que es justo el tamaño de los labels. Se subió a `#807A9F` (4.85), el cambio más chico que cruza el umbral manteniendo el matiz. El resto de los tokens de texto pasan con holgura (`--text-mid` 9.78, `--text-hi` 17.71).
+- Contraste AA en todo el texto, verificado sobre las tres superficies del sitio y no solo sobre el fondo base. `--text-low` pasó por dos ajustes: de `#7B7499` a `#807A9F` en la Fase 2 (daba 4.48 sobre `--bg-base`), y de ahí a `#8B85AD` en la Fase 9, porque sobre `--bg-elevated` —las cards y el modal— daba 4.27. El valor actual da 5.65 / 4.98 / 5.10 sobre base, elevated y la barra de las ventanas de mockup. **Lección: un token de texto hay que medirlo contra cada superficie donde se usa, no contra el fondo de la página.**
 - Focus visible en todos los interactivos (anillo violeta).
 - Modal con focus trap y cierre por `Esc`.
 - `prefers-reduced-motion` respetado.
@@ -701,6 +701,14 @@ Componente de layout compartido, hero split con rolling text, contenido de las t
 **Fase 9 — Cierre**
 404, página de privacidad, metadata y OG, sitemap, pasada de accesibilidad, pasada de mobile, Lighthouse.
 
+**`/design-system` no se elimina.** Decisión del cliente en la Fase 9: la ruta queda publicada como referencia de trabajo. Se mantiene fuera de los buscadores por tres vías, y las tres tienen que seguir así:
+
+- `robots: { index: false, follow: false }` en la metadata de la página.
+- `Disallow: /design-system` en `robots.txt`.
+- Ausente de `RUTAS` en `/content/sitio.ts`, que es lo que alimenta el sitemap.
+
+Si más adelante se decide sacarla, hay que borrar `/app/design-system/` y `/content/designSystem.ts`, y quitar el `Disallow` de `/app/robots.ts`.
+
 ---
 
 ## 10. Checklist final
@@ -711,10 +719,19 @@ Componente de layout compartido, hero split con rolling text, contenido de las t
 - [ ] SMTP configurado y envío probado en producción
 - [ ] Email real en el footer
 - [ ] Número de WhatsApp real
-- [ ] Metadata y OG de las 4 páginas
-- [ ] Lighthouse > 90 en Performance y Accessibility
+- [x] Metadata y OG de las 4 páginas (imagen OG generada con next/og, canonical por ruta, JSON-LD de Organization)
+- [x] Lighthouse medido en la Fase 9 sobre el build de producción (`npm run build` + `npm start`, no el dev server, que da números muy por debajo):
+
+  | Ruta | Performance | Accessibility | Best practices | SEO |
+  |---|---|---|---|---|
+  | `/ecommerce` | 94 | 100 | 100 | 100 |
+  | `/privacidad` | 95 | 100 | 100 | 100 |
+  | `/` desktop | 86 | 100 | 100 | 100 |
+  | `/` mobile | 87 | 100 | — | — |
+
+  **La home queda en 86 por la secuencia de entrada del hero, no por peso de carga.** El 87% del LCP es "render delay": el elemento más grande es la bajada del hero, que entra con el delay de 0,5s que pide §4.2. La red no es el problema (todos los recursos bajo 21ms, CLS 0). Subir la home a >90 implica adelantar o sacar ese delay, que es una decisión de diseño y no un ajuste técnico.
 - [ ] Probado en Safari iOS (el blur y el sticky rompen ahí antes que en ningún lado)
-- [ ] `prefers-reduced-motion` verificado
+- [x] `prefers-reduced-motion` verificado en partículas, reveals, hero, rolling text y transiciones de página
 - [ ] Formulario probado desde mobile
 
 ---

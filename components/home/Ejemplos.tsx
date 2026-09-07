@@ -192,7 +192,7 @@ export default function Ejemplos() {
                   <button
                     type="button"
                     onClick={() => abrirModal(i)}
-                    aria-label={`${ui.abrir}: ${m.titulo}`}
+                    aria-label={`${m.titulo}. ${ui.abrir}`}
                     className="group block w-full text-left"
                   >
                     <div className="overflow-hidden rounded-(--radius-card) border border-hairline bg-elevated transition-colors duration-500 ease-(--ease-suave) group-hover:border-hairline-hover">

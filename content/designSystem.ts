@@ -71,11 +71,11 @@ export const designSystem = {
     {
       titulo: 'Texto',
       descripcion:
-        'Contraste AA en todo el texto sobre el fondo base. El valor de --color-low se subió de #7B7499 a #807A9F: el original daba 4.48 y AA pide 4.5 para texto normal, que es justo el tamaño de los labels.',
+        'Contraste AA sobre las tres superficies del sitio, no solo sobre el fondo base. --color-low pasó por dos ajustes: de #7B7499 a #807A9F en la Fase 2 (daba 4.48 sobre --bg-base) y de ahí a #8B85AD en la Fase 9, porque sobre --bg-elevated (las cards y el modal) daba 4.27. El valor actual da 5.65 / 4.98 / 5.10 sobre base, elevated y la barra de las ventanas de mockup.',
       muestras: [
         { variable: '--color-hi', valor: '#F4F2FF', nota: 'Títulos', comoTexto: true },
         { variable: '--color-mid', valor: '#B9B3D6', nota: 'Cuerpo', comoTexto: true },
-        { variable: '--color-low', valor: '#807A9F', nota: 'Labels y metadatos', comoTexto: true },
+        { variable: '--color-low', valor: '#8B85AD', nota: 'Labels y metadatos', comoTexto: true },
         {
           variable: '--color-danger',
           valor: '#FCA5A5',
