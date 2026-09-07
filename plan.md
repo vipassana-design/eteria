@@ -202,6 +202,8 @@ Tres capas, todas sutiles, ninguna protagonista:
     Particulas.tsx  Glow.tsx  Grano.tsx
 /lib
   gsap.ts                       registro de plugins
+  enviarConsulta.ts             envío del formulario — HOY SIMULADO, ver §8.4
+  validarConsulta.ts            validación compartida cliente/servidor
   motion.ts                     tokens de ease/duración y helpers de media query
   fuentes.ts                    next/font/local de Clash Display y Satoshi
   lenis.ts                      scroll a secciones y bloqueo de scroll
@@ -212,6 +214,7 @@ Tres capas, todas sutiles, ninguna protagonista:
   mockups.ts  landings.ts
   marca.ts                      nombre, email, WhatsApp, navegación y footer
   hero.ts                       títulos, CTAs y mockups del hero
+  contacto.ts                   textos del formulario y tipos de proyecto
   queHacemos.ts                 texto y datos de la sección
   servicios.ts  proceso.ts  stack.ts
   designSystem.ts               temporal, contenido de /design-system
@@ -233,7 +236,7 @@ Todo el texto del sitio vive en `/content`. Ningún copy hardcodeado dentro de u
 Fijo. Al scrollear pasa de transparente a `--bg-elevated` con `backdrop-filter: blur(12px)` y borde inferior hairline.
 
 ```
-[Eteria]        Servicios  Proceso  Ejemplos  Qué hacemos      [ Contacto ]
+[Eteria]        Quiénes somos  Servicios  Proceso  Ejemplos    [ Contacto ]
 ```
 
 - Logo tipográfico en Clash Display 600. `Eter` en `--text-hi`, `ia` con el degradé de marca.
@@ -286,7 +289,7 @@ Fijo. Al scrollear pasa de transparente a `--bg-elevated` con `backdrop-filter: 
 
 Sin card. Texto grande sobre el fondo, dos columnas asimétricas.
 
-> **Título:** Desarrollo a medida
+> **Título:** Quiénes somos
 >
 > **Cuerpo:**
 > Cada proyecto arranca en cero: escribimos el código que la operación necesita, con la estructura que va a soportar lo que se agregue después.
@@ -436,7 +439,15 @@ Dos columnas. Izquierda el texto y los datos, derecha el formulario.
 - Validación en cliente con mensajes inline en `--text-danger`, no alerts.
 - Estados: normal → enviando (botón con spinner) → enviado (mensaje de confirmación en el lugar del form).
 - Sin reCAPTCHA por ahora. Honeypot + validación de longitud mínima en el servidor.
-- El mismo componente `<Contacto />` se reutiliza en las tres landings, con la prop `tipoPreseleccionado`.
+- El mismo componente `<Contacto />` se reutiliza en las tres landings, con la prop `tipoPreseleccionado`. Lleva además `conTitulo`, que en las landings lo deja sin su propio H2.
+
+**Resuelto en la Fase 7.** El formulario está terminado; el envío quedó pendiente por el hosting (ver el recuadro en §8.4). Detalles que no estaban en el plan:
+
+- **Los errores aparecen recién al primer intento de envío**, no mientras se escribe: marcar en rojo un campo que la persona todavía está completando es hostil. Después del primer intento sí se recalculan al escribir, para que se limpien apenas se corrigen.
+- **El foco salta al primer campo con error** al enviar, para que alguien que navega con teclado no tenga que buscarlo.
+- **Si el envío falla, los datos se conservan.** El error va en un bloque con `role="alert"` arriba del botón, separado de los errores de validación.
+- El honeypot se posiciona fuera de pantalla en vez de `display:none`, que algunos bots detectan.
+- La validación vive en `/lib/validarConsulta.ts`, aparte del componente, para que el endpoint la reutilice cuando exista.
 
 ### 4.9 Footer
 
@@ -583,6 +594,39 @@ Validación en el servidor además de en el cliente. Rate limit simple por IP.
 
 > **Nota de hosting:** esto requiere Node corriendo. Si el hosting final es cPanel compartido, la alternativa es exportar el sitio estático y postear a un script PHP en el mismo hosting. Decisión pendiente.
 
+---
+
+#### ⚠️ PENDIENTE: el envío no está implementado
+
+**Estado al cerrar la Fase 7.** El formulario está completo y funcionando —campos, validación, los tres estados, honeypot y confirmación—, pero **no envía nada**. El hosting no está definido y de eso depende el método.
+
+Hoy `enviarConsulta()` simula el resultado con una demora de 1,2s, para que los estados se vean como se van a ver en producción. Escribiendo `error@test.com` en el email se puede ver el estado de error sin romper nada.
+
+**Todo lo que hay que cambiar está en un solo archivo: `/lib/enviarConsulta.ts`.** El componente `Contacto` consume el tipo `ResultadoEnvio` y no sabe cómo viaja el mensaje, así que no hay que tocar ningún componente.
+
+**Pasos comunes a las dos opciones**
+
+1. En `/lib/enviarConsulta.ts`: poner `SIMULAR = false` y borrar el bloque de simulación junto con el atajo de `error@test.com`.
+2. Ajustar la constante `ENDPOINT` según la opción elegida.
+3. El endpoint tiene que responder JSON: `{ ok: true }` o `{ ok: false, error: 'mensaje para el usuario' }`.
+4. Validar de nuevo en el servidor. `/lib/validarConsulta.ts` es agnóstico del cliente y se puede importar tal cual desde un route handler; para PHP hay que replicar los mínimos de `LIMITES`.
+5. Cortar cuando `website` (el honeypot) venga con contenido, respondiendo `{ ok: true }` sin enviar.
+
+**Opción A — Node (Vercel, VPS, cualquier hosting con Node)**
+
+- `ENDPOINT = '/api/contacto'`
+- Crear `/app/api/contacto/route.ts` con Nodemailer y las variables SMTP de arriba.
+- Rate limit por IP. Con una sola instancia alcanza un `Map` en memoria; si hay varias, hace falta almacenamiento compartido.
+
+**Opción B — cPanel compartido (sin Node)**
+
+- `ENDPOINT = '/contacto.php'`
+- El sitio se exporta estático: `output: 'export'` en `next.config.ts`. **Atención:** eso desactiva los route handlers y la optimización de imágenes de Next (`images.unoptimized: true`).
+- El script PHP recibe el JSON, valida, y manda con `mail()` o PHPMailer.
+- Hay que verificar que el hosting permita `mail()` saliente, que muchos cPanel lo limitan.
+
+**Lo que falta definir antes de implementar:** hosting, casilla real de destino (hoy `hola@eteria.com` es placeholder en `/content/marca.ts`) y credenciales SMTP.
+
 ### 8.5 SEO
 
 - Metadata por página con la API de metadata de Next.
@@ -646,6 +690,7 @@ Componente de layout compartido, hero split con rolling text, contenido de las t
 
 - [ ] Reemplazo global de `Eteria` por el nombre definitivo
 - [ ] Mockups reales reemplazando placeholders
+- [ ] **Implementar el envío del formulario** (hoy simulado, ver el recuadro de §8.4)
 - [ ] SMTP configurado y envío probado en producción
 - [ ] Email real en el footer
 - [ ] Número de WhatsApp real

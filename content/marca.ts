@@ -18,7 +18,7 @@ export const marca: Marca = {
 /** Navegación del header y del menú mobile.
  *  Anclas a las secciones de la home, en el orden en que aparecen. */
 export const navegacion: EnlaceNav[] = [
-  { etiqueta: 'Qué hacemos', href: '/#que-hacemos' },
+  { etiqueta: 'Quiénes somos', href: '/#que-hacemos' },
   { etiqueta: 'Servicios', href: '/#servicios' },
   { etiqueta: 'Proceso', href: '/#proceso' },
   { etiqueta: 'Ejemplos', href: '/#ejemplos' },
