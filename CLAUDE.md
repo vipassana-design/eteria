@@ -67,6 +67,7 @@ Cuando actualices un archivo, editá la parte que corresponde. No lo reescribas 
 - El loop de cualquier animación por frame va en `gsap.ticker`, no en un `requestAnimationFrame` propio: así hay un solo rAF compartido con Lenis y ScrollTrigger.
 - Los nombres de componentes, props, variables y archivos de contenido van en español, igual que el copy.
 - Antes de cerrar una fase con trabajo visual, mirar el resultado en el navegador. Que compile no es que se vea bien.
+- Las capturas sirven para verificar cosas objetivas: layout, desbordes, contraste, estados de un componente. No las uses para mostrar animaciones ni timing: eso lo evalúa el cliente en el navegador. Si algo se juzga mirándolo correr, terminalo y avisá; no armes herramientas para capturarlo.
 - Para ocultar o mostrar un `Boton` por breakpoint, envolverlo en un div con la clase de display. Pasarle `hidden` por `className` no funciona: compite con el `inline-flex` de sus clases base y gana el orden de la hoja generada, no el del atributo.
 
 ## Stack instalado

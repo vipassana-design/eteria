@@ -179,6 +179,8 @@ Tres capas, todas sutiles, ninguna protagonista:
     Ejemplos.tsx  MockupModal.tsx  Stack.tsx  Contacto.tsx
     VentanaMockup.tsx             marco de navegador de los mockups
     PantallasMockup.tsx           pantallas SVG placeholder del hero
+    IlustracionesProceso.tsx      SVG de las 4 etapas
+    LogosStack.tsx                logos SVG de las tecnologías
   /landing
     LandingHero.tsx  LandingBeneficios.tsx  LandingLayout.tsx
   /ui
@@ -194,9 +196,11 @@ Tres capas, todas sutiles, ninguna protagonista:
 /types
   index.ts                      tipos compartidos de contenido
 /content
-  servicios.ts  proceso.ts  mockups.ts  stack.ts  landings.ts
+  mockups.ts  landings.ts
   marca.ts                      nombre, email, WhatsApp, navegación y footer
   hero.ts                       títulos, CTAs y mockups del hero
+  queHacemos.ts                 texto y datos de la sección
+  servicios.ts  proceso.ts  stack.ts
   designSystem.ts               temporal, contenido de /design-system
 /public
   /fonts  /mockups  /og
@@ -282,6 +286,8 @@ Sin card. Texto grande sobre el fondo, dos columnas asimétricas.
 
 Los números en Clash Display grande con degradé, el label debajo en `--text-low`.
 
+**Ajuste de la Fase 5.** El dato del medio no es un número: al mismo tamaño que `+20` y `24h` ocupaba tres líneas y desbalanceaba el bloque. Lleva `esTexto: true` en el contenido y se renderiza a tamaño H3, así el peso de número grande queda para las cifras.
+
 ### 4.4 Servicios — cards apiladas
 
 Tres cards que se apilan al scrollear: cada una queda pineada y la siguiente sube por encima, con la anterior escalando levemente hacia atrás y perdiendo opacidad. Es el efecto que viste en Wavespace.
@@ -310,6 +316,13 @@ Cada card: mitad texto, mitad mockup a color.
 > `Ver más sobre software a medida →`
 
 **Implementación:** `position: sticky` en las cards + ScrollTrigger para la escala/opacidad de las de atrás. En mobile se desactiva el pin y quedan tres cards apiladas normalmente.
+
+**Resuelto en la Fase 5.** Sticky nativo funciona con Lenis: se verificó que las cards se pinean y se apilan con el scroll suavizado activo, así que no hizo falta caer al `pin: true` de ScrollTrigger que anticipaba §11. La clave es que `#capa-sitio` usa `overflow-x: clip` y no `hidden`, que sí rompería el sticky.
+
+Dos ajustes que no estaban previstos:
+
+- **El apagado de las cards de atrás va con un velo encima, no con `opacity` sobre la card.** Bajar la opacidad la vuelve translúcida entera y se lee el texto de la card de atrás a través de la de adelante. El velo es un div con `bg-base` que ScrollTrigger lleva de 0 a 0.62.
+- El `top` de sticky crece 1.25rem por card, así queda visible el borde superior de las de atrás, y el gap entre cards es de `60vh` en desktop: es lo que da el recorrido de scroll para que una alcance a la siguiente.
 
 ### 4.5 Proceso — 4 etapas
 
@@ -369,6 +382,8 @@ Grid estático de tecnologías con hover. Una línea de contexto arriba, sin exp
 `Next.js · React · TypeScript · Node.js · PostgreSQL`
 
 Cada logo en una celda con borde hairline. En hover: el borde pasa a `--border-hover`, el logo pasa de monocromo a color, y aparece el nombre debajo.
+
+**Resuelto en la Fase 5.** Los logos son SVG inline con `fill="currentColor"` en `LogosStack.tsx`, así el paso a color es un cambio de color heredado y no dos archivos. Son las marcas oficiales, sin alterar forma ni proporción: es uso nominativo, que es lo que las licencias de las cinco permiten. El nombre está siempre en el DOM (en `text-transparent`) para no cambiar el alto de la celda en hover y para que los lectores de pantalla lo lean.
 
 Son cinco, así que el grid va de 5 columnas en desktop y 2 en mobile (la quinta celda queda sola en la última fila, alineada a la izquierda como el resto del sitio). Si en algún momento se suma una sexta tecnología, pasa a 3 columnas en desktop.
 

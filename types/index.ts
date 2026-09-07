@@ -7,6 +7,13 @@ export type LandingSlug = 'ecommerce' | 'sitios-institucionales' | 'software-a-m
 /** Opciones del campo "tipo de proyecto" del formulario. */
 export type TipoProyecto = 'ecommerce' | 'institucional' | 'webapp' | 'otro'
 
+/** Pantalla de placeholder para los mockups del hero.
+ *
+ *  Son UI dibujada con SVG, no imágenes: los mockups reales son un
+ *  pendiente del cliente (PLAN.md §1) y así el hero se puede juzgar
+ *  con contenido realista mientras tanto. */
+export type PantallaMockup = 'tienda' | 'panel' | 'sitio'
+
 /** Enlace de navegación. Los del header apuntan a secciones de la home
  *  con ancla; los del footer pueden ir a rutas. */
 export interface EnlaceNav {
@@ -22,9 +29,11 @@ export interface Servicio {
   descripcion: string
   textoEnlace: string
   href: string
-  /** Imagen del mockup que acompaña la card. */
-  imagen: string
-  imagenAlt: string
+  /** Pantalla de mockup que acompaña la card. Mientras no haya
+   *  imágenes reales se dibuja con SVG, igual que en el hero. */
+  pantalla: PantallaMockup
+  pantallaUrl: string
+  pantallaAlt: string
 }
 
 /** Etapa del proceso de trabajo (4 en total). */
@@ -49,12 +58,14 @@ export interface Mockup {
   alt: string
 }
 
-/** Tecnología del grid de stack. */
+/** Tecnología del grid de stack.
+ *  Los logos son SVG inline (no archivos en /public) para poder animar
+ *  el paso de monocromo a color en hover con currentColor. */
 export interface Tecnologia {
-  id: string
+  id: 'nextjs' | 'react' | 'typescript' | 'nodejs' | 'postgresql'
   nombre: string
-  /** Ruta del logo SVG en /public. */
-  logo: string
+  /** Color de marca, al que pasa el logo en hover. */
+  color: string
 }
 
 /** Bloque de beneficio de una landing (layout editorial, sin card). */
@@ -77,13 +88,6 @@ export interface Landing {
   meta: { title: string; description: string }
 }
 
-/** Pantalla de placeholder para los mockups del hero.
- *
- *  Son UI dibujada con SVG, no imágenes: los mockups reales son un
- *  pendiente del cliente (PLAN.md §1) y así el hero se puede juzgar
- *  con contenido realista mientras tanto. */
-export type PantallaMockup = 'tienda' | 'panel' | 'sitio'
-
 /** Una de las tres ventanas de navegador del hero. */
 export interface MockupHero {
   id: PantallaMockup
@@ -93,10 +97,14 @@ export interface MockupHero {
   alt: string
 }
 
-/** Dato de prueba social del hero. */
+/** Dato de prueba social (hero y "Qué hacemos"). */
 export interface DatoHero {
   valor: string
   etiqueta: string
+  /** El valor es una enumeración, no un número: va a cuerpo más chico.
+   *  El tamaño de número grande está reservado para las cifras, que es
+   *  lo que le da peso al bloque. */
+  esTexto?: boolean
 }
 
 /** Datos de marca y contacto. Los valores reales son pendientes del

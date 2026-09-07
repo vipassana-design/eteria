@@ -1,19 +1,19 @@
 import TituloSeccion from '@/components/ui/TituloSeccion'
 import Hero from '@/components/home/Hero'
+import QueHacemos from '@/components/home/QueHacemos'
+import Servicios from '@/components/home/Servicios'
+import Proceso from '@/components/home/Proceso'
+import Stack from '@/components/home/Stack'
 
 /** Home.
  *
- *  El hero está terminado (Fase 4). El resto de las secciones son
- *  contenedores con sus anclas, para que la navegación funcione de punta
- *  a punta mientras se construyen.
+ *  Hero y secciones de contenido terminados (Fases 4 y 5). Ejemplos y
+ *  contacto quedan como contenedores con sus anclas para que la
+ *  navegación funcione mientras se construyen.
  */
 
 const PENDIENTES = [
-  { id: 'que-hacemos', titulo: 'Qué hacemos', nota: 'Fase 5' },
-  { id: 'servicios', titulo: 'Servicios', nota: 'Fase 5' },
-  { id: 'proceso', titulo: 'Proceso', nota: 'Fase 5' },
   { id: 'ejemplos', titulo: 'Ejemplos', nota: 'Fase 6' },
-  { id: 'stack', titulo: 'Stack', nota: 'Fase 5' },
   { id: 'contacto', titulo: 'Contacto', nota: 'Fase 7' },
 ]
 
@@ -21,19 +21,32 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <QueHacemos />
+      <Servicios />
+      <Proceso />
 
-      {PENDIENTES.map((s) => (
-        <section
-          key={s.id}
-          id={s.id}
-          className="seccion relative scroll-mt-24 border-t border-hairline"
-        >
-          <div className="contenedor">
-            <TituloSeccion>{s.titulo}</TituloSeccion>
-            <p className="text-label mt-4 text-low">{s.nota}</p>
-          </div>
-        </section>
-      ))}
+      {/* Ejemplos va entre Proceso y Stack según el orden del header. */}
+      <section
+        id={PENDIENTES[0]!.id}
+        className="seccion relative scroll-mt-24 border-t border-hairline"
+      >
+        <div className="contenedor">
+          <TituloSeccion>{PENDIENTES[0]!.titulo}</TituloSeccion>
+          <p className="text-label mt-4 text-low">{PENDIENTES[0]!.nota}</p>
+        </div>
+      </section>
+
+      <Stack />
+
+      <section
+        id={PENDIENTES[1]!.id}
+        className="seccion relative scroll-mt-24 border-t border-hairline"
+      >
+        <div className="contenedor">
+          <TituloSeccion>{PENDIENTES[1]!.titulo}</TituloSeccion>
+          <p className="text-label mt-4 text-low">{PENDIENTES[1]!.nota}</p>
+        </div>
+      </section>
     </>
   )
 }
