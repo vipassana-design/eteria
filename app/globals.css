@@ -1,0 +1,201 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------
+   Tokens del design system (PLAN.md §2)
+   Se declaran en @theme para que Tailwind genere las utilidades
+   (bg-base, text-hi, border-hairline, font-display…) y a la vez
+   queden como variables CSS usables desde cualquier hoja.
+   --------------------------------------------------------------- */
+@theme {
+  /* Superficies */
+  --color-base: #0c0a18;
+  --color-surface: #14112370;
+  --color-elevated: #1b1733;
+
+  /* Acento — rampa completa */
+  --color-violet-300: #c4b5fd;
+  --color-violet-500: #8b5cf6;
+  --color-violet-600: #7c3aed;
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #3b82f6;
+
+  /* Texto */
+  --color-hi: #f4f2ff;
+  --color-mid: #b9b3d6;
+  --color-low: #7b7499;
+  --color-danger: #fca5a5;
+
+  /* Bordes */
+  --color-hairline: rgba(255, 255, 255, 0.07);
+  --color-hairline-hover: rgba(139, 92, 246, 0.35);
+
+  /* Tipografía */
+  --font-display: var(--font-clash), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-satoshi), ui-sans-serif, system-ui, sans-serif;
+
+  /* Escala tipográfica (§2.2) — clamp entre mobile y desktop */
+  --text-hero: clamp(2.5rem, 1.19rem + 5.6vw, 4.75rem); /* 40 → 76 */
+  --text-hero--line-height: 1.05;
+  --text-hero--letter-spacing: -0.03em;
+
+  --text-h2: clamp(2rem, 1.27rem + 3.11vw, 3.25rem); /* 32 → 52 */
+  --text-h2--line-height: 1.08;
+  --text-h2--letter-spacing: -0.02em;
+
+  --text-h3: clamp(1.375rem, 1.15rem + 0.93vw, 1.75rem); /* 22 → 28 */
+  --text-h3--line-height: 1.25;
+  --text-h3--letter-spacing: -0.01em;
+
+  --text-cuerpo-lg: clamp(1.125rem, 1.05rem + 0.31vw, 1.25rem); /* 18 → 20 */
+  --text-cuerpo-lg--line-height: 1.6;
+
+  --text-cuerpo: clamp(1rem, 0.96rem + 0.16vw, 1.0625rem); /* 16 → 17 */
+  --text-cuerpo--line-height: 1.65;
+
+  --text-label: clamp(0.8125rem, 0.79rem + 0.08vw, 0.875rem); /* 13 → 14 */
+  --text-label--line-height: 1.4;
+  --text-label--font-weight: 500;
+
+  /* Radios (§2.3) */
+  --radius-card: 16px;
+  --radius-control: 12px;
+  --radius-pill: 999px;
+
+  /* Layout (§2.3) */
+  --spacing-contenedor: 1280px;
+
+  /* Motion (§2.4) — para transiciones CSS; GSAP usa /lib/motion.ts */
+  --ease-suave: cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* Degradé de marca y glow: composiciones, no colores sueltos,
+   así que van fuera de @theme. */
+:root {
+  --grad-brand: linear-gradient(100deg, #c4b5fd 0%, #8b5cf6 45%, #3b82f6 100%);
+  --glow-violet: radial-gradient(circle, rgba(139, 92, 246, 0.22) 0%, transparent 70%);
+  --padding-lateral: 1.5rem;
+  color-scheme: dark;
+}
+
+@media (width >= 64rem) {
+  :root {
+    --padding-lateral: 4rem;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Base
+   --------------------------------------------------------------- */
+@layer base {
+  * {
+    border-color: var(--color-hairline);
+  }
+
+  html {
+    /* El scroll suavizado lo maneja Lenis; sin esto pelean. */
+    scroll-behavior: auto;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-base);
+    color: var(--color-mid);
+    font-family: var(--font-sans);
+    font-size: var(--text-cuerpo);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: var(--color-hi);
+    text-wrap: balance;
+  }
+
+  /* Focus visible en todos los interactivos (§8.6) */
+  :focus-visible {
+    outline: 2px solid var(--color-violet-500);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: rgba(139, 92, 246, 0.32);
+    color: var(--color-hi);
+  }
+
+  /* Scrollbar finita con thumb violeta (§4.1) */
+  @supports selector(::-webkit-scrollbar) {
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--color-base);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--color-violet-600);
+      border-radius: var(--radius-pill);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--color-violet-500);
+    }
+  }
+
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-violet-600) var(--color-base);
+  }
+}
+
+/* ---------------------------------------------------------------
+   Utilidades propias
+   --------------------------------------------------------------- */
+@utility contenedor {
+  width: 100%;
+  max-width: var(--spacing-contenedor);
+  margin-inline: auto;
+  padding-inline: var(--padding-lateral);
+}
+
+/* Ritmo vertical de sección: 72px mobile / 120px desktop (§2.3) */
+@utility seccion {
+  padding-block: 4.5rem;
+  @media (width >= 64rem) {
+    padding-block: 7.5rem;
+  }
+}
+
+/* Degradé de marca sobre texto. Solo H1 del hero y títulos de
+   sección principal (§2.1). */
+@utility texto-degrade {
+  background-image: var(--grad-brand);
+  background-clip: text;
+  color: transparent;
+  /* Chrome recorta descendentes con background-clip:text */
+  padding-block-end: 0.08em;
+  margin-block-end: -0.08em;
+}
+
+/* Ancho máximo de párrafo: 68 caracteres (§2.2) */
+@utility medida {
+  max-width: 68ch;
+}
+
+/* ---------------------------------------------------------------
+   Reduced motion (§2.4) — se respeta en toda animación
+   --------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
