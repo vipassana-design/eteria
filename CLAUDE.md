@@ -56,6 +56,7 @@ Cuando actualices un archivo, editá la parte que corresponde. No lo reescribas 
 - Todo el texto visible sale de `/content`. Nada hardcodeado en JSX.
 - Los objetos de `/content` se tipan contra las interfaces de `/types/index.ts`.
 - Sentence case en toda la interfaz. Nunca mayúsculas para labels.
+- Los títulos nombran, los párrafos explican. Antes de escribir un título, probá reemplazarlo por el nombre llano de lo que describe: si no se pierde información, el título estaba adornando. Sin estructuras "X, no Y", sin adjetivos de venta, sin promesas que no sean verificables. El criterio completo está en la sección 1 de `PLAN.md`.
 - Sin `localStorage` ni `sessionStorage`.
 - Animaciones GSAP dentro de `useGSAP()` con scope, nunca `useEffect`.
 - Los plugins de GSAP se registran una sola vez en `/lib/gsap.ts`.

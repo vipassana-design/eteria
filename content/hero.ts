@@ -6,14 +6,14 @@ export const hero = {
    *  SplitText lo divide por líneas al animar.
    *
    *  El corte de línea es deliberado y no queda librado al ancho: a 76px
-   *  de cuerpo "Desarrollamos" ocupa casi la columna entera, y sin marcar
-   *  el corte la segunda línea quedaba con "software" sola. */
+   *  de cuerpo las palabras largas ocupan casi la columna entera, y sin
+   *  marcar el corte quedaban líneas con una sola palabra. */
   titulo: {
-    antes: ['Desarrollamos el', 'software'],
-    degrade: ['que tu negocio', 'necesita.'],
+    antes: ['Desarrollo', 'de software'],
+    degrade: ['a medida'],
   },
   bajada:
-    'Ecommerce, plataformas y sitios a medida. Construidos desde cero, sin plantillas ni limitaciones.',
+    'Ecommerce, plataformas de gestión y sitios institucionales. Cada proyecto se escribe desde cero, sobre el alcance que definimos con el cliente.',
   ctaPrimario: { etiqueta: 'Cotizar mi proyecto', href: '/#contacto' },
   ctaSecundario: { etiqueta: 'Ver ejemplos', href: '/#ejemplos' },
   /** Prueba social. Sin conteo de proyectos (§1). */

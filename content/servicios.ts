@@ -4,18 +4,18 @@ import type { Servicio } from '@/types'
  *  Tres cards que se apilan al scrollear. Cada una: mitad texto, mitad
  *  mockup a color. */
 export const seccionServicios = {
-  titulo: 'Qué',
-  tituloDegrade: 'construimos',
-  bajada: 'Tres formas de trabajo, con el mismo criterio en las tres.',
+  titulo: 'Tipos de',
+  tituloDegrade: 'proyecto',
+  bajada: 'Tres áreas de trabajo. En las tres el desarrollo es a medida.',
 }
 
 export const servicios: Servicio[] = [
   {
     id: 'ecommerce',
     titulo: 'Ecommerce',
-    gancho: 'Tiendas que venden, no que solo existen.',
+    gancho: 'Tiendas online con catálogo, checkout y administración.',
     descripcion:
-      'Catálogo, checkout, pagos, envíos y panel de administración. Integramos las pasarelas y la logística que ya usás, y el sistema queda preparado para crecer en productos y en tráfico sin rehacerse.',
+      'Catálogo, carrito, checkout, pagos, envíos y panel de administración. Integramos las pasarelas de pago y los operadores logísticos que la empresa ya usa, y la arquitectura contempla el crecimiento en catálogo y en tráfico.',
     textoEnlace: 'Ver más sobre ecommerce',
     href: '/ecommerce',
     pantalla: 'tienda',
@@ -25,9 +25,9 @@ export const servicios: Servicio[] = [
   {
     id: 'sitios-institucionales',
     titulo: 'Sitios institucionales',
-    gancho: 'La cara de tu empresa, bien construida.',
+    gancho: 'El sitio de la empresa y su contenido.',
     descripcion:
-      'Sitios rápidos, indexables y fáciles de mantener. Estructura pensada para que la información se encuentre y para que el equipo pueda actualizarla sin depender de nadie.',
+      'Sitios rápidos e indexables, con la estructura de contenido y las URLs pensadas para búsqueda. Se entregan con un panel para que el equipo actualice textos, secciones e imágenes.',
     textoEnlace: 'Ver más sobre sitios institucionales',
     href: '/sitios-institucionales',
     pantalla: 'sitio',
@@ -37,9 +37,9 @@ export const servicios: Servicio[] = [
   {
     id: 'software-a-medida',
     titulo: 'Webapps y software a medida',
-    gancho: 'Sistemas que resuelven tu operación.',
+    gancho: 'Sistemas internos, plataformas e integraciones.',
     descripcion:
-      'Paneles internos, plataformas con usuarios, automatizaciones, integraciones con lo que ya tenés. Software pensado para tu proceso, no un producto genérico al que hay que adaptarse.',
+      'Paneles de gestión, plataformas con usuarios y permisos, automatización de tareas repetitivas e integraciones con los sistemas que la empresa ya tiene: facturación, stock, CRM o lo que corresponda.',
     textoEnlace: 'Ver más sobre software a medida',
     href: '/software-a-medida',
     pantalla: 'panel',

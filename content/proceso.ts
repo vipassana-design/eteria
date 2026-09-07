@@ -5,7 +5,7 @@ import type { EtapaProceso } from '@/types'
 export const seccionProceso = {
   titulo: 'Cómo',
   tituloDegrade: 'trabajamos',
-  bajada: 'Cuatro etapas, con un entregable claro en cada una.',
+  bajada: 'Cuatro etapas, cada una con su entregable.',
 }
 
 export const proceso: EtapaProceso[] = [
@@ -13,28 +13,28 @@ export const proceso: EtapaProceso[] = [
     numero: '01',
     titulo: 'Relevamiento',
     descripcion:
-      'Entendemos qué tiene que hacer el sistema, con quién se integra y qué problema resuelve. De acá sale el alcance real.',
+      'Definimos qué tiene que hacer el sistema, con qué se integra y qué casos cubre. El entregable es el documento de alcance.',
     ilustracion: 'documento',
   },
   {
     numero: '02',
     titulo: 'Diseño',
     descripcion:
-      'Definimos estructura, pantallas y flujos antes de programar. Vas a ver cómo se usa el sistema antes de que exista.',
+      'Estructura, pantallas y flujos de navegación antes de programar. El entregable son los prototipos de las pantallas principales.',
     ilustracion: 'wireframe',
   },
   {
     numero: '03',
     titulo: 'Desarrollo',
     descripcion:
-      'Construimos sobre lo acordado, con entregas parciales para que veas el avance y corrijas a tiempo.',
+      'Programación sobre el alcance acordado, con entregas parciales en un entorno de prueba para revisar el avance durante el desarrollo.',
     ilustracion: 'codigo',
   },
   {
     numero: '04',
     titulo: 'Entrega',
     descripcion:
-      'Publicación, pruebas en producción y acompañamiento durante las primeras semanas.',
+      'Publicación, pruebas en producción y acompañamiento durante las primeras semanas de uso.',
     ilustracion: 'check',
   },
 ]

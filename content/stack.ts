@@ -2,9 +2,9 @@ import type { Tecnologia } from '@/types'
 
 /** Sección "Stack" (PLAN.md §4.7). */
 export const seccionStack = {
-  titulo: 'Con qué',
-  tituloDegrade: 'trabajamos',
-  bajada: 'Tecnologías actuales, elegidas por lo que resuelven y no por moda.',
+  titulo: 'Stack',
+  tituloDegrade: 'de trabajo',
+  bajada: 'Las tecnologías con las que desarrollamos.',
 }
 
 export const stack: Tecnologia[] = [

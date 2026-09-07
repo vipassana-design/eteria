@@ -29,6 +29,19 @@
 | Cursor custom | No. |
 | Prueba social | +20 años de experiencia. Sin conteo de proyectos. |
 
+### Criterio de copy
+
+Definido por el cliente en la revisión de la Fase 6. Aplica a todo el texto del sitio, incluidas las landings.
+
+**La prueba:** si un título se puede reemplazar por el nombre llano de lo que describe sin perder información, entonces no estaba informando, estaba adornando.
+
+- Los títulos nombran, los párrafos explican. El peso informativo va en el cuerpo, no en el titular.
+- Nada de estructuras del tipo "X, no Y" ni negaciones que suenan a chicana.
+- Nada de adjetivos de venta: potente, definitivo, real, verdadero, sin atajos.
+- Nada que no sea verificable. "Sin atajos" no significa nada comprobable; "el entregable es el documento de alcance" sí.
+- Si una frase podría estar en el sitio de cualquier agencia, no sirve.
+- Se puede usar la etiqueta del servicio como título si es lo más claro.
+
 ### Pendientes del cliente
 
 - Nombre definitivo de la marca y dominio
@@ -235,12 +248,14 @@ Fijo. Al scrollear pasa de transparente a `--bg-elevated` con `backdrop-filter: 
 ```
 ┌──────────────────────────────────────────────────────────┐
 │                                          ╱▔▔▔▔▔▔╲        │
-│  Desarrollamos el software              │ mockup │╲      │
-│  que tu negocio necesita.               │  color │ │╲    │
-│                                          ╲______╱ │ │    │
-│  Ecommerce, plataformas y sitios a         ╲______╱ │    │
-│  medida. Construidos desde cero,             ╲______╱    │
-│  sin plantillas ni limitaciones.                         │
+│  Desarrollo                             │ mockup │╲      │
+│  de software                            │  color │ │╲    │
+│  a medida                                ╲______╱ │ │    │
+│                                            ╲______╱ │    │
+│  Ecommerce, plataformas de gestión y         ╲______╱    │
+│  sitios institucionales. Cada proyecto                   │
+│  se escribe desde cero, sobre el alcance                 │
+│  que definimos con el cliente.                           │
 │                                                          │
 │  [ Cotizar mi proyecto ]  [ Ver ejemplos ]               │
 │                                                          │
@@ -271,12 +286,12 @@ Fijo. Al scrollear pasa de transparente a `--bg-elevated` con `backdrop-filter: 
 
 Sin card. Texto grande sobre el fondo, dos columnas asimétricas.
 
-> **Título:** Software a medida, sin atajos
+> **Título:** Desarrollo a medida
 >
 > **Cuerpo:**
-> Cada proyecto arranca en cero. No adaptamos plantillas ni forzamos un sistema que no encaja: escribimos el código que tu operación necesita, con la estructura que va a soportar lo que viene después.
+> Cada proyecto arranca en cero: escribimos el código que la operación necesita, con la estructura que va a soportar lo que se agregue después.
 >
-> Trabajamos con empresas que ya tienen algo funcionando y necesitan que funcione mejor, y con equipos que están armando la primera versión de un producto. En los dos casos el punto de partida es el mismo: entender qué tiene que hacer el sistema antes de escribir una línea.
+> Trabajamos con empresas que ya tienen un sistema funcionando y necesitan ampliarlo o reemplazarlo, y con equipos que están armando la primera versión de un producto. En los dos casos el punto de partida es definir qué tiene que hacer el sistema antes de escribir código.
 
 **A la derecha, tres datos:**
 
@@ -295,23 +310,23 @@ Tres cards que se apilan al scrollear: cada una queda pineada y la siguiente sub
 Cada card: mitad texto, mitad mockup a color.
 
 **Card 1 — Ecommerce**
-> Tiendas que venden, no que solo existen.
+> Tiendas online con catálogo, checkout y administración.
 >
-> Catálogo, checkout, pagos, envíos y panel de administración. Integramos las pasarelas y la logística que ya usás, y el sistema queda preparado para crecer en productos y en tráfico sin rehacerse.
+> Catálogo, carrito, checkout, pagos, envíos y panel de administración. Integramos las pasarelas de pago y los operadores logísticos que la empresa ya usa, y la arquitectura contempla el crecimiento en catálogo y en tráfico.
 >
 > `Ver más sobre ecommerce →` (a `/ecommerce`)
 
 **Card 2 — Sitios institucionales**
-> La cara de tu empresa, bien construida.
+> El sitio de la empresa y su contenido.
 >
-> Sitios rápidos, indexables y fáciles de mantener. Estructura pensada para que la información se encuentre y para que el equipo pueda actualizarla sin depender de nadie.
+> Sitios rápidos e indexables, con la estructura de contenido y las URLs pensadas para búsqueda. Se entregan con un panel para que el equipo actualice textos, secciones e imágenes.
 >
 > `Ver más sobre sitios institucionales →`
 
 **Card 3 — Webapps y software a medida**
-> Sistemas que resuelven tu operación.
+> Sistemas internos, plataformas e integraciones.
 >
-> Paneles internos, plataformas con usuarios, automatizaciones, integraciones con lo que ya tenés. Software pensado para tu proceso, no un producto genérico al que hay que adaptarse.
+> Paneles de gestión, plataformas con usuarios y permisos, automatización de tareas repetitivas e integraciones con los sistemas que la empresa ya tiene: facturación, stock, CRM o lo que corresponda.
 >
 > `Ver más sobre software a medida →`
 
@@ -354,8 +369,8 @@ Cuatro cards horizontales con ilustración SVG propia arriba, con una línea con
 
 ### 4.6 Ejemplos — carrusel de mockups
 
-**Título:** Lo que se puede construir
-**Bajada:** Distintos tipos de proyecto y cómo se resuelven.
+**Título:** Ejemplos de proyectos
+**Bajada:** Seis casos de demostración, uno por tipo de proyecto.
 
 Carrusel horizontal con 6 mockups. Navegación por flechas + drag con inercia (`Draggable` + `InertiaPlugin` de GSAP, ambos gratis). Se ven ~2.5 cards a la vez para que se entienda que hay más.
 
@@ -389,8 +404,8 @@ Con el estado ya capturado, el modal hace `Flip.fit` para posar el marco sobre l
 
 Grid estático de tecnologías con hover. Una línea de contexto arriba, sin explicación larga.
 
-> **Título:** Con qué trabajamos
-> **Bajada:** Tecnologías actuales, elegidas por lo que resuelven y no por moda.
+> **Título:** Stack de trabajo
+> **Bajada:** Las tecnologías con las que desarrollamos.
 
 `Next.js · React · TypeScript · Node.js · PostgreSQL`
 

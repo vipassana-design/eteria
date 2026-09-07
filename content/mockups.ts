@@ -6,9 +6,9 @@ import type { Mockup } from '@/types'
  *  atribuyen a clientes. Se presentan como capacidades, no como
  *  portfolio (§1). */
 export const seccionEjemplos = {
-  titulo: 'Lo que se puede',
-  tituloDegrade: 'construir',
-  bajada: 'Distintos tipos de proyecto y cómo se resuelven.',
+  titulo: 'Ejemplos de',
+  tituloDegrade: 'proyectos',
+  bajada: 'Seis casos de demostración, uno por tipo de proyecto.',
   /** Etiquetas de la navegación del carrusel y del modal. */
   ui: {
     anterior: 'Ver anterior',
