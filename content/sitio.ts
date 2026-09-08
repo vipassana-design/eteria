@@ -9,7 +9,7 @@ export const SITIO = {
   url: process.env.NEXT_PUBLIC_URL ?? 'https://eteria.com',
   nombre: 'Eteria',
   descripcion:
-    'Desarrollamos ecommerce, plataformas de gestión y sitios institucionales. Cada proyecto se escribe desde cero, sobre el alcance que definimos con el cliente.',
+    'Desarrollamos ecommerce, plataformas de gestión y sitios institucionales. Cada proyecto se construye sobre el alcance que definimos con el cliente.',
   locale: 'es_AR',
   /** Área geográfica principal. */
   pais: 'AR',

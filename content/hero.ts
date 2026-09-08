@@ -17,7 +17,7 @@ export const hero = {
     rotantes: ['a medida', 'end-to-end', 'para empresas', 'integral'],
   },
   bajada:
-    'Ecommerce, plataformas de gestión y sitios institucionales. Cada proyecto se escribe desde cero, sobre el alcance que definimos con el cliente.',
+    'Ecommerce, plataformas de gestión y sitios institucionales. Cada proyecto se construye sobre el alcance que definimos con el cliente.',
   ctaPrimario: { etiqueta: 'Cotizar mi proyecto', href: '/#contacto' },
   ctaSecundario: { etiqueta: 'Ver ejemplos', href: '/#ejemplos' },
   /** Prueba social. Sin conteo de proyectos (§1). */

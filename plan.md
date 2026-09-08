@@ -276,8 +276,8 @@ Fijo. Al scrollear pasa de transparente a `--bg-elevated` con `backdrop-filter: 
 │                                            ╲______╱ │    │
 │  Ecommerce, plataformas de gestión y         ╲______╱    │
 │  sitios institucionales. Cada proyecto                   │
-│  se escribe desde cero, sobre el alcance                 │
-│  que definimos con el cliente.                           │
+│  se construye sobre el alcance que                       │
+│  definimos con el cliente.                               │
 │                                                          │
 │  [ Cotizar mi proyecto ]  [ Ver ejemplos ]               │
 │                                                          │
@@ -338,6 +338,18 @@ De los datos originales se sacaron dos: "24h tiempo de respuesta" (ya está en l
 > **No defenderse de acusaciones que nadie hizo.** Negar plantillas, aclarar que no se terceriza o subrayar quién escribe el código son preocupaciones de proveedor chico: instalan la duda al responderla y bajan el registro. Un equipo consolidado no lo menciona porque se da por sentado.
 
 El párrafo habla ahora de cómo se organiza el trabajo —equipo asignado, responsable técnico que sigue el proyecto de principio a fin—, que es verificable y no compite con nadie. (Una tercera versión decía "sin intermediarios entre quien decide y quien construye": misma defensa con otra ropa, también fuera.) Tampoco repite los datos de la columna derecha: los años están en `+20`, el alcance en `End to end` y la continuidad en `Soporte`, así que el párrafo no vuelve sobre ninguno de los tres.
+
+**Barrido del resto del copy.** A pedido del cliente se revisaron los 14 archivos de `/content` y el JSX buscando el mismo patrón. Se corrigieron cinco lugares más:
+
+| Dónde | Decía | Por qué |
+|---|---|---|
+| Bajada del hero (y `SITIO.descripcion`, y `/heros`) | "Cada proyecto **se escribe desde cero**" | "Desde cero" solo significa algo por contraste con lo prearmado, y "se escribe" vuelve al foco de quién teclea. Ahora: "se construye sobre el alcance que definimos con el cliente" |
+| Landing de ecommerce, panel | "Lo usa el equipo **sin pasar por nosotros**" | Se defiende de "te cobran cada cambio". Ahora: "Lo opera el equipo de la empresa" |
+| Landing institucional, panel | "**sin tocar código ni pedirlo por mail**" | Igual que el anterior. Ahora: "con vista previa antes de publicar", que agrega información en lugar de justificar |
+
+También se reemplazaron tres textos de muestra de la escala tipográfica en `/design-system`, que arrastraban copy descartado: "Software a medida, **sin atajos**" (adjetivo prohibido por nombre en §1) y "Tiendas que venden, **no que solo existen**" (estructura "X, no Y"). Las muestras usan ahora copy real del sitio.
+
+Quedan dos menciones de "plantilla" en `designSystem.ts` y `heros.ts`, pero son notas técnicas de las rutas de revisión —por qué el fondo lleva croma, qué representa la propuesta de terminal—, no copy publicable.
 
 **Segunda pasada de los datos (cliente).** Los tres pasaron a `+20 años acompañando clientes`, `End to end` y `Soporte`. Con esto se resuelve el pendiente que había: las dos cifras sin verificar (`+100 proyectos` y `9 de 10 clientes siguen con nosotros`) ya no están, y los datos describen el alcance del trabajo en lugar de afirmar volumen. El flag `esTexto` de `DatoHero`, que había quedado sin uso, vuelve a usarse en los dos últimos.
 

@@ -42,7 +42,7 @@ export const landings: Record<LandingSlug, Landing> = {
         numero: '04',
         titulo: 'Panel de administración',
         descripcion:
-          'Alta de productos, gestión de pedidos, estados de envío e informes de venta. Lo usa el equipo sin pasar por nosotros.',
+          'Alta de productos, gestión de pedidos, estados de envío e informes de venta. Lo opera el equipo de la empresa.',
       },
     ],
     mockup: {
@@ -83,7 +83,7 @@ export const landings: Record<LandingSlug, Landing> = {
         numero: '03',
         titulo: 'Panel de contenido',
         descripcion:
-          'El equipo actualiza textos, secciones, novedades e imágenes desde un panel, sin tocar código ni pedirlo por mail.',
+          'El equipo actualiza textos, secciones, novedades e imágenes desde un panel, con vista previa antes de publicar.',
       },
       {
         numero: '04',

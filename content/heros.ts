@@ -10,7 +10,7 @@ export type HeroId = 'franja' | 'reveal' | 'ventana' | 'video' | 'terminal' | 'm
 export const copyComun = {
   titulo: { antes: ['Desarrollo', 'de software'], degrade: ['a medida'] },
   bajada:
-    'Ecommerce, plataformas de gestión y sitios institucionales. Cada proyecto se escribe desde cero, sobre el alcance que definimos con el cliente.',
+    'Ecommerce, plataformas de gestión y sitios institucionales. Cada proyecto se construye sobre el alcance que definimos con el cliente.',
   ctaPrimario: { etiqueta: 'Cotizar mi proyecto', href: '/#contacto' },
   ctaSecundario: { etiqueta: 'Ver ejemplos', href: '/#ejemplos' },
   prueba: '+20 años construyendo software',
