@@ -21,8 +21,11 @@ import { gsap, useGSAP } from '@/lib/gsap'
 const TRAZOS = 18
 const TRAZOS_MOBILE = 8
 
-/** Cuánto borra el velo por frame. Más alto, estela más corta. */
-const DESVANECIDO = 0.075
+/** Cuánto borra el velo por frame. Más alto, estela más corta.
+ *
+ *  A 0.075 el rastro tardaba unos 40 frames en desaparecer y quedaban
+ *  franjas colgadas ensuciando la pantalla. A 0.3 se apaga en ~8. */
+const DESVANECIDO = 0.3
 
 interface Trazo {
   x: number
@@ -80,13 +83,19 @@ export default function FondoFlujo() {
           cv.width = Math.round(ancho * dpr)
           cv.height = Math.round(alto * dpr)
           ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+
+          // Asignar width/height resetea el estado del contexto, así que
+          // estas dos van acá y no una sola vez al montar: en un resize
+          // se perderían.
+          ctx.globalCompositeOperation = 'source-over'
+          ctx.lineCap = 'round'
         }
 
         const nuevoTrazo = (desdeIzquierda = false): Trazo => ({
           x: desdeIzquierda ? -gsap.utils.random(0, 200) : gsap.utils.random(0, ancho),
           y: gsap.utils.random(0, alto),
           vel: gsap.utils.random(70, 190) * factorVel,
-          largo: gsap.utils.random(40, 130),
+          largo: gsap.utils.random(26, 64),
           grosor: gsap.utils.random(0.6, 1.5),
           color: COLORES[Math.floor(Math.random() * COLORES.length)]!,
           deriva: gsap.utils.random(-14, 14),
@@ -99,14 +108,15 @@ export default function FondoFlujo() {
           const dt = Math.min(delta, 50) / 1000
 
           // El velo es lo que hace la estela: en vez de limpiar, se
-          // oscurece lo ya pintado. `source-over` con alfa bajo.
-          ctx.globalCompositeOperation = 'source-over'
+          // oscurece lo ya pintado.
+          //
+          // Todo el dibujado va con `source-over`. Antes los trazos
+          // usaban `lighter`, que suma luz sobre lo anterior: el rastro
+          // se volvía más brillante donde el trazo pasaba despacio, y
+          // el velo ya no alcanzaba a borrarlo. De ahí las franjas
+          // colgadas.
           ctx.fillStyle = `rgba(12,10,24,${DESVANECIDO})`
           ctx.fillRect(0, 0, ancho, alto)
-
-          // Los trazos se suman a lo que quedó: así el cruce de dos
-          // estelas aclara en vez de taparse.
-          ctx.globalCompositeOperation = 'lighter'
 
           for (let i = 0; i < trazos.length; i++) {
             const t = trazos[i]!
@@ -116,13 +126,15 @@ export default function FondoFlujo() {
             // El degradé a lo largo del trazo es lo que le da la punta
             // brillante y la cola apagada.
             const grad = ctx.createLinearGradient(t.x - t.largo, t.y, t.x, t.y)
+            // La cola llega a cero y la punta es lo único brillante:
+            // así el trazo se lee como un destello que avanza y no como
+            // una franja.
             grad.addColorStop(0, `${t.color}0)`)
-            grad.addColorStop(0.75, `${t.color}0.16)`)
-            grad.addColorStop(1, `${t.color}0.5)`)
+            grad.addColorStop(0.6, `${t.color}0.05)`)
+            grad.addColorStop(1, `${t.color}0.38)`)
 
             ctx.strokeStyle = grad
             ctx.lineWidth = t.grosor
-            ctx.lineCap = 'round'
             ctx.beginPath()
             ctx.moveTo(t.x - t.largo, t.y)
             ctx.lineTo(t.x, t.y)
@@ -132,8 +144,6 @@ export default function FondoFlujo() {
             // con parámetros nuevos: el patrón no se repite.
             if (t.x - t.largo > ancho) trazos[i] = nuevoTrazo(true)
           }
-
-          ctx.globalCompositeOperation = 'source-over'
         }
 
         gsap.ticker.add(dibujar)

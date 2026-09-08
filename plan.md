@@ -835,6 +835,8 @@ El fondo actual (glows suaves y partículas) se siente flojo. Se armaron cuatro 
 | 3 | `/fondos/halo` | Halo | Patrón de puntos apagado que se revela donde pasa el cursor | `mask-image` radial sobre el patrón, seguimiento con `quickTo` |
 | 4 | `/fondos/flujo` | Flujo | Trazos finos con estela corta que se desvanece | Canvas: la estela sale de **no** limpiar el frame, sino pintar un velo encima |
 
+**Ajuste de la estela (revisión del cliente).** La primera versión dejaba franjas colgadas que ensuciaban la pantalla. Eran tres causas sumadas: el velo borraba a 0.075 por frame (unos 40 frames para desaparecer), los trazos usaban `lighter`, que *suma* luz sobre lo anterior y volvía el rastro más brillante donde el trazo pasaba despacio, y el degradé no llegaba a cero en la cola. Ahora el velo borra a 0.3, todo el dibujado va con `source-over` y los trazos son más cortos. Verificado: la superficie con tinta visible queda en 0,02–0,03% y **estable en el tiempo** —antes crecía—, con brillo promedio de 1 sobre el fondo.
+
 ### Por qué CSS en tres y canvas en uno
 
 - **Mesh, Grilla y Halo van en CSS** porque lo que se mueve son transformaciones y máscaras: el compositor las resuelve sin repintar. Mesh en canvas obligaría a redibujar gradientes de 620px en cada frame; Halo obligaría a redibujar el patrón enmascarado en cada movimiento del mouse.
