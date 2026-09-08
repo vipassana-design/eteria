@@ -53,6 +53,59 @@ export default function Servicios() {
           // de atrás a través de la de adelante.
           if (velo) gsap.to(velo, { opacity: 0.62, ease: 'none', scrollTrigger: st })
         })
+
+        // --- Hover ---
+        //
+        // Va con GSAP y no con una transición CSS sobre el hijo: el
+        // scrollTrigger de arriba escribe `transform` inline en la card
+        // en cada frame del scroll, y eso invalida la interpolación CSS
+        // del hijo. El navegador descartaba la transición y el hover
+        // saltaba de golpe al valor final.
+        const limpiar: (() => void)[] = []
+
+        for (const card of cards) {
+          const bloque = card.querySelector<HTMLElement>('[data-bloque]')
+          if (!bloque) continue
+
+          // La escala arranca declarada, si no el primer tween parte de
+          // 0 y la card desaparece por un frame.
+          gsap.set(bloque, { scale: 1 })
+
+          // Un solo tween por transición, con overwrite para que entrar
+          // y salir en rápida sucesión no dejen dos animaciones peleando.
+          const entra = () => {
+            gsap.to(bloque, {
+              scale: 1.008,
+              borderColor: 'rgba(139,92,246,0.35)',
+              boxShadow:
+                '0 0 0 1px rgba(139,92,246,0.12), 0 28px 80px -28px rgba(139,92,246,0.4)',
+              duration: 0.9,
+              ease: 'power2.out',
+              overwrite: 'auto',
+            })
+          }
+          const sale = () => {
+            gsap.to(bloque, {
+              scale: 1,
+              borderColor: 'rgba(255,255,255,0.07)',
+              boxShadow: '0 0 0 1px rgba(139,92,246,0), 0 28px 80px -28px rgba(139,92,246,0)',
+              duration: 0.9,
+              ease: 'power2.out',
+              overwrite: 'auto',
+            })
+          }
+
+          card.addEventListener('mouseenter', entra)
+          card.addEventListener('mouseleave', sale)
+          limpiar.push(() => {
+            card.removeEventListener('mouseenter', entra)
+            card.removeEventListener('mouseleave', sale)
+          })
+        }
+
+        return () => {
+          for (const fn of limpiar) fn()
+        }
       })
     },
     { scope: raiz },
@@ -89,10 +142,13 @@ export default function Servicios() {
               {/* Todo el bloque escala apenas y toma un glow al pasar el
                   mouse: es un solo movimiento sobre transform y
                   box-shadow, las dos de composición. */}
-              {/* El hover escala apenas y toma un glow. La transición es
-                  larga y con la curva suave del design system: a 500ms
-                  el salto se sentía brusco. */}
-              <div className="relative grid overflow-hidden rounded-(--radius-card) border border-hairline bg-elevated transition-[transform,border-color,box-shadow] duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform group-hover/card:scale-[1.008] group-hover/card:border-violet-500/35 group-hover/card:shadow-[0_0_0_1px_rgba(139,92,246,0.12),0_28px_80px_-28px_rgba(139,92,246,0.4)] lg:min-h-[27rem] lg:grid-cols-2">
+              {/* El hover lo maneja GSAP (ver arriba): la escala y el
+                  glow no pueden ir por transición CSS porque el
+                  scrollTrigger de la card escribe transform inline. */}
+              <div
+                data-bloque
+                className="relative grid overflow-hidden rounded-(--radius-card) border border-hairline bg-elevated will-change-transform lg:min-h-[27rem] lg:grid-cols-2"
+              >
                 {/* Velo de apagado: lo anima ScrollTrigger cuando la
                     card siguiente la cubre. */}
                 <div

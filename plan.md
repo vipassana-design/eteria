@@ -500,7 +500,13 @@ Mismo header, mismo footer, misma línea gráfica. Más cortas y más directas a
 3. **Proceso** — versión compacta de las 4 etapas
 4. **Formulario** — el mismo componente, con el tipo de proyecto preseleccionado
 
-**Rolling text del hero:** el sustantivo del titular rota — la palabra sale hacia arriba con máscara y entra la siguiente desde abajo. Timeline en loop con `SplitText` + `yPercent`, 2.2s por palabra.
+**Rolling text del hero:** el sustantivo del titular rota — la palabra sale hacia arriba con máscara y entra la siguiente desde abajo. 2,2s por palabra.
+
+**Reimplementado dos veces.** El enfoque de apilar las palabras y animar cada una por separado falla de dos formas: con curvas distintas o con la opacidad animada, la que sale y la que entra se leen superpuestas a mitad del cruce; y reencadenar timelines con `onComplete` suma la latencia de cada reencadenado al intervalo, así que los cambios pasaban de 2,4s a 5,3s.
+
+La versión que funciona es **una sola tira vertical** con las palabras apiladas y la primera duplicada al final. La tira se desplaza un renglón por vez con un único tween, así la que sale y la que entra se mueven como un bloque: no hay dos animaciones que cruzarse. Al llegar al duplicado la tira vuelve a 0 sin transición, y el salto no se ve porque el contenido es idéntico. Verificado: 0 superposiciones e intervalos de 2,6 a 2,8s.
+
+El `yPercent` es relativo al alto de la tira, que tiene un renglón más que palabras: el divisor es la cantidad de renglones. Y el contenedor lleva `padding-block-end` para compensar el que agrega `texto-degrade`, si no la palabra asoma por debajo de la máscara mientras se desplaza.
 
 **Titulares reescritos en la Fase 8.** Los originales ("construida para vender / escalar / durar") eran anteriores al criterio de copy de §1: prometían en vez de nombrar. Las palabras que rotan ahora nombran partes concretas del trabajo.
 
