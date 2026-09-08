@@ -36,7 +36,7 @@ export const servicios: Servicio[] = [
   },
   {
     id: 'software-a-medida',
-    titulo: 'Webapps y software a medida',
+    titulo: 'Software a medida',
     gancho: 'Sistemas internos, plataformas e integraciones.',
     descripcion:
       'Paneles de gestión, plataformas con usuarios y permisos, automatización de tareas repetitivas e integraciones con los sistemas que ya están en uso: facturación, stock o CRM.',

@@ -207,7 +207,7 @@ export default function Hero() {
       <Glow className="-right-44 -top-24" tamano={860} />
       <Glow className="-left-56 top-1/3" tamano={620} intensidad={0.6} />
 
-      <div className="contenedor grid w-full items-center gap-14 lg:grid-cols-[1fr_1.25fr] lg:gap-12">
+      <div className="contenedor grid w-full items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-12">
         {/* Texto */}
         <div className="relative z-10">
           {/* Los cortes de línea vienen del contenido, no del ancho: a

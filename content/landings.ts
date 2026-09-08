@@ -46,9 +46,8 @@ export const landings: Record<LandingSlug, Landing> = {
       },
     ],
     mockup: {
-      pantalla: 'tienda',
-      url: 'tienda-indumentaria.com',
-      alt: 'Tienda online con catálogo de productos, carrito y navegación por categorías',
+      url: 'tienda-atelier.com/campera-lino',
+      alt: 'Ficha de producto de una tienda online: galería, precio, talles, cálculo de envío y checkout en tres pasos',
     },
     meta: {
       title: 'Desarrollo de ecommerce a medida',
@@ -94,9 +93,8 @@ export const landings: Record<LandingSlug, Landing> = {
       },
     ],
     mockup: {
-      pantalla: 'corporativo',
-      url: 'norvex.com',
-      alt: 'Sitio institucional con hero, datos de la compañía y sección de prensa',
+      url: 'norvex.com/panel/novedades',
+      alt: 'Panel de contenido de un sitio institucional: árbol de secciones, editor de texto, campos de búsqueda, biblioteca de imágenes y barra de publicación',
     },
     meta: {
       title: 'Desarrollo de sitios institucionales',
@@ -142,9 +140,8 @@ export const landings: Record<LandingSlug, Landing> = {
       },
     ],
     mockup: {
-      pantalla: 'panel',
-      url: 'app.gestion.com/panel',
-      alt: 'Panel de gestión con métricas, gráfico de ventas y tabla de pedidos',
+      url: 'app.gestion.com/pedidos/4821',
+      alt: 'Detalle de un pedido en un sistema de gestión: línea de tiempo del estado, integraciones con facturación, stock y logística, y registro de actividad',
     },
     meta: {
       title: 'Desarrollo de software y webapps a medida',

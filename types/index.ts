@@ -93,8 +93,9 @@ export interface Landing {
   /** Valor preseleccionado en el formulario de la landing. */
   tipoPreseleccionado: TipoProyecto
   beneficios: Beneficio[]
-  /** Pantalla SVG del hero de la landing, mientras no haya imágenes. */
-  mockup: { pantalla: PantallaMockup; url: string; alt: string }
+  /** Ventana del hero de la landing. La pantalla SVG se elige por
+   *  `slug` en PANTALLAS_LANDING; acá van la URL de la barra y el alt. */
+  mockup: { url: string; alt: string }
   meta: { title: string; description: string }
 }
 

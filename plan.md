@@ -200,6 +200,7 @@ Tres capas, todas sutiles, ninguna protagonista:
   /landing
     LandingHero.tsx  LandingBeneficios.tsx  LandingLayout.tsx
     LandingProceso.tsx            version compacta del proceso
+    PantallasLanding.tsx          pantallas SVG por landing, en partes
   /ui
     Boton.tsx  TituloSeccion.tsx  Campo.tsx  Reveal.tsx
     RollingText.tsx               palabra que rota — home y landings
@@ -500,7 +501,13 @@ Mismo header, mismo footer, misma línea gráfica. Más cortas y más directas a
 
 **Estructura:**
 
-1. **Hero split** — mitad izquierda titular grande con rolling text, mitad derecha mockup del servicio con más presencia visual
+1. **Hero split** — mitad izquierda titular grande con rolling text, mitad derecha una ventana donde la interfaz del servicio se arma sola por partes, se desarma y vuelve a armarse.
+
+   **Rehecho en la revisión del cliente.** Antes era un mockup estático y rotado en perspectiva. Ahora usa la misma mecánica que el hero de la home, sin la etapa de terminal (esa es de la home), y la ventana va **alineada, sin perspectiva**: el mockup es el protagonista del hero y rotarlo le quitaba legibilidad.
+
+   Cada landing tiene su propia pantalla en `PantallasLanding.tsx`, distinta de las de la home y de seis partes en vez de cuatro, para que el armado dure más: la ficha de producto con checkout (`/ecommerce`), el panel de contenido (`/sitios-institucionales`) y el detalle de un pedido con sus integraciones (`/software-a-medida`). Cada una muestra la vista que sostiene el argumento de su landing.
+
+   **El grid usa `minmax(0,1fr)` y no `1fr`**: con `fr` pelado el reparto se hace por contenido mínimo, así que el ancho del título definía el tamaño de la ventana y cada página la tenía distinta. Con `minmax` la ventana mide 724px en las cuatro.
 2. **Beneficios** — 3 o 4 bloques de qué incluye, sin cards genéricas: layout editorial con números o íconos
 3. **Proceso** — versión compacta de las 4 etapas
 4. **Formulario** — el mismo componente, con el tipo de proyecto preseleccionado

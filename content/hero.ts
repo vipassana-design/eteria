@@ -8,14 +8,13 @@ export const hero = {
    *  de cuerpo las palabras largas ocupan casi la columna entera, y sin
    *  marcar el corte quedaban líneas con una sola palabra.
    *
-   *  El último tramo rota. Las cuatro variantes encajan con "Desarrollo
-   *  de software…" y nombran algo concreto en vez de vender (§1):
-   *  el tipo de trabajo, el alcance, quién lo hace y para qué se usa. */
+   *  El último tramo rota entre las cuatro variantes que definió el
+   *  cliente. */
   titulo: {
     antes: ['Desarrollo', 'de software'],
     /** Rotan en este orden. La primera es la que queda en el estado
      *  base y la que leen los lectores de pantalla. */
-    rotantes: ['a medida', 'de punta a punta', 'que mantenemos', 'para tu operación'],
+    rotantes: ['a medida', 'end-to-end', 'para empresas', 'integral'],
   },
   bajada:
     'Ecommerce, plataformas de gestión y sitios institucionales. Cada proyecto se escribe desde cero, sobre el alcance que definimos con el cliente.',

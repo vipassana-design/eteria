@@ -28,7 +28,7 @@ export const navegacion: EnlaceNav[] = [
     hijos: [
       { etiqueta: 'Ecommerce', href: '/ecommerce' },
       { etiqueta: 'Sitios institucionales', href: '/sitios-institucionales' },
-      { etiqueta: 'Webapps y software a medida', href: '/software-a-medida' },
+      { etiqueta: 'Software a medida', href: '/software-a-medida' },
     ],
   },
   { etiqueta: 'Proceso', href: '/#proceso' },
