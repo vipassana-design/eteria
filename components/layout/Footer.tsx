@@ -21,7 +21,9 @@ export default function Footer() {
 
           {/* Servicios */}
           <nav aria-label={footer.servicios.titulo}>
-            <h2 className="text-label font-sans text-low">{footer.servicios.titulo}</h2>
+            <h2 className="text-cuerpo-lg font-sans font-semibold text-hi">
+              {footer.servicios.titulo}
+            </h2>
             <ul className="mt-4 flex flex-col gap-3">
               {footer.servicios.enlaces.map((enlace) => (
                 <li key={enlace.href}>
@@ -38,7 +40,9 @@ export default function Footer() {
 
           {/* Contacto */}
           <div>
-            <h2 className="text-label font-sans text-low">{footer.contacto.titulo}</h2>
+            <h2 className="text-cuerpo-lg font-sans font-semibold text-hi">
+              {footer.contacto.titulo}
+            </h2>
             <ul className="mt-4 flex flex-col gap-3">
               <li>
                 <a

@@ -46,7 +46,7 @@ export const tiposProyecto: OpcionSelect[] = [
   { valor: '', etiqueta: 'Elegí una opción' },
   { valor: 'ecommerce', etiqueta: 'Ecommerce' },
   { valor: 'institucional', etiqueta: 'Sitio institucional' },
-  { valor: 'webapp', etiqueta: 'Webapp o sistema' },
+  { valor: 'webapp', etiqueta: 'Desarrollo a medida' },
   { valor: 'otro', etiqueta: 'Otro' },
 ]
 

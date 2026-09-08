@@ -12,7 +12,7 @@
 | Ítem | Decisión |
 |---|---|
 | Qué es | Sitio de agencia de desarrollo a medida. Carta de presentación + captación por ads. |
-| Servicios | Ecommerce · Sitios institucionales · Webapps / software a medida |
+| Servicios | Ecommerce · Sitios institucionales · Software a medida |
 | Posicionamiento | Agencia. Voz en "nosotros". Sin foto, sin nombre propio, sin perfil personal. |
 | Tono | Profesional y claro. Sin lenguaje corporativo frío, sin marketing inflado. |
 | Idioma | Español neutro (sin voseo) |
@@ -347,7 +347,7 @@ Cada card: mitad texto, mitad mockup a color.
 >
 > `Ver más sobre sitios institucionales →`
 
-**Card 3 — Webapps y software a medida**
+**Card 3 — Software a medida**
 > Sistemas internos, plataformas e integraciones.
 >
 > Paneles de gestión, plataformas con usuarios y permisos, automatización de tareas repetitivas e integraciones con los sistemas que la empresa ya tiene: facturación, stock, CRM o lo que corresponda.
@@ -453,7 +453,7 @@ Dos columnas. Izquierda el texto y los datos, derecha el formulario.
 | Nombre | text | sí |
 | Email | email | sí |
 | Empresa | text | no |
-| Tipo de proyecto | select: Ecommerce / Sitio institucional / Webapp o sistema / Otro | sí |
+| Tipo de proyecto | select: Ecommerce / Sitio institucional / Desarrollo a medida / Otro | sí |
 | Mensaje | textarea | sí |
 | `website` | honeypot oculto | — |
 
@@ -482,6 +482,8 @@ Desarrollo a medida       Ecommerce        hola@eteria.com
 ```
 
 Link de privacidad chico, en `--text-low`, a la derecha. Sin redes sociales.
+
+**Ajuste del cliente.** Los títulos de columna ("Servicios", "Contacto") estaban en `text-label` a 14px contra enlaces de 17px, así que se leían como subordinados a su propia lista. Pasaron a `text-cuerpo-lg` (20px) en semibold y `--text-hi`: quedan por encima de los enlaces, que es la jerarquía que corresponde.
 
 ### 4.10 WhatsApp flotante
 
