@@ -12,11 +12,10 @@ export const queHacemos = {
   /** Los valores van en Clash Display grande con degradé, el label
    *  debajo en --text-low. */
   datos: [
-    { valor: '+20', etiqueta: 'años construyendo software' },
-    { valor: '+100', etiqueta: 'proyectos entregados' },
-    // Tercer dato propuesto: habla de la continuidad con el cliente,
-    // que es lo que diferencia a un equipo chico de una agencia grande.
-    // El número es tentativo, pendiente de confirmación.
-    { valor: '9 de 10', etiqueta: 'clientes siguen con nosotros' },
+    { valor: '+20', etiqueta: 'años acompañando clientes' },
+    // Los dos últimos no son cifras: van a cuerpo más chico, que el
+    // tamaño de número grande queda para las que sí lo son.
+    { valor: 'End to end', etiqueta: 'del relevamiento al lanzamiento', esTexto: true },
+    { valor: 'Soporte', etiqueta: 'asistencia post lanzamiento', esTexto: true },
   ] satisfies DatoHero[] as DatoHero[],
 }

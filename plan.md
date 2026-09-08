@@ -322,17 +322,17 @@ Sin card. Texto grande sobre el fondo, dos columnas asimétricas.
 
 **A la derecha, tres datos:**
 
-- `+20` años construyendo software
-- `+100` proyectos entregados
-- `9 de 10` clientes siguen con nosotros
+- `+20` años acompañando clientes
+- `End to end` del relevamiento al lanzamiento
+- `Soporte` asistencia post lanzamiento
 
-Los números en Clash Display grande con degradé, el label debajo en `--text-low`.
+Los valores en Clash Display con degradé, el label debajo en `--text-low`. Los dos últimos no son cifras: van con `esTexto` y a `--text-h3`, que el tamaño de número grande queda para las que sí lo son.
 
 **Reescrito por el cliente.** La sección pasó de "Qué hacemos" a **"Sobre nosotros"**: el título anterior repetía lo que ya dicen el hero y servicios, y el copy arrancaba con "cada proyecto arranca en cero", que no dice nada. Ahora la sección habla del equipo.
 
-De los datos originales se sacaron dos: "24h tiempo de respuesta" (ya está en la sección de contacto) y "Ecommerce · Plataformas · Sitios", que no era un número y desbalanceaba el bloque. El flag `esTexto` de `DatoHero` queda disponible pero sin uso.
+De los datos originales se sacaron dos: "24h tiempo de respuesta" (ya está en la sección de contacto) y "Ecommerce · Plataformas · Sitios", que no era un número y desbalanceaba el bloque.
 
-> **Pendiente de confirmar:** `+100 proyectos` y `9 de 10 clientes siguen con nosotros` son valores propuestos, no datos verificados. El tercero apunta a la continuidad con el cliente, que es lo que distingue a un equipo chico de una agencia grande. Hay que confirmarlos o cambiarlos antes de publicar.
+**Segunda pasada de los datos (cliente).** Los tres pasaron a `+20 años acompañando clientes`, `End to end` y `Soporte`. Con esto se resuelve el pendiente que había: las dos cifras sin verificar (`+100 proyectos` y `9 de 10 clientes siguen con nosotros`) ya no están, y los datos describen el alcance del trabajo en lugar de afirmar volumen. El flag `esTexto` de `DatoHero`, que había quedado sin uso, vuelve a usarse en los dos últimos.
 
 ### 4.4 Servicios — cards apiladas
 
