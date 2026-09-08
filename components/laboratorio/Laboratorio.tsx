@@ -20,6 +20,7 @@ import {
   type ControlColor,
   type ControlNumero,
 } from '@/content/laboratorio'
+import { paletas, paletasUi } from '@/content/paletas'
 import { useLaboratorio } from './useLaboratorio'
 
 /** Laboratorio de paleta (PLAN.md §15).
@@ -36,11 +37,11 @@ import { useLaboratorio } from './useLaboratorio'
  *  viven en memoria y para conservar una hay que copiar el CSS.
  */
 
-type Pestana = 'color' | 'escala' | 'fondo' | 'contraste'
+type Pestana = 'paletas' | 'color' | 'escala' | 'fondo' | 'contraste'
 
 export default function Laboratorio() {
   const [abierto, setAbierto] = useState(true)
-  const [pestana, setPestana] = useState<Pestana>('color')
+  const [pestana, setPestana] = useState<Pestana>('paletas')
   const [copiado, setCopiado] = useState(false)
   const p = useLaboratorio()
 
@@ -92,7 +93,7 @@ export default function Laboratorio() {
     <aside
       // El z-index va por encima del header (z-50) y del FAB, pero el
       // panel no bloquea el scroll de la página.
-      className="fixed bottom-6 left-6 z-[70] flex max-h-[min(62vh,560px)] w-[300px] flex-col overflow-hidden rounded-2xl border border-white/12 bg-[#141122]/97 shadow-[0_24px_70px_-16px_rgba(0,0,0,0.9)] backdrop-blur-xl"
+      className="fixed bottom-6 left-6 z-[70] flex max-h-[min(72vh,640px)] w-[326px] flex-col overflow-hidden rounded-2xl border border-white/12 bg-[#141122]/97 shadow-[0_24px_70px_-16px_rgba(0,0,0,0.9)] backdrop-blur-xl"
       style={{ colorScheme: 'dark' }}
     >
       {/* Cabecera */}
@@ -127,7 +128,7 @@ export default function Laboratorio() {
             key={k}
             type="button"
             onClick={() => setPestana(k)}
-            className={`flex-1 rounded-md px-2 py-1.5 text-[11px] font-medium transition-colors duration-200 ${
+            className={`flex-1 rounded-md px-1.5 py-1.5 text-[10.5px] font-medium transition-colors duration-200 ${
               pestana === k
                 ? 'bg-violet-500/22 text-violet-100'
                 : 'text-white/45 hover:bg-white/6 hover:text-white/75'
@@ -140,6 +141,7 @@ export default function Laboratorio() {
 
       {/* Cuerpo */}
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+        {pestana === 'paletas' ? <PanelPaletas p={p} /> : null}
         {pestana === 'color' ? <PanelColor p={p} /> : null}
         {pestana === 'escala' ? <PanelNumeros p={p} grupos={gruposNumero} /> : null}
         {pestana === 'fondo' ? (
@@ -231,6 +233,80 @@ export default function Laboratorio() {
         <p className="mt-3 text-[9.5px] leading-relaxed text-white/28">{laboratorioUi.aviso}</p>
       </footer>
     </aside>
+  )
+}
+
+// ────────────────────────── Pestaña de paletas ──────────────────────────
+
+/** Las plantillas: doce paletas completas, listas para aplicar.
+ *
+ *  Todas pasan AA en los doce pares, así que se puede elegir por
+ *  criterio visual sin tener que auditar cada una. El badge del
+ *  contraste mínimo dice cuánto margen deja cada una para después
+ *  ajustar los colores a mano. */
+function PanelPaletas({ p }: { p: ReturnType<typeof useLaboratorio> }) {
+  // Agrupadas por origen, en el orden en que están declaradas.
+  const origenes = [...new Set(paletas.map((x) => x.origen))]
+
+  return (
+    <div className="flex flex-col gap-5">
+      <p className="text-[10px] leading-relaxed text-white/40">{paletasUi.bajada}</p>
+
+      {origenes.map((origen) => (
+        <section key={origen}>
+          <p className="mb-2 text-[10px] uppercase tracking-wide text-white/35">
+            {paletasUi.origenes[origen]}
+          </p>
+          <div className="flex flex-col gap-1.5">
+            {paletas
+              .filter((x) => x.origen === origen)
+              .map((pal) => (
+                <button
+                  key={pal.id}
+                  type="button"
+                  onClick={() => p.aplicar(pal.tokens)}
+                  className="group rounded-lg border border-white/10 p-2.5 text-left transition-colors duration-200 hover:border-violet-500/50 hover:bg-white/4"
+                >
+                  <span className="flex items-center gap-2">
+                    {/* Las muestras: fondo, card, acento, su clara y el
+                        cuerpo de texto. Alcanza para reconocer la
+                        paleta sin aplicarla. */}
+                    <span aria-hidden="true" className="flex shrink-0 gap-0.5">
+                      {[
+                        '--color-base',
+                        '--color-elevated',
+                        '--color-violet-500',
+                        '--color-violet-300',
+                        '--color-mid',
+                      ].map((t) => (
+                        <span
+                          key={t}
+                          className="size-4 rounded-sm border border-white/12"
+                          style={{ background: pal.tokens[t] }}
+                        />
+                      ))}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate text-[11.5px] font-medium text-white/85">
+                      {pal.nombre}
+                    </span>
+                    <span
+                      title={`Contraste más bajo de la paleta: ${pal.peorContraste.toFixed(2)}`}
+                      className="shrink-0 rounded bg-emerald-500/18 px-1.5 py-0.5 font-mono text-[9px] text-emerald-200"
+                    >
+                      {paletasUi.contrasteMinimo} {pal.peorContraste.toFixed(2)}
+                    </span>
+                  </span>
+                  <span className="mt-1.5 block text-[9.5px] leading-relaxed text-white/38">
+                    {pal.linea}
+                  </span>
+                </button>
+              ))}
+          </div>
+        </section>
+      ))}
+
+      <p className="text-[9.5px] leading-relaxed text-white/30">{paletasUi.nota}</p>
+    </div>
   )
 }
 

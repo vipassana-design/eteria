@@ -122,7 +122,11 @@ export const paresContraste: ParContraste[] = [
   { texto: '--color-violet-300', fondo: '--color-base', etiqueta: 'Enlace violeta' },
   { texto: '--color-violet-300', fondo: '--color-elevated', etiqueta: 'Enlace sobre card' },
   { texto: '--color-danger', fondo: '--color-base', etiqueta: 'Error sobre página' },
-  { texto: '--color-hi', fondo: '--color-violet-600', etiqueta: 'Texto sobre botón' },
+  {
+    texto: '--color-base',
+    fondo: '--color-violet-500',
+    etiqueta: 'Texto sobre botón',
+  },
 ]
 
 /** Un control numérico: tipografía, radios, espaciado. */
@@ -297,6 +301,7 @@ export const laboratorioUi = {
   aleatorio: 'Variante al azar',
   aleatorioNota: 'Mueve el tono del acento y ajusta el resto en consecuencia.',
   pestanas: {
+    paletas: 'Paletas',
     color: 'Color',
     escala: 'Escala',
     fondo: 'Fondo',

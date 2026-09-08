@@ -1012,12 +1012,25 @@ Escribe las variables CSS del documento con `setProperty`. Como todos los colore
 
 | Pestaña | Contenido |
 |---|---|
+| **Paletas** | Trece combinaciones completas para dark mode, listas para aplicar |
 | **Color** | 8 controles: dos superficies, dos acentos, cuatro de texto. Cada uno con picker nativo y sliders H/S/L |
 | **Escala** | Los cinco tamaños de tipografía, los dos radios, el ancho del contenedor y el margen lateral |
 | **Fondo** | Multiplicadores de glows, partículas, mesh y grano |
 | **Contraste** | Los 12 pares texto/superficie con su ratio WCAG, recalculados en vivo |
 
 Son ~8 controles de color y no los 40 tokens del tema: el resto son derivados. El violeta principal arrastra su rampa (`600` más oscuro, `300` más claro) con deltas HSL, así la escala queda coherente sin tener que ajustarla a mano.
+
+### Las paletas
+
+Trece combinaciones completas, listas de un click. Salen de las **escalas dark de Radix Colors**, que traen dos cosas que no se improvisan: el gris que acompaña cada matiz —Radix empareja mauve con los violetas, slate con los azules, sage con los verdes, sand con los cálidos— y un step 9 construido con la máxima croma de la escala. Dos vienen de sistemas reales.
+
+**Todas pasan AA en los doce pares.** El punto de tener plantillas es poder elegir por criterio visual sin auditar cada una, así que cada card muestra su contraste más bajo: dice cuánto margen queda para ajustar después.
+
+Lo que hubo que corregir: el botón primario usa `text-base` sobre el degradé —el fondo de página oscuro encima del acento— y varios step 9 no llegaban a 4,5:1 en ese par. Se aclararon hasta pasar, medido uno por uno.
+
+Un par del panel estaba mal definido y se descubrió acá: medía `--color-hi` sobre el botón, cuando el sitio pinta `text-base`. El par corregido es fondo-de-página sobre `violet-500`, que es el tramo medio del degradé.
+
+**Cuatro candidatas se descartaron por redundancia, no por contraste.** Jade y verde terminal quedaban a 8° y 22° de matiz de teal: los tres se leían igual. Violeta Radix e índigo caían dentro de un racimo de siete paletas entre 206° y 258°. Las trece que quedaron cubren el círculo cromático con la menor distancia en 6°, y en esos casos el fondo las distingue antes que el acento.
 
 ### La pestaña de contraste
 
