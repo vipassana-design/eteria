@@ -89,7 +89,10 @@ export default function Servicios() {
               {/* Todo el bloque escala apenas y toma un glow al pasar el
                   mouse: es un solo movimiento sobre transform y
                   box-shadow, las dos de composición. */}
-              <div className="relative grid overflow-hidden rounded-(--radius-card) border border-hairline bg-elevated transition-[transform,border-color,box-shadow] duration-500 ease-(--ease-suave) group-hover/card:scale-[1.012] group-hover/card:border-violet-500/35 group-hover/card:shadow-[0_0_0_1px_rgba(139,92,246,0.14),0_24px_70px_-24px_rgba(139,92,246,0.45)] lg:min-h-[27rem] lg:grid-cols-2">
+              {/* El hover escala apenas y toma un glow. La transición es
+                  larga y con la curva suave del design system: a 500ms
+                  el salto se sentía brusco. */}
+              <div className="relative grid overflow-hidden rounded-(--radius-card) border border-hairline bg-elevated transition-[transform,border-color,box-shadow] duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform group-hover/card:scale-[1.008] group-hover/card:border-violet-500/35 group-hover/card:shadow-[0_0_0_1px_rgba(139,92,246,0.12),0_28px_80px_-28px_rgba(139,92,246,0.4)] lg:min-h-[27rem] lg:grid-cols-2">
                 {/* Velo de apagado: lo anima ScrollTrigger cuando la
                     card siguiente la cubre. */}
                 <div
@@ -122,16 +125,22 @@ export default function Servicios() {
                   </div>
                 </div>
 
-                {/* Mockup, también enlazado. */}
+                {/* Mockup, también enlazado. El contenedor centra una
+                    ventana con la relación 720:460 de las pantallas, así
+                    el mockup entra completo: antes se estiraba a la caja
+                    y el SVG se recortaba por los costados. */}
                 <Link
                   href={s.href}
                   aria-label={`${s.titulo}. ${s.textoEnlace}`}
-                  className="relative min-h-56 overflow-hidden border-t border-hairline bg-[#211C3D] lg:min-h-0 lg:border-l lg:border-t-0"
+                  className="relative flex min-h-56 items-center justify-center overflow-hidden border-t border-hairline bg-[#211C3D] p-6 lg:min-h-0 lg:border-l lg:border-t-0 lg:p-8"
                 >
                   <span
                     role="img"
                     aria-label={s.pantallaAlt}
-                    className="absolute inset-0 left-8 top-8 block overflow-hidden rounded-tl-(--radius-card) border-l border-t border-white/10 shadow-[0_-8px_40px_-8px_rgba(0,0,0,0.5)]"
+                    // El fondo va acá y no solo en el SVG: con
+                    // preserveAspectRatio=meet puede sobrar un hilo a
+                    // los costados, y sin fondo se vería el violeta.
+                    className="block aspect-[720/460] w-full overflow-hidden rounded-xl border border-white/10 bg-[#F7F6FB] shadow-[0_16px_50px_-12px_rgba(0,0,0,0.6)]"
                   >
                     <Pantalla />
                   </span>

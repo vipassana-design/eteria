@@ -1,23 +1,22 @@
 import type { DatoHero } from '@/types'
 
-/** Sección "Qué hacemos" (PLAN.md §4.3).
+/** Sección "Sobre nosotros" (PLAN.md §4.3).
  *  Sin card: texto grande sobre el fondo, dos columnas asimétricas. */
 export const queHacemos = {
-  titulo: 'Quiénes',
-  tituloDegrade: 'somos',
+  titulo: 'Sobre',
+  tituloDegrade: 'nosotros',
   parrafos: [
-    'Cada proyecto arranca en cero: escribimos el código que la operación necesita, con la estructura que va a soportar lo que se agregue después.',
-    'Trabajamos con empresas que ya tienen un sistema funcionando y necesitan ampliarlo o reemplazarlo, y con equipos que están armando la primera versión de un producto. En los dos casos el punto de partida es definir qué tiene que hacer el sistema antes de escribir código.',
+    'Somos un equipo de desarrollo. No revendemos plantillas ni tercerizamos el trabajo: el código lo escribimos nosotros y lo mantenemos después de entregarlo.',
+    'Trabajamos con empresas que ya tienen un sistema funcionando y necesitan ampliarlo o reemplazarlo, y con equipos que están armando la primera versión de un producto. En los dos casos empezamos por definir qué tiene que hacer el sistema y con qué se integra.',
   ],
   /** Los valores van en Clash Display grande con degradé, el label
    *  debajo en --text-low. */
   datos: [
     { valor: '+20', etiqueta: 'años construyendo software' },
-    {
-      valor: 'Ecommerce · Plataformas · Sitios',
-      etiqueta: 'lo que desarrollamos',
-      esTexto: true,
-    },
-    { valor: '24h', etiqueta: 'tiempo de respuesta' },
+    { valor: '+100', etiqueta: 'proyectos entregados' },
+    // Tercer dato propuesto: habla de la continuidad con el cliente,
+    // que es lo que diferencia a un equipo chico de una agencia grande.
+    // El número es tentativo, pendiente de confirmación.
+    { valor: '9 de 10', etiqueta: 'clientes siguen con nosotros' },
   ] satisfies DatoHero[] as DatoHero[],
 }

@@ -24,7 +24,10 @@ function Marco({ children }: { children: React.ReactNode }) {
     <svg
       viewBox={`0 0 ${CAJA.ancho} ${CAJA.alto}`}
       className="size-full"
-      preserveAspectRatio="xMidYMid slice"
+      // `meet` y no `slice`: la pantalla entra completa aunque la caja
+      // no tenga exactamente la relación 720:460. Con `slice` el SVG se
+      // recortaba por los costados al cambiar el alto de las cards.
+      preserveAspectRatio="xMidYMid meet"
       aria-hidden="true"
     >
       <rect width={CAJA.ancho} height={CAJA.alto} fill={PAPEL} />

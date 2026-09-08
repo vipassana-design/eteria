@@ -1,9 +1,8 @@
-import type { MockupHero } from '@/types'
 
 /** Contenido del hero (PLAN.md §4.2). */
 export const hero = {
-  /** El título se parte para que el degradé tome solo el tramo final.
-   *  SplitText lo divide por líneas al animar.
+  /** El título se parte en líneas para que el degradé tome solo el
+   *  tramo final, y para que cada una entre con su propia máscara.
    *
    *  El corte de línea es deliberado y no queda librado al ancho: a 76px
    *  de cuerpo las palabras largas ocupan casi la columna entera, y sin
@@ -18,23 +17,41 @@ export const hero = {
   ctaSecundario: { etiqueta: 'Ver ejemplos', href: '/#ejemplos' },
   /** Prueba social. Sin conteo de proyectos (§1). */
   prueba: '+20 años construyendo software',
-
-  /** Las tres ventanas, de la de atrás a la de adelante. */
-  mockups: [
-    {
-      id: 'sitio',
-      url: 'estudio-legal.com',
-      alt: 'Mockup de un sitio institucional para un estudio de servicios profesionales',
-    },
-    {
-      id: 'panel',
-      url: 'app.gestion.com/panel',
-      alt: 'Mockup de un panel de administración con métricas y tabla de pedidos',
-    },
-    {
-      id: 'tienda',
-      url: 'tienda-indumentaria.com',
-      alt: 'Mockup de una tienda online de indumentaria con grilla de productos',
-    },
-  ] satisfies MockupHero[] as MockupHero[],
 }
+
+/** Etapas del ciclo del hero (PLAN.md §4.2).
+ *
+ *  El ciclo arranca con la terminal levantando un proyecto y sigue con
+ *  las tres pantallas armándose una tras otra. La etapa de terminal se
+ *  representa con null en el ciclo del componente. */
+export const etapasHero = [
+  {
+    pantalla: 'tienda' as const,
+    url: 'tienda-atelier.com',
+    etiqueta: 'Ecommerce',
+  },
+  {
+    pantalla: 'panel' as const,
+    url: 'app.gestion.com/panel',
+    etiqueta: 'Panel de administración',
+  },
+  {
+    pantalla: 'corporativo' as const,
+    url: 'norvex.com',
+    etiqueta: 'Sitio institucional',
+  },
+]
+
+/** Sesión de terminal del hero: entra en ~5s, que es lo que dura antes
+ *  de pasar a las ventanas. */
+export const sesionHero = [
+  { tipo: 'comando', texto: 'npx create-next-app tienda' },
+  { tipo: 'ok', texto: 'Success! Created tienda' },
+  { tipo: 'comando', texto: 'npm i @mercadopago/sdk-react' },
+  { tipo: 'salida', texto: 'added 24 packages in 3s' },
+  { tipo: 'comando', texto: 'npm run build' },
+  { tipo: 'ok', texto: 'Deployed to production' },
+] as const
+
+/** Etiqueta de la etapa de terminal en el indicador. */
+export const etiquetaTerminal = 'Desarrollo'

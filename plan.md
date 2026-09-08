@@ -241,7 +241,7 @@ Todo el texto del sitio vive en `/content`. Ningún copy hardcodeado dentro de u
 Fijo. Al scrollear pasa de transparente a `--bg-elevated` con `backdrop-filter: blur(12px)` y borde inferior hairline.
 
 ```
-[Eteria]        Quiénes somos  Servicios  Proceso  Ejemplos    [ Contacto ]
+[Eteria]        Sobre nosotros  Servicios  Proceso  Ejemplos   [ Contacto ]
 ```
 
 - Logo tipográfico en Clash Display 600. `Eter` en `--text-hi`, `ia` con el degradé de marca.
@@ -282,7 +282,11 @@ Fijo. Al scrollear pasa de transparente a `--bg-elevated` con `backdrop-filter: 
 
 **CTA primario:** "Cotizar mi proyecto" → scroll al formulario. Sin promesa de inmediatez.
 
-> **El hero está en revisión.** El cliente pidió explorar alternativas: el actual funciona pero le falta peso visual. Hay cinco propuestas en `/heros`, cada una a pantalla completa en su ruta, con el mismo copy y la misma paleta para que la comparación sea de dirección visual. Ver §12.
+**Hero definido: la propuesta mixta.** El hero de la Fase 4 (tres ventanas en perspectiva con seguimiento de mouse) se reemplazó por el ciclo de terminal y ventanas: la terminal levanta un proyecto en ~3,3s y después las tres pantallas se arman por partes, una tras otra, antes de volver a la terminal. La terminal comparte el marco y la caja 16:10 de las ventanas, medido en 722x451 constante en las cuatro etapas.
+
+El texto conserva la secuencia de entrada orquestada del sitio y después queda quieto: el movimiento vive en la ventana. El H1 bajó a tamaño H2 para convivir con la ventana, que ahora es más grande.
+
+Las otras propuestas siguen en `/heros` para comparar. Ver §12.
 
 **Resuelto en la Fase 4.**
 
@@ -292,26 +296,30 @@ Fijo. Al scrollear pasa de transparente a `--bg-elevated` con `backdrop-filter: 
 - **Las dos ventanas de atrás llevan `brightness` reducido.** Sin eso competían con la de adelante en vez de leerse como profundidad.
 - Escalonado en diagonal a 19% vertical y 14% horizontal: con offsets menores las ventanas se tapaban entre sí y solo se leía la de adelante.
 
-### 4.3 Qué hacemos
+### 4.3 Sobre nosotros
 
 Sin card. Texto grande sobre el fondo, dos columnas asimétricas.
 
-> **Título:** Quiénes somos
+> **Título:** Sobre nosotros
 >
 > **Cuerpo:**
-> Cada proyecto arranca en cero: escribimos el código que la operación necesita, con la estructura que va a soportar lo que se agregue después.
+> Somos un equipo de desarrollo. No revendemos plantillas ni tercerizamos el trabajo: el código lo escribimos nosotros y lo mantenemos después de entregarlo.
 >
-> Trabajamos con empresas que ya tienen un sistema funcionando y necesitan ampliarlo o reemplazarlo, y con equipos que están armando la primera versión de un producto. En los dos casos el punto de partida es definir qué tiene que hacer el sistema antes de escribir código.
+> Trabajamos con empresas que ya tienen un sistema funcionando y necesitan ampliarlo o reemplazarlo, y con equipos que están armando la primera versión de un producto. En los dos casos empezamos por definir qué tiene que hacer el sistema y con qué se integra.
 
 **A la derecha, tres datos:**
 
 - `+20` años construyendo software
-- `Ecommerce · Plataformas · Sitios` lo que desarrollamos
-- `24h` tiempo de respuesta
+- `+100` proyectos entregados
+- `9 de 10` clientes siguen con nosotros
 
 Los números en Clash Display grande con degradé, el label debajo en `--text-low`.
 
-**Ajuste de la Fase 5.** El dato del medio no es un número: al mismo tamaño que `+20` y `24h` ocupaba tres líneas y desbalanceaba el bloque. Lleva `esTexto: true` en el contenido y se renderiza a tamaño H3, así el peso de número grande queda para las cifras.
+**Reescrito por el cliente.** La sección pasó de "Qué hacemos" a **"Sobre nosotros"**: el título anterior repetía lo que ya dicen el hero y servicios, y el copy arrancaba con "cada proyecto arranca en cero", que no dice nada. Ahora la sección habla del equipo.
+
+De los datos originales se sacaron dos: "24h tiempo de respuesta" (ya está en la sección de contacto) y "Ecommerce · Plataformas · Sitios", que no era un número y desbalanceaba el bloque. El flag `esTexto` de `DatoHero` queda disponible pero sin uso.
+
+> **Pendiente de confirmar:** `+100 proyectos` y `9 de 10 clientes siguen con nosotros` son valores propuestos, no datos verificados. El tercero apunta a la continuidad con el cliente, que es lo que distingue a un equipo chico de una agencia grande. Hay que confirmarlos o cambiarlos antes de publicar.
 
 ### 4.4 Servicios — cards apiladas
 
@@ -691,7 +699,7 @@ Header con scroll state, menú mobile overlay, footer, WhatsApp flotante, scroll
 La sección más importante. Mockups en perspectiva, secuencia de entrada, seguimiento de mouse. Revisar acá antes de seguir: si el hero funciona, el resto del sitio se acomoda.
 
 **Fase 5 — Secciones de contenido**
-Qué hacemos → Servicios apiladas → Proceso con ilustraciones y línea → Stack.
+Sobre nosotros → Servicios apiladas → Proceso con ilustraciones y línea → Stack.
 
 **Fase 6 — Ejemplos**
 Carrusel con drag e inercia, modal con Flip, navegación entre mockups.
