@@ -7,8 +7,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      // Ruta temporal de revisión, no indexable.
-      disallow: ['/design-system'],
+      // Rutas de revisión interna, no indexables.
+      disallow: ['/design-system', '/heros'],
     },
     sitemap: `${SITIO.url}/sitemap.xml`,
   }

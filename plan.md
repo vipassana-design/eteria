@@ -181,6 +181,7 @@ Tres capas, todas sutiles, ninguna protagonista:
   /sitios-institucionales/page.tsx
   /privacidad/page.tsx
   /design-system/page.tsx       revisión visual — queda, con noindex
+  /heros/                       5 propuestas de hero — temporal, con noindex
   not-found.tsx
   /api/contacto/route.ts        POST → envío de mail
 /components
@@ -221,6 +222,7 @@ Tres capas, todas sutiles, ninguna protagonista:
   queHacemos.ts                 texto y datos de la sección
   servicios.ts  proceso.ts  stack.ts
   designSystem.ts               contenido de /design-system
+  heros.ts                      contenido de las propuestas de hero
 /public
   /fonts  /mockups  /og
   grano.png                     ruido tileable de 128px generado, no descargado
@@ -279,6 +281,8 @@ Fijo. Al scrollear pasa de transparente a `--bg-elevated` con `backdrop-filter: 
 4. Partículas hacen fade-in al final
 
 **CTA primario:** "Cotizar mi proyecto" → scroll al formulario. Sin promesa de inmediatez.
+
+> **El hero está en revisión.** El cliente pidió explorar alternativas: el actual funciona pero le falta peso visual. Hay cinco propuestas en `/heros`, cada una a pantalla completa en su ruta, con el mismo copy y la misma paleta para que la comparación sea de dirección visual. Ver §12.
 
 **Resuelto en la Fase 4.**
 
@@ -749,3 +753,40 @@ Si más adelante se decide sacarla, hay que borrar `/app/design-system/` y `/con
 **StrictMode duplica animaciones en desarrollo.** Si una animación se ejecuta dos veces o arranca de una posición rara solo en local, la causa casi siempre es haber usado `useEffect` en lugar de `useGSAP`.
 
 **Demasiado movimiento mata el efecto.** Si al terminar el sitio se siente inquieto, la primera medida es sacar reveals, no sumar. La regla es: un momento memorable (el hero) y el resto disciplinado.
+
+---
+
+## 12. Propuestas de hero (en revisión)
+
+El hero de la Fase 4 funciona pero le falta peso visual. Se armaron cinco alternativas en `/heros`, cada una a pantalla completa en su propia ruta, con **el mismo copy y la misma paleta**: la comparación es de dirección visual, no de texto. Las cinco son `noindex` y están excluidas en `robots.txt`.
+
+| # | Ruta | Nombre | Qué la hace distinta |
+|---|---|---|---|
+| 1 | `/heros/franja` | Franja | Los mockups desfilan en loop en el tercio inferior, cortados por los dos bordes. El mouse sobre una tarjeta frena la marcha y le devuelve el color. |
+| 2 | `/heros/reveal` | Reveal | Grilla de mockups apagados a pantalla completa detrás del texto. El cursor funciona como foco: lo que pasa cerca recupera color y nitidez. |
+| 3 | `/heros/ventana` | Ventana que se construye sola | Una ventana grande donde la interfaz se arma por partes, se desarma y vuelve a armarse con otro tipo de proyecto: tienda → panel → institucional. |
+| 4 | `/heros/video` | Video | Loop abstracto oscuro a pantalla completa con velo y degradé que lo funde hacia abajo. |
+| 5 | `/heros/terminal` | Terminal | Una sesión de trabajo: los comandos se escriben solos y van levantando un proyecto. |
+
+### Decisiones técnicas comunes
+
+- **Todo el movimiento va sobre propiedades de composición.** El loop de la franja usa `x`; el foco del reveal usa `opacity`, `scale` y `filter`; el tipeo de la terminal usa `clip-path` en vez de reescribir `textContent`, que forzaría layout en cada frame.
+- **El seguimiento del cursor no crea un tween por evento.** El reveal usa `quickTo` y agenda un único recálculo por frame en `gsap.ticker`; los centros de las celdas se miden una vez y se recalculan solo en `resize`.
+- **El freno de la franja usa `timeScale`**, no un `pause`: no reinicia el loop ni recalcula posiciones.
+- **`prefers-reduced-motion` en las cinco:** sin loop, sin seguimiento, y el video pausado en el primer frame. Verificado: franja con la pista en `x:0`, reveal con la zona central encendida, ventana con las 4 partes visibles, terminal con las 10 líneas, video `paused: true` en `t:0`.
+- `PantallasPorPartes.tsx` existe porque las pantallas de `PantallasMockup.tsx` son un SVG monolítico: sirven para mostrar una interfaz, no para armarla por etapas.
+
+### Pendiente de revisión: el video de la propuesta 4
+
+El placeholder es de **Pexels** (id 2611250), 3,3 MB, 1920×1080, H.264. La licencia de Pexels permite uso comercial sin atribución obligatoria. Se eligió Pexels sobre Coverr porque expone descarga directa por URL sin API key.
+
+**El contenido visual no se pudo verificar automáticamente:** Chrome headless no decodifica H.264, así que en las capturas el video sale negro. El layout y los velos sí están verificados. Hay que mirarlo en un navegador real y confirmar que sea suficientemente oscuro y de movimiento lento.
+
+Para reemplazarlo: pisar `/public/heros/abstracto.mp4` manteniendo el nombre, o cambiar `archivo` en `/content/heros.ts`. Para producción conviene además una versión WebM y un poster JPG del primer frame.
+
+### Cuando se elija
+
+1. Llevar el componente elegido de `/components/heros/` a `/components/home/Hero.tsx`.
+2. Borrar `/app/heros/`, `/components/heros/`, `/content/heros.ts` y, si no se eligió la propuesta 4, `/public/heros/`.
+3. Quitar `/heros` del `disallow` en `/app/robots.ts`.
+4. Actualizar §4.2 con la dirección elegida y borrar esta sección.
