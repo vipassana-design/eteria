@@ -9,7 +9,7 @@ import type { Landing } from '@/types'
 import Boton from '@/components/ui/Boton'
 import Glow from '@/components/bg/Glow'
 import VentanaMockup from '@/components/home/VentanaMockup'
-import RollingText from './RollingText'
+import RollingText from '@/components/ui/RollingText'
 
 /** Hero de las landings (PLAN.md §5).
  *  Split: titular con rolling text a la izquierda, mockup del servicio

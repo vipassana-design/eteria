@@ -7,6 +7,7 @@ import { dur, ease } from '@/lib/motion'
 import { etapasHero, etiquetaTerminal, hero, sesionHero } from '@/content/hero'
 import Boton from '@/components/ui/Boton'
 import Glow from '@/components/bg/Glow'
+import RollingText from '@/components/ui/RollingText'
 import { POR_PARTES } from './PantallasPorPartes'
 
 /** Hero (PLAN.md §4.2).
@@ -51,12 +52,21 @@ export default function Hero() {
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
         const tl = gsap.timeline()
-        tl.from('[data-titulo] > span', {
+        // Solo las líneas fijas entran con máscara. El tramo rotante
+        // queda afuera: su wrapper tiene overflow-hidden y su tira ya
+        // usa yPercent, así que animarlo desde abajo recortaría la
+        // palabra. Entra con opacidad, junto al resto del texto.
+        tl.from('[data-titulo] > span:not([data-rotante])', {
           yPercent: 100,
           duration: 0.9,
           stagger: 0.08,
           ease: ease.snap,
         })
+          .from(
+            '[data-rotante]',
+            { opacity: 0, duration: dur.base, ease: ease.out },
+            0.3,
+          )
           .from(
             '[data-texto]',
             { opacity: 0, y: 20, duration: dur.base, stagger: 0.1, ease: ease.out },
@@ -209,11 +219,9 @@ export default function Hero() {
                 {linea}
               </span>
             ))}
-            {hero.titulo.degrade.map((linea) => (
-              <span key={linea} className="texto-degrade block">
-                {linea}
-              </span>
-            ))}
+            {/* El último tramo rota, y ocupa su propia línea como los
+                anteriores. */}
+            <RollingText palabras={hero.titulo.rotantes} className="block" />
           </h1>
 
           <p data-anim data-texto className="text-cuerpo medida mt-6 text-mid">

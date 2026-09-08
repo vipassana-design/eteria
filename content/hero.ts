@@ -1,15 +1,21 @@
 
 /** Contenido del hero (PLAN.md §4.2). */
 export const hero = {
-  /** El título se parte en líneas para que el degradé tome solo el
-   *  tramo final, y para que cada una entre con su propia máscara.
+  /** El título se parte en líneas para que cada una entre con su propia
+   *  máscara.
    *
    *  El corte de línea es deliberado y no queda librado al ancho: a 76px
    *  de cuerpo las palabras largas ocupan casi la columna entera, y sin
-   *  marcar el corte quedaban líneas con una sola palabra. */
+   *  marcar el corte quedaban líneas con una sola palabra.
+   *
+   *  El último tramo rota. Las cuatro variantes encajan con "Desarrollo
+   *  de software…" y nombran algo concreto en vez de vender (§1):
+   *  el tipo de trabajo, el alcance, quién lo hace y para qué se usa. */
   titulo: {
     antes: ['Desarrollo', 'de software'],
-    degrade: ['a medida'],
+    /** Rotan en este orden. La primera es la que queda en el estado
+     *  base y la que leen los lectores de pantalla. */
+    rotantes: ['a medida', 'de punta a punta', 'que mantenemos', 'para tu operación'],
   },
   bajada:
     'Ecommerce, plataformas de gestión y sitios institucionales. Cada proyecto se escribe desde cero, sobre el alcance que definimos con el cliente.',

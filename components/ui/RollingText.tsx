@@ -3,7 +3,9 @@
 import { useRef } from 'react'
 import { gsap, useGSAP } from '@/lib/gsap'
 
-/** Palabra que rota dentro del titular de una landing (PLAN.md §5).
+/** Palabra que rota dentro de un titular (PLAN.md §4.2 y §5).
+ *
+ *  Lo usan el hero de la home y el de las tres landings.
  *
  *  Las palabras se apilan en una tira vertical y la tira se desplaza de
  *  a un renglón: la que sale y la que entra se mueven como un solo
@@ -34,9 +36,10 @@ const ALTO_RENGLON = '1.22em'
 
 export default function RollingText({
   palabras,
-  className = '',
+  className = 'inline-block',
 }: {
   palabras: string[]
+  /** Incluir la clase de display: el componente no la fija. */
   className?: string
 }) {
   const raiz = useRef<HTMLSpanElement>(null)
@@ -103,7 +106,10 @@ export default function RollingText({
     // sin necesidad de padding.
     <span
       ref={raiz}
-      className={`relative inline-block overflow-hidden align-bottom ${className}`}
+      // El display lo define el consumidor: en el hero de la home el
+      // tramo rotante ocupa su propia línea (block) y en las landings va
+      // en el flujo del titular (inline-block, el default).
+      className={`relative overflow-hidden align-bottom ${className}`}
       style={{
         height: ALTO_RENGLON,
         // La ventana es más alta que la línea del título para contener
@@ -111,6 +117,10 @@ export default function RollingText({
         // flujo, así el titular no gana alto de más.
         marginBottom: '-0.17em',
       }}
+      // Marca para que la secuencia de entrada del hero lo excluya de
+      // su animación por máscara: este wrapper ya recorta y su tira ya
+      // usa yPercent.
+      data-rotante
       // El texto accesible es la primera palabra: el resto son estados
       // del mismo titular, no contenido nuevo.
       aria-label={primera}

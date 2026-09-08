@@ -200,9 +200,9 @@ Tres capas, todas sutiles, ninguna protagonista:
   /landing
     LandingHero.tsx  LandingBeneficios.tsx  LandingLayout.tsx
     LandingProceso.tsx            version compacta del proceso
-    RollingText.tsx               palabra que rota en el titular
   /ui
     Boton.tsx  TituloSeccion.tsx  Campo.tsx  Reveal.tsx
+    RollingText.tsx               palabra que rota — home y landings
   /bg
     Particulas.tsx  Glow.tsx  Grano.tsx
 /lib
