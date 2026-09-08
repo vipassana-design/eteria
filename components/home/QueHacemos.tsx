@@ -36,7 +36,7 @@ export default function QueHacemos() {
                   que le da peso al bloque. La enumeración al mismo
                   tamaño ocupaba tres líneas y lo desbalanceaba. */}
               <p
-                className={`font-display texto-degrade font-semibold ${
+                className={`font-display texto-degrade-2 font-semibold ${
                   d.esTexto ? 'text-h3 leading-snug' : 'text-h2 leading-none'
                 }`}
               >

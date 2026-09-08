@@ -1,7 +1,7 @@
 /** Paletas del laboratorio (PLAN.md §15).
  *
- *  Trece combinaciones completas para dark mode, listas para aplicar de
- *  un click. Todas pasan AA en los doce pares que audita el panel: el
+ *  Veintitrés combinaciones completas para dark mode, listas para
+ *  aplicar de un click. Todas pasan AA en los doce pares que audita el panel: el
  *  punto de tener plantillas es poder elegir sin auditar cada una.
  *
  *  **De dónde salen los valores.** La mayoría usa las escalas dark de
@@ -19,8 +19,16 @@
  *  redundancia, no por contraste: jade y verde terminal quedaban a 8° y
  *  22° de teal —los tres se leían igual—, y violeta Radix e índigo
  *  caían dentro de un racimo de siete paletas entre 206° y 258°. Las
- *  trece que quedaron cubren el círculo con la menor distancia en 6°, y
+ *  que quedaron cubren el círculo con la menor distancia en 6°, y
  *  en esos casos el fondo las distingue antes que el acento.
+ *
+ *  **Los grises neutros y el segundo acento.** Cinco variantes de gris
+ *  cambian el piso (de 3% a 13% de luminosidad), la elevación de las
+ *  cards y el cast —frío, cálido o sin croma—, con tres niveles de
+ *  contraste de texto. Otras cinco parten del gris neutro y suman un
+ *  segundo acento en los valores que son un dato y no una acción: las
+ *  cifras de Sobre nosotros, los números del proceso y los de los
+ *  beneficios de cada landing.
  *
  *  Las recomendaciones generales de dark mode que se siguieron: nada
  *  de negro puro —los fondos van entre 6% y 12% de luminosidad—, el
@@ -34,7 +42,7 @@ export interface Paleta {
   /** Qué carácter tiene y para qué serviría. */
   linea: string
   /** De dónde salen los valores. */
-  origen: 'La del sitio' | 'Radix Colors' | 'Sistemas reales'
+  origen: 'La del sitio' | 'Radix Colors' | 'Sistemas reales' | 'Con segundo acento'
   /** Los tokens que escribe, con el nombre de la variable CSS. */
   tokens: Record<string, string>
   /** El contraste más bajo de la paleta, normalizado a la escala de
@@ -61,6 +69,10 @@ function paleta(
     mid: string
     low: string
     danger: string
+    /** Segundo acento: los valores que son un dato y no una acción.
+     *  Si no se declara, queda igual al principal. */
+    ac2?: string
+    ac2Claro?: string
   },
   peorContraste: number,
 ): Paleta {
@@ -83,6 +95,10 @@ function paleta(
       '--color-mid': c.mid,
       '--color-low': c.low,
       '--color-danger': c.danger,
+      // Sin segundo acento declarado, queda igual al principal: el
+      // sitio se ve como si no existiera la distinción.
+      '--color-acento-2': c.ac2 ?? c.v500,
+      '--color-acento-2-claro': c.ac2Claro ?? c.v300,
     },
   }
 }
@@ -245,15 +261,137 @@ export const paletas: Paleta[] = [
     4.66,
   ),
   paleta(
+    'neutro-tinta',
+    'Gris tinta',
+    'Sistemas reales',
+    'Casi negro con un cast frío mínimo. El de mayor contraste de las cinco.',
+    {
+      base: '#08090a', elevated: '#1a1c1e', surface: '#1a1c1e70',
+      v500: '#0076fd', v600: '#0076fd', v300: '#66b3ff',
+      b500: '#00b7e0', b400: '#33c8eb',
+      hi: '#f4f4f5', mid: '#b8b8bd', low: '#98989e', danger: '#ff8f8f',
+    },
+    4.75,
+  ),
+  paleta(
     'neutro',
     'Gris neutro',
     'Sistemas reales',
-    'Grises sin croma y azul de sistema. El registro de las plataformas de deploy.',
+    'Grises puros sin croma. El registro de las plataformas de deploy.',
     {
-      base: '#0a0a0a', elevated: '#1f1f1f', surface: '#16161670',
+      base: '#0a0a0a', elevated: '#1f1f1f', surface: '#1f1f1f70',
       v500: '#0076fd', v600: '#0076fd', v300: '#66b3ff',
       b500: '#00b7e0', b400: '#33c8eb',
       hi: '#ededed', mid: '#a1a1a1', low: '#8f8f8f', danger: '#ff8f8f',
+    },
+    4.72,
+  ),
+  paleta(
+    'neutro-medio',
+    'Gris medio',
+    'Sistemas reales',
+    'El fondo levantado a 11%: deja respirar las sombras de las cards y los mockups.',
+    {
+      base: '#111111', elevated: '#242424', surface: '#24242470',
+      v500: '#0379ff', v600: '#0379ff', v300: '#66b3ff',
+      b500: '#00b7e0', b400: '#33c8eb',
+      hi: '#ededed', mid: '#a1a1a1', low: '#93939c', danger: '#ff8f8f',
+    },
+    4.66,
+  ),
+  paleta(
+    'neutro-carbon',
+    'Gris carbón',
+    'Sistemas reales',
+    'El más claro y con cast frío. El azul sube de luminosidad para no perderse.',
+    {
+      base: '#131315', elevated: '#282a2d', surface: '#282a2d70',
+      v500: '#3d8bfd', v600: '#3d8bfd', v300: '#8cbcff',
+      b500: '#00b7e0', b400: '#33c8eb',
+      hi: '#f4f4f5', mid: '#b8b8bd', low: '#9a9ba1', danger: '#ff8f8f',
+    },
+    5.19,
+  ),
+  paleta(
+    'neutro-calido',
+    'Gris cálido',
+    'Sistemas reales',
+    'Cast cálido mínimo. Menos clínico que el neutro puro, casi imperceptible.',
+    {
+      base: '#100f0e', elevated: '#232120', surface: '#23212070',
+      v500: '#0177ff', v600: '#0177ff', v300: '#66b3ff',
+      b500: '#00b7e0', b400: '#33c8eb',
+      hi: '#e4e4e6', mid: '#9a9a95', low: '#8e8c86', danger: '#ff8f8f',
+    },
+    4.63,
+  ),
+  paleta(
+    'ac2-ambar',
+    'Neutro + ámbar',
+    'Con segundo acento',
+    'Ámbar en los datos: las cifras, los números del proceso y los de los beneficios. Casi complementario del azul, es el que más separa "dato" de "acción".',
+    {
+      base: '#0a0a0a', elevated: '#1f1f1f', surface: '#1f1f1f70',
+      v500: '#0076fd', v600: '#0076fd', v300: '#66b3ff',
+      b500: '#00b7e0', b400: '#33c8eb',
+      hi: '#ededed', mid: '#a1a1a1', low: '#8f8f8f', danger: '#ff8f8f',
+      ac2: '#ffc53d', ac2Claro: '#fde6b0',
+    },
+    4.72,
+  ),
+  paleta(
+    'ac2-violeta',
+    'Neutro + violeta',
+    'Con segundo acento',
+    'Violeta en los datos. Cercano al azul, así que el conjunto se lee más unificado y la distinción es más sutil.',
+    {
+      base: '#0a0a0a', elevated: '#1f1f1f', surface: '#1f1f1f70',
+      v500: '#0076fd', v600: '#0076fd', v300: '#66b3ff',
+      b500: '#00b7e0', b400: '#33c8eb',
+      hi: '#ededed', mid: '#a1a1a1', low: '#8f8f8f', danger: '#ff8f8f',
+      ac2: '#a78bfa', ac2Claro: '#e2d9fc',
+    },
+    4.72,
+  ),
+  paleta(
+    'ac2-teal',
+    'Neutro + teal',
+    'Con segundo acento',
+    'Teal en los datos. Frío como el azul pero claramente separado: la lectura queda técnica.',
+    {
+      base: '#0a0a0a', elevated: '#1f1f1f', surface: '#1f1f1f70',
+      v500: '#0076fd', v600: '#0076fd', v300: '#66b3ff',
+      b500: '#00b7e0', b400: '#33c8eb',
+      hi: '#ededed', mid: '#a1a1a1', low: '#8f8f8f', danger: '#ff8f8f',
+      ac2: '#2dd4bf', ac2Claro: '#8ee3d8',
+    },
+    4.72,
+  ),
+  paleta(
+    'ac2-lima',
+    'Neutro + lima',
+    'Con segundo acento',
+    'Lima en los datos. El más luminoso: los números pesan tanto como los títulos.',
+    {
+      base: '#0a0a0a', elevated: '#1f1f1f', surface: '#1f1f1f70',
+      v500: '#0076fd', v600: '#0076fd', v300: '#66b3ff',
+      b500: '#00b7e0', b400: '#33c8eb',
+      hi: '#ededed', mid: '#a1a1a1', low: '#8f8f8f', danger: '#ff8f8f',
+      ac2: '#bef264', ac2Claro: '#e9f9cd',
+    },
+    4.72,
+  ),
+  paleta(
+    'ac2-coral',
+    'Neutro + coral',
+    'Con segundo acento',
+    'Coral en los datos. Cálido y con presencia, sin llegar al rojo que el sitio usa para error.',
+    {
+      base: '#0a0a0a', elevated: '#1f1f1f', surface: '#1f1f1f70',
+      v500: '#0076fd', v600: '#0076fd', v300: '#66b3ff',
+      b500: '#00b7e0', b400: '#33c8eb',
+      hi: '#ededed', mid: '#a1a1a1', low: '#8f8f8f', danger: '#ff8f8f',
+      ac2: '#fb7185', ac2Claro: '#fdd9de',
     },
     4.72,
   ),
@@ -268,6 +406,7 @@ export const paletasUi = {
     'La del sitio': 'La del sitio',
     'Radix Colors': 'Radix',
     'Sistemas reales': 'Sistemas',
+    'Con segundo acento': 'Con segundo acento',
   },
   nota: 'Aplicar una paleta reemplaza los doce colores. Después se puede ajustar cada uno en la pestaña Color.',
 }

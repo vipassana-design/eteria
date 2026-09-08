@@ -128,7 +128,7 @@ export default function Proceso() {
                   <div className="lg:pt-10">
                     <Ilustracion />
 
-                    <p className="font-display texto-degrade mt-6 text-h3 font-semibold leading-none">
+                    <p className="font-display texto-degrade-2 mt-6 text-h3 font-semibold leading-none">
                       {etapa.numero}
                     </p>
                     <h3 className="text-h3 mt-3 font-medium">{etapa.titulo}</h3>

@@ -54,6 +54,12 @@ export const gruposColor: { titulo: string; controles: ControlColor[] }[] = [
         nota: 'El cierre del degradé de marca y la segunda mancha del fondo mesh.',
         derivados: [{ token: '--color-blue-400', dl: 12 }],
       },
+      {
+        token: '--color-acento-2',
+        etiqueta: 'Segundo acento',
+        nota: 'Los valores que son un dato y no una acción: las cifras de Sobre nosotros, los números del proceso y los de los beneficios. Arranca igual al principal; moverlo separa "dato" de "acción".',
+        derivados: [{ token: '--color-acento-2-claro', dl: 22, ds: -6 }],
+      },
     ],
   },
   {
@@ -121,6 +127,12 @@ export const paresContraste: ParContraste[] = [
   },
   { texto: '--color-violet-300', fondo: '--color-base', etiqueta: 'Enlace violeta' },
   { texto: '--color-violet-300', fondo: '--color-elevated', etiqueta: 'Enlace sobre card' },
+  {
+    texto: '--color-acento-2',
+    fondo: '--color-base',
+    etiqueta: 'Dato sobre página',
+    grande: true,
+  },
   { texto: '--color-danger', fondo: '--color-base', etiqueta: 'Error sobre página' },
   {
     texto: '--color-base',

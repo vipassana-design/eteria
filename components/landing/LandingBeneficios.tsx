@@ -22,7 +22,7 @@ export default function LandingBeneficios({ beneficios }: { beneficios: Benefici
               className="border-t border-hairline py-8 lg:py-10"
             >
               <div className="grid gap-4 lg:grid-cols-[auto_1fr_1.4fr] lg:items-baseline lg:gap-12">
-                <p className="font-display texto-degrade text-h3 font-semibold leading-none lg:w-16">
+                <p className="font-display texto-degrade-2 text-h3 font-semibold leading-none lg:w-16">
                   {b.numero}
                 </p>
                 <h3 className="text-h3 font-medium">{b.titulo}</h3>

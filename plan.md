@@ -1012,7 +1012,7 @@ Escribe las variables CSS del documento con `setProperty`. Como todos los colore
 
 | Pestaña | Contenido |
 |---|---|
-| **Paletas** | Trece combinaciones completas para dark mode, listas para aplicar |
+| **Paletas** | Veintidós combinaciones completas para dark mode, listas para aplicar |
 | **Color** | 8 controles: dos superficies, dos acentos, cuatro de texto. Cada uno con picker nativo y sliders H/S/L |
 | **Escala** | Los cinco tamaños de tipografía, los dos radios, el ancho del contenedor y el margen lateral |
 | **Fondo** | Multiplicadores de glows, partículas, mesh y grano |
@@ -1031,6 +1031,36 @@ Lo que hubo que corregir: el botón primario usa `text-base` sobre el degradé �
 Un par del panel estaba mal definido y se descubrió acá: medía `--color-hi` sobre el botón, cuando el sitio pinta `text-base`. El par corregido es fondo-de-página sobre `violet-500`, que es el tramo medio del degradé.
 
 **Cuatro candidatas se descartaron por redundancia, no por contraste.** Jade y verde terminal quedaban a 8° y 22° de matiz de teal: los tres se leían igual. Violeta Radix e índigo caían dentro de un racimo de siete paletas entre 206° y 258°. Las trece que quedaron cubren el círculo cromático con la menor distancia en 6°, y en esos casos el fondo las distingue antes que el acento.
+
+### El segundo acento
+
+El sitio usaba **un solo color para todo**: botones, glows, bordes en hover, números, cifras. Se agregó `--color-acento-2` para separar dos cosas que no son lo mismo: "hacé click" y "esto es un dato".
+
+Va en tres lugares, los que son valor y no acción:
+
+- Las cifras de Sobre nosotros (`+20`, `End to end`, `Soporte`)
+- Los números de las cuatro etapas del proceso
+- Los números de los beneficios de cada landing
+
+Se aplica con la utilidad `texto-degrade-2`, gemela de `texto-degrade` pero con `--grad-acento-2`. El hover del stack quedó con el principal a propósito: es una interacción.
+
+**Arranca igual al acento principal**, así que el sitio se ve como si la distinción no existiera hasta que se mueve. El cambio es opt-in: la separación se decide moviéndolo en el panel o aplicando una de las paletas que lo traen.
+
+### Los grises neutros
+
+Cinco variantes que cambian el piso (de 3% a 13% de luminosidad), la elevación de las cards y el cast del gris:
+
+| Paleta | Fondo | Cast | Por qué |
+|---|---|---|---|
+| Gris tinta | `#08090a` | frío mínimo | El de mayor contraste |
+| Gris neutro | `#0a0a0a` | sin croma | El de las plataformas de deploy |
+| Gris medio | `#111111` | sin croma | Deja respirar las sombras de las cards |
+| Gris carbón | `#131315` | frío | El más claro; el azul sube para no perderse |
+| Gris cálido | `#100f0e` | cálido mínimo | Menos clínico, casi imperceptible |
+
+El fondo importa más de lo que parece: los mockups tienen sombras de `0_30px_80px_-20px`, y sobre negro casi puro se pierden. Por eso las variantes de 11% y 13%.
+
+Otras cinco parten del gris neutro y suman un segundo acento —ámbar, violeta, teal, lima o coral— para ver la distinción funcionando sin tener que armarla a mano.
 
 ### La pestaña de contraste
 
