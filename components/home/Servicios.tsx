@@ -159,20 +159,21 @@ export default function Servicios() {
 
                 {/* Texto. justify-center para que quede centrado en la
                     card y no tirado hacia arriba. */}
-                <div className="flex flex-col justify-center gap-5 p-8 lg:p-12">
-                  <p className="text-label text-low">{s.titulo}</p>
-
-                  {/* El gancho es enlace a la landing. */}
+                <div className="flex flex-col justify-center gap-3 p-8 lg:p-12">
+                  {/* El nombre del servicio es el título y lleva el
+                      enlace a la landing. */}
                   <h3 className="text-h3 font-medium">
                     <Link
                       href={s.href}
                       className="transition-colors duration-300 ease-(--ease-suave) hover:text-violet-300"
                     >
-                      {s.gancho}
+                      {s.titulo}
                     </Link>
                   </h3>
 
-                  <p className="text-cuerpo medida text-mid">{s.descripcion}</p>
+                  <p className="text-cuerpo-lg text-mid">{s.gancho}</p>
+
+                  <p className="text-cuerpo medida mt-2 text-low">{s.descripcion}</p>
 
                   <div className="mt-2">
                     <Boton href={s.href} tamano="chico">

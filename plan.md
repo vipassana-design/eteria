@@ -361,26 +361,38 @@ Tres cards que se apilan al scrollear: cada una queda pineada y la siguiente sub
 
 Cada card: mitad texto, mitad mockup a color.
 
+**Jerarquía del texto (revisión del cliente).** Son tres niveles: el **nombre del servicio** como título (`--text-h3`, lleva el enlace a la landing), un **subtítulo** en `--text-cuerpo-lg` sobre `--text-mid`, y la **descripción** en `--text-cuerpo` sobre `--text-low`.
+
+Estaba al revés: el nombre del servicio iba como label chico en `--text-low` y el subtítulo ocupaba el `h3`. El dato más importante de la card quedaba como metadato.
+
 **Card 1 — Ecommerce**
-> Tiendas online con catálogo, checkout y administración.
+> Tiendas online para vender y administrar el negocio.
 >
-> Catálogo, carrito, checkout, pagos, envíos y panel de administración. Integramos las pasarelas de pago y los operadores logísticos que la empresa ya usa, y la arquitectura contempla el crecimiento en catálogo y en tráfico.
+> Catálogo, carrito, checkout, pagos, envíos y panel de administración. Integramos las pasarelas y los operadores logísticos que la empresa ya usa, y la arquitectura contempla el crecimiento.
 >
-> `Ver más sobre ecommerce →` (a `/ecommerce`)
+> `Ver ecommerce →` (a `/ecommerce`)
 
 **Card 2 — Sitios institucionales**
-> El sitio de la empresa y su contenido.
+> La cara pública de la empresa, con su contenido al día.
 >
-> Sitios rápidos e indexables, con la estructura de contenido y las URLs pensadas para búsqueda. Se entregan con un panel para que el equipo actualice textos, secciones e imágenes.
+> Definimos las secciones y la jerarquía del contenido para que cada página tenga un propósito claro. El equipo administra textos, novedades, imágenes y documentos desde un panel propio.
 >
-> `Ver más sobre sitios institucionales →`
+> `Ver sitios institucionales →`
 
 **Card 3 — Software a medida**
-> Sistemas internos, plataformas e integraciones.
+> Sistemas que se adaptan a cómo trabaja la empresa.
 >
-> Paneles de gestión, plataformas con usuarios y permisos, automatización de tareas repetitivas e integraciones con los sistemas que la empresa ya tiene: facturación, stock, CRM o lo que corresponda.
+> Paneles de gestión, plataformas con usuarios y permisos, y automatización de tareas que hoy se hacen a mano. Se conecta con los sistemas que la empresa ya tiene en uso: facturación, stock o CRM.
 >
-> `Ver más sobre software a medida →`
+> `Ver software a medida →`
+
+**Copys reescritos (revisión del cliente).** Los tres subtítulos y dos descripciones cambiaron:
+
+- **Institucionales** era el más flojo. El subtítulo, "El sitio de la empresa", no informaba nada; la descripción abría con "sitios rápidos e indexables" —jerga técnica en la primera línea— y seguía con performance y Lighthouse, que no es lo que decide la compra. También decía "se entregan con un panel", que nadie había definido. Ahora la descripción habla del trabajo de estructura y de quién administra el contenido. La misma frase abría la bajada de la landing `/sitios-institucionales`: se corrigió ahí también.
+- **Software a medida**: el subtítulo, "Sistemas internos, plataformas e integraciones", enumeraba lo mismo que el título y que la descripción. Ahora dice para qué sirven.
+- **Ecommerce**: el subtítulo repetía la enumeración con la que arranca la descripción. Ahora el subtítulo dice para qué es y la descripción qué incluye.
+
+El largo de las tres descripciones se ajustó (189 / 184 / 194 caracteres) para que las cards midan igual: con `justify-center` el texto se centra, pero una línea de más cambia el alto de la card. Verificado en 1440 / 1024 / 390: las tres en 432px, 432px y 635px respectivamente.
 
 **Implementación:** `position: sticky` en las cards + ScrollTrigger para la escala/opacidad de las de atrás. En mobile se desactiva el pin y quedan tres cards apiladas normalmente.
 

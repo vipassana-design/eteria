@@ -64,7 +64,7 @@ export const landings: Record<LandingSlug, Landing> = {
       despues: '',
     },
     bajada:
-      'El sitio de la empresa, con la estructura de contenido pensada para que la información se encuentre.',
+      'La cara pública de la empresa, con la estructura de contenido pensada para que la información se encuentre.',
     tipoPreseleccionado: 'institucional',
     beneficios: [
       {

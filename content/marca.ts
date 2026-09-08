@@ -9,7 +9,7 @@ import type { EnlaceNav, Marca } from '@/types'
 export const marca: Marca = {
   nombre: { inicio: 'Eter', fin: 'ia' },
   descripcion: 'Desarrollo a medida',
-  email: 'hola@eteria.com',
+  email: 'info@eteria.com',
   // Placeholder: número de ejemplo hasta que el cliente dé el real.
   whatsapp: '5491100000000',
   whatsappVisible: 'WhatsApp',
