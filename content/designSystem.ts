@@ -121,7 +121,7 @@ export const designSystem = {
       clase: 'text-cuerpo-lg',
       medidas: '20 / 18 px · 400 · lh 1.6',
       ejemplo:
-        'Ecommerce, plataformas y sitios a medida. Construidos desde cero, sin plantillas ni limitaciones.',
+        'Ecommerce, plataformas de gestión y sitios institucionales para empresas que necesitan algo propio.',
       fuente: 'Satoshi',
     },
     {
@@ -129,7 +129,7 @@ export const designSystem = {
       clase: 'text-cuerpo',
       medidas: '17 / 16 px · 400 · lh 1.65',
       ejemplo:
-        'Cada proyecto arranca en cero. No adaptamos plantillas ni forzamos un sistema que no encaja: escribimos el código que tu operación necesita.',
+        'Somos un equipo de desarrollo especializado en software para empresas. Cada proyecto tiene un equipo asignado y un responsable técnico que lo sigue de principio a fin.',
       fuente: 'Satoshi',
     },
     {

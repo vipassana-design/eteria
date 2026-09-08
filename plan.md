@@ -37,6 +37,7 @@ Definido por el cliente en la revisión de la Fase 6. Aplica a todo el texto del
 
 - Los títulos nombran, los párrafos explican. El peso informativo va en el cuerpo, no en el titular.
 - Nada de estructuras del tipo "X, no Y" ni negaciones que suenan a chicana.
+- **No defenderse de acusaciones que nadie hizo.** Negar plantillas, aclarar que no se terceriza, subrayar quién escribe el código: son preocupaciones de proveedor chico. Instalan la duda al responderla y bajan el registro. Un equipo consolidado no lo menciona porque se da por sentado. Vale también en afirmativo: "el código lo escribimos nosotros" es la misma defensa sin el "no".
 - Nada de adjetivos de venta: potente, definitivo, real, verdadero, sin atajos.
 - Nada que no sea verificable. "Sin atajos" no significa nada comprobable; "el entregable es el documento de alcance" sí.
 - Si una frase podría estar en el sitio de cualquier agencia, no sirve.
@@ -316,7 +317,7 @@ Sin card. Texto grande sobre el fondo, dos columnas asimétricas.
 > **Título:** Sobre nosotros
 >
 > **Cuerpo:**
-> Somos un equipo de desarrollo. El código lo escribimos nosotros y seguimos a cargo del sistema después de entregarlo: quien lo construyó es quien lo mantiene.
+> Somos un equipo de desarrollo especializado en software para empresas. Cada proyecto tiene un equipo asignado y un responsable técnico que lo sigue de principio a fin.
 >
 > Trabajamos con empresas que ya tienen un sistema funcionando y necesitan ampliarlo o reemplazarlo, y con equipos que están armando la primera versión de un producto. En los dos casos empezamos por definir qué tiene que hacer el sistema y con qué se integra.
 
@@ -332,7 +333,11 @@ Los valores en Clash Display con degradé, el label debajo en `--text-low`. Los 
 
 De los datos originales se sacaron dos: "24h tiempo de respuesta" (ya está en la sección de contacto) y "Ecommerce · Plataformas · Sitios", que no era un número y desbalanceaba el bloque.
 
-**Primer párrafo reformulado (cliente).** Decía "no revendemos plantillas ni tercerizamos el trabajo". Se sacó: negar algo lo instala como tema, y la comparación con el proveedor barato baja el registro en vez de subirlo. El mismo contenido va ahora en positivo —el equipo escribe el código y queda a cargo del sistema— que además es lo que sostiene el dato de `Soporte`.
+**Primer párrafo, dos pasadas (cliente).** La versión original decía "no revendemos plantillas ni tercerizamos el trabajo"; la siguiente, "el código lo escribimos nosotros". Las dos fueron rechazadas por lo mismo, y de ahí sale una regla para todo el copy:
+
+> **No defenderse de acusaciones que nadie hizo.** Negar plantillas, aclarar que no se terceriza o subrayar quién escribe el código son preocupaciones de proveedor chico: instalan la duda al responderla y bajan el registro. Un equipo consolidado no lo menciona porque se da por sentado.
+
+El párrafo habla ahora de cómo se organiza el trabajo —equipo asignado, responsable técnico que sigue el proyecto de principio a fin—, que es verificable y no compite con nadie. (Una tercera versión decía "sin intermediarios entre quien decide y quien construye": misma defensa con otra ropa, también fuera.) Tampoco repite los datos de la columna derecha: los años están en `+20`, el alcance en `End to end` y la continuidad en `Soporte`, así que el párrafo no vuelve sobre ninguno de los tres.
 
 **Segunda pasada de los datos (cliente).** Los tres pasaron a `+20 años acompañando clientes`, `End to end` y `Soporte`. Con esto se resuelve el pendiente que había: las dos cifras sin verificar (`+100 proyectos` y `9 de 10 clientes siguen con nosotros`) ya no están, y los datos describen el alcance del trabajo en lugar de afirmar volumen. El flag `esTexto` de `DatoHero`, que había quedado sin uso, vuelve a usarse en los dos últimos.
 
