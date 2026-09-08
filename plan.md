@@ -106,7 +106,7 @@ Satoshi        → cuerpo, botones, labels, navegación
 
 | Rol | Desktop | Mobile | Peso | Tracking |
 |---|---|---|---|---|
-| Hero H1 | 76px | 40px | 600 | -0.03em |
+| Hero H1 | 64px | 40–48px | 600 | -0.03em |
 | H2 sección | 52px | 32px | 600 | -0.02em |
 | H3 card | 28px | 22px | 500 | -0.01em |
 | Cuerpo grande | 20px | 18px | 400 | 0 |
@@ -114,6 +114,7 @@ Satoshi        → cuerpo, botones, labels, navegación
 | Label | 14px | 13px | 500 | 0 |
 
 - Line-height: 1.05 en títulos grandes, 1.65 en cuerpo.
+- **El H1 del hero se mide contra su columna, no contra el viewport.** Bajó de 76 a 64px porque a ese tamaño las palabras más largas de los títulos rotantes no entraban y el overflow de la máscara las cortaba: "para empresas" medía 546px en una columna de 491. Además usa las utilidades `titulo-hero` / `titulo-hero-texto`, que atan el tamaño al ancho de la columna con `cqw`: el clamp del viewport no alcanzaba, porque entre 1024 y 1280px la columna queda angosta mientras el viewport todavía pide 64px, y ahí desbordaban tres de las cuatro páginas. Verificado con holgura de 23px en el peor caso a 1440, 1280, 1024 y 390.
 - Ancho máximo de párrafo: 68 caracteres.
 - Sentence case en todo. Nada de labels en mayúsculas — es uno de los tells de plantilla.
 

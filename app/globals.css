@@ -34,7 +34,14 @@
   --font-sans: var(--font-satoshi), ui-sans-serif, system-ui, sans-serif;
 
   /* Escala tipográfica (§2.2) — clamp entre mobile y desktop */
-  --text-hero: clamp(2.5rem, 1.19rem + 5.6vw, 4.75rem); /* 40 → 76 */
+  /* 40 → 64. Bajó de 76 en la revisión del cliente: a 76px las
+     palabras más largas de los títulos rotantes no entraban en la
+     columna del hero y el overflow de la máscara las cortaba.
+
+     El hero además ata su H1 al ancho de su columna con la utilidad
+     `titulo-hero`: el clamp mide el viewport, pero la columna es una
+     fracción de él y entre 1024 y 1280 queda demasiado angosta. */
+  --text-hero: clamp(2.5rem, 1.36rem + 4.2vw, 4rem); /* 40 → 64 */
   --text-hero--line-height: 1.05;
   --text-hero--letter-spacing: -0.03em;
 
@@ -196,6 +203,34 @@
 /* Ancho máximo de párrafo: 68 caracteres (§2.2) */
 @utility medida {
   max-width: 68ch;
+}
+
+/* Título del hero.
+ *
+ * El tamaño se ata al ancho de la columna del hero, no al del viewport:
+ * la columna es una fracción del ancho total, así que entre 1024 y
+ * 1280px queda angosta mientras el clamp del viewport todavía da 64px.
+ * Ahí las palabras más largas de los títulos rotantes se pasaban y el
+ * overflow de la máscara las cortaba.
+ *
+ * 13cqw sobre una columna de ~490px da 64px, que es el techo de la
+ * escala; sobre una de 372px da 48px. El clamp acota los extremos. */
+@utility titulo-hero {
+  container-type: inline-size;
+}
+
+@utility titulo-hero-texto {
+  font-size: clamp(2.5rem, 13cqw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+/* El tramo rotante ocupa el ancho de su columna: así una palabra futura
+   más larga que las actuales se ve entera y no cortada contra la
+   máscara. Con los textos de hoy no cambia nada — la más ancha tiene
+   23px de holgura en el viewport más ajustado. */
+[data-rotante] {
+  max-width: 100%;
 }
 
 /* Con el menú mobile abierto, los flotantes se apartan: el botón de

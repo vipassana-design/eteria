@@ -208,12 +208,14 @@ export default function Hero() {
       <Glow className="-left-56 top-1/3" tamano={620} intensidad={0.6} />
 
       <div className="contenedor grid w-full items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-12">
-        {/* Texto */}
-        <div className="relative z-10">
+        {/* Texto.  declara el contenedor de consulta: el
+            tamaño del H1 se mide contra esta columna y no contra el
+            viewport. */}
+        <div className="titulo-hero relative z-10">
           {/* Los cortes de línea vienen del contenido, no del ancho: a
               76px las palabras largas ocupan casi la columna entera y el
               wrap dejaba líneas de una sola palabra. */}
-          <h1 data-anim data-titulo className="text-hero font-semibold [text-wrap:nowrap]">
+          <h1 data-anim data-titulo className="titulo-hero-texto font-display font-semibold [text-wrap:nowrap]">
             {hero.titulo.antes.map((linea) => (
               <span key={linea} className="block">
                 {linea}

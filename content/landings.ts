@@ -12,8 +12,8 @@ export const landings: Record<LandingSlug, Landing> = {
   ecommerce: {
     slug: 'ecommerce',
     titulo: {
-      antes: 'Tiendas online con',
-      palabras: ['catálogo', 'checkout', 'pagos', 'envíos'],
+      antes: 'Ecommerce',
+      palabras: ['con catálogo', 'con checkout', 'con pagos'],
       despues: '',
     },
     bajada:
@@ -59,8 +59,8 @@ export const landings: Record<LandingSlug, Landing> = {
   'sitios-institucionales': {
     slug: 'sitios-institucionales',
     titulo: {
-      antes: 'Sitios institucionales para',
-      palabras: ['empresas', 'estudios', 'instituciones'],
+      antes: 'Sitios web para',
+      palabras: ['empresas', 'estudios', 'comercios'],
       despues: '',
     },
     bajada:

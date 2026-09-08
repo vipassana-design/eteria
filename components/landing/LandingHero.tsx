@@ -131,8 +131,10 @@ export default function LandingHero({ landing }: { landing: Landing }) {
           ventana mida igual en las cuatro páginas. Sin w-full el grid se
           encoge al contenido y la ventana queda de otro tamaño. */}
       <div className="contenedor grid w-full items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-12">
-        <div>
-          <h1 data-anim data-titulo className="text-hero font-semibold">
+        {/*  declara el contenedor de consulta: el tamaño
+            del H1 se mide contra esta columna, no contra el viewport. */}
+        <div className="titulo-hero">
+          <h1 data-anim data-titulo className="titulo-hero-texto font-display font-semibold">
             <span className="block">{landing.titulo.antes}</span>
             <RollingText palabras={landing.titulo.palabras} className="block" />
             {landing.titulo.despues ? (
