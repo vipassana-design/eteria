@@ -11,6 +11,9 @@ import Boton from '@/components/ui/Boton'
 import Logo from './Logo'
 import MobileMenu from './MobileMenu'
 
+/** Píxeles de scroll a partir de los cuales el header va opaco. */
+const UMBRAL_SCROLL = 24
+
 /** Header fijo (PLAN.md §4.1).
  *  Al scrollear pasa de transparente a --bg-elevated con blur y borde
  *  inferior hairline. */
@@ -23,11 +26,22 @@ export default function Header() {
   useGSAP(() => {
     // El estado se resuelve con ScrollTrigger en vez de un listener
     // propio: ya hay uno corriendo y comparte el mismo cálculo.
+    //
+    // Va con `onUpdate` y no con `onToggle`: `onToggle` informa si el
+    // scroll está dentro del rango del trigger, y el rango termina en
+    // `max`. Al tocar el fondo de la página el trigger se desactiva y
+    // el fondo del header desaparecía, igual que arriba pero por el
+    // extremo opuesto. Lo que importa acá no es el rango sino la
+    // posición: si se bajó del umbral, el header va opaco.
     const st = ScrollTrigger.create({
-      start: 'top -24px',
-      end: 'max',
-      onToggle: (self) => setConScroll(self.isActive),
+      onUpdate: (self) => setConScroll(self.scroll() > UMBRAL_SCROLL),
     })
+
+    // El estado inicial: si la página carga ya scrolleada (una
+    // recarga a mitad de página, o entrar con un ancla), `onUpdate` no
+    // corre hasta el primer movimiento.
+    setConScroll(st.scroll() > UMBRAL_SCROLL)
+
     return () => st.kill()
   })
 

@@ -251,6 +251,8 @@ Todo el texto del sitio vive en `/content`. Ningún copy hardcodeado dentro de u
 
 Fijo. Al scrollear pasa de transparente a `--bg-elevated` con `backdrop-filter: blur(12px)` y borde inferior hairline.
 
+El estado se calcula con `onUpdate` de un ScrollTrigger comparando la posición contra un umbral de 24px, **no con `onToggle`**. `onToggle` informa si el scroll está dentro del rango del trigger, y ese rango termina en `max`: al tocar el fondo de la página el trigger se desactivaba y el fondo del header desaparecía, el mismo síntoma que arriba pero por el extremo opuesto. Lo que importa acá es la posición, no la pertenencia a un rango. El estado inicial se setea a mano, porque `onUpdate` no corre hasta el primer movimiento y la página puede cargar ya scrolleada (una recarga a mitad de página, o entrar con un ancla).
+
 ```
 [Eteria]        Sobre nosotros  Servicios  Proceso  Soluciones [ Contacto ]
 ```
