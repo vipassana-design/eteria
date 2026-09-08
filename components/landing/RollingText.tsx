@@ -23,6 +23,15 @@ const ESPERA = 2.2
 /** Cuánto tarda el desplazamiento de un renglón al siguiente. */
 const DESPLAZAMIENTO = 0.55
 
+/** Alto de cada renglón de la tira, y por lo tanto de la ventana.
+ *
+ *  Tiene que contener el descendente de la "g" o "y": sin la utilidad
+ *  `texto-degrade` no hay padding que lo proteja, y con
+ *  `background-clip: text` Chrome recorta lo que sale de la caja. A
+ *  1.22em el descendente entra completo, y como la ventana mide lo
+ *  mismo, al subir un renglón no queda tinta visible. */
+const ALTO_RENGLON = '1.22em'
+
 export default function RollingText({
   palabras,
   className = '',
@@ -80,13 +89,28 @@ export default function RollingText({
   const renglones = [...palabras, primera]
 
   return (
-    // La máscara deja ver un renglón. El padding compensa el que agrega
-    // `texto-degrade` para no recortar descendentes: sin él la palabra
-    // asoma por debajo mientras se desplaza.
+    // La ventana deja ver un renglón por vez.
+    //
+    // Los renglones NO usan la utilidad `texto-degrade`: esa utilidad
+    // agrega `padding-block-end: 0.08em` con margen negativo para que
+    // Chrome no recorte los descendentes, y ese padding pinta tinta más
+    // abajo de lo que el renglón ocupa en el layout. Al subir un renglón
+    // exacto, el descendente de la "g" de "catálogo" quedaba dentro de
+    // la ventana.
+    //
+    // El degradé se declara en cada renglón, y la caja del renglón es
+    // más alta que su line-height para que el descendente entre completo
+    // sin necesidad de padding.
     <span
       ref={raiz}
-      className={`relative inline-block overflow-hidden pb-[0.14em] align-bottom ${className}`}
-      style={{ height: '1.08em' }}
+      className={`relative inline-block overflow-hidden align-bottom ${className}`}
+      style={{
+        height: ALTO_RENGLON,
+        // La ventana es más alta que la línea del título para contener
+        // el descendente; el margen negativo devuelve esa diferencia al
+        // flujo, así el titular no gana alto de más.
+        marginBottom: '-0.17em',
+      }}
       // El texto accesible es la primera palabra: el resto son estados
       // del mismo titular, no contenido nuevo.
       aria-label={primera}
@@ -96,8 +120,21 @@ export default function RollingText({
           <span
             key={`${p}-${i}`}
             aria-hidden={i > 0}
-            className="texto-degrade block whitespace-nowrap"
-            style={{ height: '1.08em', lineHeight: '1.08em' }}
+            className="block whitespace-nowrap"
+            style={{
+              height: ALTO_RENGLON,
+              // El line-height sigue al de los títulos (1.05) y no al
+              // alto de la caja: la caja es más alta solo para contener
+              // el descendente, no para separar los renglones.
+              lineHeight: '1.05em',
+              // El degradé va por renglón y no en la tira: en la tira se
+              // desplazaría con ella y cada palabra tomaría un tramo
+              // distinto de la rampa. Se declara acá en vez de usar la
+              // utilidad `texto-degrade` para no arrastrar su padding.
+              backgroundImage: 'var(--grad-brand)',
+              backgroundClip: 'text',
+              color: 'transparent',
+            }}
           >
             {p}
           </span>

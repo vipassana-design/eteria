@@ -203,7 +203,7 @@ export default function Hero() {
           {/* Los cortes de línea vienen del contenido, no del ancho: a
               76px las palabras largas ocupan casi la columna entera y el
               wrap dejaba líneas de una sola palabra. */}
-          <h1 data-anim data-titulo className="text-h2 font-semibold [text-wrap:nowrap]">
+          <h1 data-anim data-titulo className="text-hero font-semibold [text-wrap:nowrap]">
             {hero.titulo.antes.map((linea) => (
               <span key={linea} className="block">
                 {linea}
