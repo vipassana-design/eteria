@@ -1,10 +1,10 @@
-/** Contenido de las cinco propuestas de hero (ruta temporal /heros).
+/** Contenido de las propuestas de hero (ruta temporal /heros).
  *
- *  El copy y la paleta son idénticos en las cinco a propósito: la
+ *  El copy y la paleta son idénticos en todas a propósito: la
  *  comparación es de dirección visual, no de texto.
  */
 
-export type HeroId = 'franja' | 'reveal' | 'ventana' | 'video' | 'terminal'
+export type HeroId = 'franja' | 'reveal' | 'ventana' | 'video' | 'terminal' | 'mixto'
 
 /** El mismo copy del hero actual (content/hero.ts). */
 export const copyComun = {
@@ -59,19 +59,26 @@ export const propuestas: Propuesta[] = [
     linea:
       'Una sesión de trabajo real: los comandos se escriben solos y van levantando un proyecto. Vincula con el oficio, no con una metáfora.',
   },
+  {
+    id: 'mixto',
+    numero: '6',
+    nombre: 'Mixto — terminal y ventanas',
+    linea:
+      'La terminal levanta el proyecto en cinco segundos y después la ventana arma los tres tipos de proyecto, uno tras otro, antes de volver a la terminal.',
+  },
 ]
 
 /** Etiquetas de la barra de comparación. */
 export const herosUi = {
   titulo: 'Propuestas de hero',
-  bajada: 'Cinco direcciones distintas, con el mismo copy y la misma paleta.',
+  bajada: 'Direcciones distintas, con el mismo copy y la misma paleta.',
   volver: 'Ver todas',
   siguiente: 'Siguiente',
   anterior: 'Anterior',
   aviso: 'Ruta temporal de comparación. No forma parte del sitio.',
 }
 
-/** Secuencia de la propuesta Terminal. */
+/** Secuencia de la propuesta Terminal (versión completa, ~11s). */
 export const sesionTerminal = [
   { tipo: 'comando', texto: 'npx create-next-app tienda-atelier' },
   { tipo: 'salida', texto: 'Creating a new Next.js app...' },
@@ -82,6 +89,17 @@ export const sesionTerminal = [
   { tipo: 'salida', texto: '14 files changed, 486 insertions(+)' },
   { tipo: 'comando', texto: 'npm run build' },
   { tipo: 'salida', texto: 'Compiled successfully in 4.1s' },
+  { tipo: 'ok', texto: 'Deployed to production' },
+] as const
+
+/** Versión corta para el hero mixto: entra en ~5s, que es lo que dura
+ *  antes de pasar a las ventanas. Menos líneas y más cortas. */
+export const sesionTerminalCorta = [
+  { tipo: 'comando', texto: 'npx create-next-app tienda' },
+  { tipo: 'ok', texto: 'Success! Created tienda' },
+  { tipo: 'comando', texto: 'npm i @mercadopago/sdk-react' },
+  { tipo: 'salida', texto: 'added 24 packages in 3s' },
+  { tipo: 'comando', texto: 'npm run build' },
   { tipo: 'ok', texto: 'Deployed to production' },
 ] as const
 

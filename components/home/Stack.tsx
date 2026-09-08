@@ -31,7 +31,9 @@ export default function Stack() {
             return (
               <div
                 key={t.id}
-                className="group flex aspect-4/3 flex-col items-center justify-center gap-3 rounded-(--radius-card) border border-hairline transition-colors duration-500 ease-(--ease-suave) hover:border-hairline-hover"
+                // En hover el borde se marca más y aparece un glow
+                // violeta alrededor de la celda.
+                className="group flex aspect-4/3 flex-col items-center justify-center gap-3 rounded-(--radius-card) border border-hairline transition-[border-color,box-shadow] duration-500 ease-(--ease-suave) hover:border-violet-500/45 hover:shadow-[0_0_0_1px_rgba(139,92,246,0.18),0_10px_40px_-10px_rgba(139,92,246,0.4)]"
               >
                 {/* El logo hereda el color: en reposo va en --text-low y
                     en hover pasa al color de marca. */}
@@ -44,9 +46,9 @@ export default function Stack() {
                   </span>
                 </span>
 
-                {/* El nombre aparece en hover. Ocupa su lugar siempre
-                    para que la celda no cambie de alto. */}
-                <span className="text-label text-transparent transition-colors duration-500 ease-(--ease-suave) group-hover:text-mid">
+                {/* El nombre está siempre visible en gris claro; en hover
+                    sube a --text-hi. */}
+                <span className="text-label text-mid transition-colors duration-500 ease-(--ease-suave) group-hover:text-hi">
                   {t.nombre}
                 </span>
               </div>
