@@ -1,10 +1,10 @@
 /** Contenido de la ruta temporal /fondos.
  *
- *  Cuatro fondos animados para el hero, cada uno con el hero completo
- *  encima para ver cómo conviven. Misma paleta que el sitio.
+ *  Fondos animados para el hero, cada uno con el hero completo encima
+ *  para ver cómo conviven. Misma paleta que el sitio.
  */
 
-export type FondoId = 'mesh' | 'grilla' | 'halo' | 'flujo'
+export type FondoId = 'mesh' | 'grilla' | 'halo' | 'flujo' | 'mesh-flujo'
 
 export interface PropuestaFondo {
   id: FondoId
@@ -52,12 +52,21 @@ export const fondos: PropuestaFondo[] = [
     tecnica:
       'Canvas con estela por acumulación: en vez de limpiar el frame se pinta un velo semitransparente encima. En mobile la mitad de trazos y más lentos.',
   },
+  {
+    id: 'mesh-flujo',
+    numero: '5',
+    nombre: 'Mesh + Flujo',
+    linea:
+      'Las manchas de Mesh como base y los trazos de Flujo encima: la base da el color y la profundidad, los trazos el movimiento puntual.',
+    tecnica:
+      'Los dos componentes apilados, cada uno sin su velo propio: el velo va una sola vez entre las capas, y el de la estela pasa a negro transparente para no tapar las manchas.',
+  },
 ]
 
 export const fondosUi = {
   titulo: 'Fondos para el hero',
   bajada:
-    'Cuatro fondos animados con el hero completo encima, para ver cómo conviven. Misma paleta que el sitio.',
+    'Cada uno con el hero completo encima, para ver cómo conviven. Misma paleta que el sitio.',
   aviso: 'Ruta temporal de comparación. No forma parte del sitio.',
   volver: 'Ver todos',
   siguiente: 'Siguiente',

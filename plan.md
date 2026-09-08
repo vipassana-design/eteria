@@ -826,7 +826,7 @@ Para reemplazarlo: pisar `/public/heros/abstracto.mp4` manteniendo el nombre, o 
 
 ## 13. Fondos para el hero (en revisión)
 
-El fondo actual (glows suaves y partículas) se siente flojo. Se armaron cuatro variantes en `/fondos`, cada una con **el hero completo de la home encima** para ver cómo conviven: la comparación es de fondo, no de hero. Las cuatro son `noindex` y están excluidas en `robots.txt`.
+El fondo actual (glows suaves y partículas) se siente flojo. Se armaron variantes en `/fondos`, cada una con **el hero completo de la home encima** para ver cómo conviven: la comparación es de fondo, no de hero. Las cuatro son `noindex` y están excluidas en `robots.txt`.
 
 | # | Ruta | Nombre | Qué hace | Técnica |
 |---|---|---|---|---|
@@ -834,6 +834,9 @@ El fondo actual (glows suaves y partículas) se siente flojo. Se armaron cuatro 
 | 2 | `/fondos/grilla` | Grilla | Retícula fina con celdas que se encienden un instante | Retícula como `background` repetido; los destellos son divs que GSAP enciende al azar |
 | 3 | `/fondos/halo` | Halo | Patrón de puntos apagado que se revela donde pasa el cursor | `mask-image` radial sobre el patrón, seguimiento con `quickTo` |
 | 4 | `/fondos/flujo` | Flujo | Trazos finos con estela corta que se desvanece | Canvas: la estela sale de **no** limpiar el frame, sino pintar un velo encima |
+| 5 | `/fondos/mesh-flujo` | Mesh + Flujo | Las manchas de Mesh como base y los trazos de Flujo encima | Los dos componentes apilados, cada uno sin su velo propio |
+
+**Combinación Mesh + Flujo (pedido del cliente).** Apilar los dos no era sumar los componentes tal cual: cada uno traía su propio velo opaco para separarse del fondo de la página, y dos velos encimados oscurecían todo. Para que se pudieran componer, ambos recibieron props: Mesh puede ir sin su velo, y Flujo sin su desvanecido de bordes —que es opaco y taparía las manchas— y con un velo de estela transparente en vez del color base, que si lo pintara en cada frame borraría la base. Verificado: las 4 manchas visibles con el canvas activo y 0 velos opacos duplicados.
 
 **Ajuste de la estela (revisión del cliente).** La primera versión dejaba franjas colgadas que ensuciaban la pantalla. Eran tres causas sumadas: el velo borraba a 0.075 por frame (unos 40 frames para desaparecer), los trazos usaban `lighter`, que *suma* luz sobre lo anterior y volvía el rastro más brillante donde el trazo pasaba despacio, y el degradé no llegaba a cero en la cola. Ahora el velo borra a 0.3, todo el dibujado va con `source-over` y los trazos son más cortos. Verificado: la superficie con tinta visible queda en 0,02–0,03% y **estable en el tiempo** —antes crecía—, con brillo promedio de 1 sobre el fondo.
 

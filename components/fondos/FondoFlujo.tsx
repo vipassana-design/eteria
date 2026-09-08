@@ -27,6 +27,13 @@ const TRAZOS_MOBILE = 8
  *  franjas colgadas ensuciando la pantalla. A 0.3 se apaga en ~8. */
 const DESVANECIDO = 0.3
 
+/** Velo por defecto: el color base del sitio con el alfa del
+ *  desvanecido.
+ *
+ *  Apilado sobre otro fondo hay que pasar uno más transparente: el
+ *  color base opaco taparía lo que está debajo. */
+const VELO_BASE = `rgba(12,10,24,${DESVANECIDO})`
+
 interface Trazo {
   x: number
   y: number
@@ -46,7 +53,19 @@ const COLORES = [
   'rgba(244,242,255,',
 ]
 
-export default function FondoFlujo() {
+interface PropsFlujo {
+  /** Color del velo que borra la estela. Apilado sobre otro fondo hay
+   *  que pasar uno más transparente que el opaco por defecto. */
+  colorVelo?: string
+  /** El desvanecido de bordes es opaco: se apaga cuando hay otro fondo
+   *  debajo que ya aporta el suyo. */
+  conDesvanecido?: boolean
+}
+
+export default function FondoFlujo({
+  colorVelo = VELO_BASE,
+  conDesvanecido = true,
+}: PropsFlujo = {}) {
   const canvas = useRef<HTMLCanvasElement>(null)
 
   useGSAP(() => {
@@ -95,8 +114,8 @@ export default function FondoFlujo() {
           x: desdeIzquierda ? -gsap.utils.random(0, 200) : gsap.utils.random(0, ancho),
           y: gsap.utils.random(0, alto),
           vel: gsap.utils.random(70, 190) * factorVel,
-          largo: gsap.utils.random(26, 64),
-          grosor: gsap.utils.random(0.6, 1.5),
+          largo: gsap.utils.random(30, 74),
+          grosor: gsap.utils.random(0.7, 1.7),
           color: COLORES[Math.floor(Math.random() * COLORES.length)]!,
           deriva: gsap.utils.random(-14, 14),
         })
@@ -115,7 +134,7 @@ export default function FondoFlujo() {
           // se volvía más brillante donde el trazo pasaba despacio, y
           // el velo ya no alcanzaba a borrarlo. De ahí las franjas
           // colgadas.
-          ctx.fillStyle = `rgba(12,10,24,${DESVANECIDO})`
+          ctx.fillStyle = colorVelo
           ctx.fillRect(0, 0, ancho, alto)
 
           for (let i = 0; i < trazos.length; i++) {
@@ -167,14 +186,17 @@ export default function FondoFlujo() {
       <canvas ref={canvas} className="absolute inset-0 size-full" />
 
       {/* Desvanecido hacia los bordes, para que los trazos no corten en
-          seco contra el límite del hero. */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage:
-            'radial-gradient(ellipse 95% 88% at 50% 45%, transparent 28%, #0C0A18 100%)',
-        }}
-      />
+          seco contra el límite del hero. Apilado sobre otro fondo se
+          apaga: es opaco y taparía lo que está debajo. */}
+      {conDesvanecido ? (
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              'radial-gradient(ellipse 95% 88% at 50% 45%, transparent 28%, #0C0A18 100%)',
+          }}
+        />
+      ) : null}
     </div>
   )
 }

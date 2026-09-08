@@ -6,12 +6,14 @@ import FondoMesh from './FondoMesh'
 import FondoGrilla from './FondoGrilla'
 import FondoHalo from './FondoHalo'
 import FondoFlujo from './FondoFlujo'
+import FondoMeshFlujo from './FondoMeshFlujo'
 
 const FONDOS = {
   mesh: FondoMesh,
   grilla: FondoGrilla,
   halo: FondoHalo,
   flujo: FondoFlujo,
+  'mesh-flujo': FondoMeshFlujo,
 } as const
 
 /** El hero real de la home con uno de los fondos detrás.

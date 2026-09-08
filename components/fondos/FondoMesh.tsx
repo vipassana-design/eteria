@@ -24,7 +24,7 @@ const MANCHAS = [
   { color: 'rgba(124,58,237,0.3)', x: '78%', y: '46%', tamano: 540, soloDesktop: true },
 ]
 
-export default function FondoMesh() {
+export default function FondoMesh({ conVelo = true }: { conVelo?: boolean } = {}) {
   const raiz = useRef<HTMLDivElement>(null)
 
   useGSAP(
@@ -79,8 +79,9 @@ export default function FondoMesh() {
       ))}
 
       {/* Velo: sin esto las manchas suben demasiado el fondo y el texto
-          pierde contraste. */}
-      <div className="absolute inset-0 bg-base/45" />
+          pierde contraste. Se puede apagar cuando otro fondo se apila
+          encima y aporta el suyo, para no oscurecer dos veces. */}
+      {conVelo ? <div className="absolute inset-0 bg-base/45" /> : null}
     </div>
   )
 }
