@@ -19,7 +19,18 @@ export const marca: Marca = {
  *  Anclas a las secciones de la home, en el orden en que aparecen. */
 export const navegacion: EnlaceNav[] = [
   { etiqueta: 'Sobre nosotros', href: '/#que-hacemos' },
-  { etiqueta: 'Servicios', href: '/#servicios' },
+  {
+    etiqueta: 'Servicios',
+    href: '/#servicios',
+    // Con hijos, el header abre un dropdown al pasar el mouse y el menú
+    // mobile despliega un submenú al tocar. El enlace propio sigue
+    // llevando a la sección de la home.
+    hijos: [
+      { etiqueta: 'Ecommerce', href: '/ecommerce' },
+      { etiqueta: 'Sitios institucionales', href: '/sitios-institucionales' },
+      { etiqueta: 'Webapps y software a medida', href: '/software-a-medida' },
+    ],
+  },
   { etiqueta: 'Proceso', href: '/#proceso' },
   { etiqueta: 'Ejemplos', href: '/#ejemplos' },
 ]

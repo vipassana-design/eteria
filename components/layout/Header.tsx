@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { gsap, ScrollTrigger, useGSAP } from '@/lib/gsap'
 import { scrollearA } from '@/lib/lenis'
 import { contacto, navegacion, ui } from '@/content/marca'
+import type { EnlaceNav } from '@/types'
 import Boton from '@/components/ui/Boton'
 import Logo from './Logo'
 import MobileMenu from './MobileMenu'
@@ -63,17 +64,25 @@ export default function Header() {
 
           <nav aria-label={ui.navegacionPrincipal} className="hidden lg:block">
             <ul className="flex items-center gap-8">
-              {navegacion.map((enlace) => (
-                <li key={enlace.href}>
-                  <Link
-                    href={enlace.href}
-                    onClick={(e) => alClickEnAncla(e, enlace.href)}
-                    className="text-cuerpo relative text-mid transition-colors duration-300 hover:text-hi after:absolute after:-bottom-1.5 after:left-0 after:h-px after:w-0 after:bg-(image:--grad-brand) after:transition-[width] after:duration-300 after:ease-(--ease-suave) hover:after:w-full"
-                  >
-                    {enlace.etiqueta}
-                  </Link>
-                </li>
-              ))}
+              {navegacion.map((enlace) =>
+                enlace.hijos ? (
+                  <ItemConDropdown
+                    key={enlace.href}
+                    enlace={enlace}
+                    onClickAncla={alClickEnAncla}
+                  />
+                ) : (
+                  <li key={enlace.href}>
+                    <Link
+                      href={enlace.href}
+                      onClick={(e) => alClickEnAncla(e, enlace.href)}
+                      className={ENLACE_NAV}
+                    >
+                      {enlace.etiqueta}
+                    </Link>
+                  </li>
+                ),
+              )}
             </ul>
           </nav>
 
@@ -142,5 +151,146 @@ function BotonHamburguesa({ abierto, onClick }: { abierto: boolean; onClick: () 
         <span data-linea className="block h-px w-full origin-center bg-hi" />
       </span>
     </button>
+  )
+}
+
+/** Estilo de los enlaces de la navegación: subrayado con el degradé que
+ *  crece en hover. Compartido con el disparador del dropdown. */
+const ENLACE_NAV =
+  'text-cuerpo relative text-mid transition-colors duration-300 hover:text-hi after:absolute after:-bottom-1.5 after:left-0 after:h-px after:w-0 after:bg-(image:--grad-brand) after:transition-[width] after:duration-300 after:ease-(--ease-suave) hover:after:w-full'
+
+/** Item de navegación con dropdown (Servicios).
+ *
+ *  El enlace propio sigue llevando a la sección de la home; los hijos
+ *  van a su landing.
+ *
+ *  El panel abre con hover y con foco de teclado. El cierre por hover
+ *  tiene un retardo corto: sin él, el hueco entre el disparador y el
+ *  panel alcanza para que el mouse "salga" y el panel se cierre en el
+ *  camino.
+ */
+function ItemConDropdown({
+  enlace,
+  onClickAncla,
+}: {
+  enlace: EnlaceNav
+  onClickAncla: (e: React.MouseEvent<HTMLAnchorElement>, href: string) => void
+}) {
+  const raiz = useRef<HTMLLIElement>(null)
+  const panel = useRef<HTMLDivElement>(null)
+  const [abierto, setAbierto] = useState(false)
+  const cierre = useRef<number | null>(null)
+
+  const abrir = () => {
+    if (cierre.current) window.clearTimeout(cierre.current)
+    setAbierto(true)
+  }
+  const cerrarConRetardo = () => {
+    if (cierre.current) window.clearTimeout(cierre.current)
+    cierre.current = window.setTimeout(() => setAbierto(false), 120)
+  }
+
+  useGSAP(
+    () => {
+      const el = panel.current
+      if (!el) return
+
+      const mm = gsap.matchMedia()
+
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        gsap.set(el, { autoAlpha: abierto ? 1 : 0, y: 0 })
+      })
+
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        gsap.to(el, {
+          autoAlpha: abierto ? 1 : 0,
+          y: abierto ? 0 : -8,
+          duration: abierto ? 0.32 : 0.2,
+          ease: abierto ? 'power3.out' : 'power2.in',
+        })
+
+        if (abierto) {
+          gsap.fromTo(
+            el.querySelectorAll('a'),
+            { opacity: 0, y: -6 },
+            { opacity: 1, y: 0, duration: 0.28, stagger: 0.05, ease: 'power2.out' },
+          )
+        }
+      })
+    },
+    { scope: raiz, dependencies: [abierto] },
+  )
+
+  // Esc cierra, y el foco que sale del item también: así el dropdown no
+  // queda abierto al tabular fuera de él.
+  const alTeclado = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') setAbierto(false)
+  }
+  const alSalirElFoco = (e: React.FocusEvent) => {
+    if (!raiz.current?.contains(e.relatedTarget as Node)) setAbierto(false)
+  }
+
+  return (
+    <li
+      ref={raiz}
+      className="relative"
+      onMouseEnter={abrir}
+      onMouseLeave={cerrarConRetardo}
+      onFocus={abrir}
+      onBlur={alSalirElFoco}
+      onKeyDown={alTeclado}
+    >
+      <Link
+        href={enlace.href}
+        onClick={(e) => {
+          setAbierto(false)
+          onClickAncla(e, enlace.href)
+        }}
+        aria-expanded={abierto}
+        className={`${ENLACE_NAV} inline-flex items-center gap-1.5`}
+      >
+        {enlace.etiqueta}
+        <svg
+          viewBox="0 0 16 16"
+          className={`size-3.5 transition-transform duration-300 ease-(--ease-suave) ${
+            abierto ? 'rotate-180' : ''
+          }`}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          aria-hidden="true"
+        >
+          <path d="m4 6.5 4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </Link>
+
+      {/* El panel arranca invisible por GSAP (autoAlpha), no por una
+          clase: si no, la primera apertura no tiene desde dónde animar. */}
+      <div
+        ref={panel}
+        className="absolute left-0 top-full pt-4 opacity-0"
+        // Sin punteros cuando está cerrado: invisible pero clickeable
+        // taparía la sección de abajo.
+        style={{ pointerEvents: abierto ? 'auto' : 'none' }}
+      >
+        <ul className="min-w-64 overflow-hidden rounded-(--radius-card) border border-hairline bg-elevated/95 p-2 shadow-[0_24px_60px_-16px_rgba(0,0,0,0.7)] backdrop-blur-xl">
+          {enlace.hijos?.map((hijo) => (
+            <li key={hijo.href}>
+              <Link
+                href={hijo.href}
+                onClick={() => setAbierto(false)}
+                tabIndex={abierto ? 0 : -1}
+                className="text-cuerpo flex items-center justify-between gap-4 rounded-(--radius-control) px-4 py-3 text-mid transition-colors duration-300 ease-(--ease-suave) hover:bg-white/[0.04] hover:text-hi"
+              >
+                {hijo.etiqueta}
+                <span aria-hidden="true" className="text-violet-300">
+                  &rarr;
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </li>
   )
 }

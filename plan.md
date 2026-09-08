@@ -83,7 +83,7 @@ Fondo con croma real, no negro neutro. Un negro puro con un solo acento brillant
 --border-hover: rgba(139,92,246,0.35);
 
 /* Glow */
---glow-violet:  radial-gradient(circle, rgba(139,92,246,0.22) 0%, transparent 70%);
+--glow-violet:  radial-gradient(circle, rgba(139,92,246,0.24) 0%, transparent 70%);
 ```
 
 **Reglas de uso**
@@ -164,7 +164,9 @@ Con la prop `stagger` la animación pasa a los hijos directos en vez del bloque 
 
 Tres capas, todas sutiles, ninguna protagonista:
 
-1. **Campo de partículas** — canvas fijo, ~60 puntos violeta a 8–14% de opacidad, deriva lenta. Se apaga en mobile y con reduced-motion.
+1. **Campo de partículas** — canvas fijo, ~60 puntos con deriva lenta. Se apaga en mobile y con reduced-motion.
+
+   **Ajustado a pedido del cliente:** la opacidad pasó de 8–14% a 16–42% y los puntos toman uno de cuatro tonos al azar (del violeta de marca al blanco puro), para que el campo no se lea como una trama plana. Se sacó el fade-in que los hacía entrar al final de la secuencia del hero: ahora están desde el primer frame.
 2. **Glows de sección** — divs con `--glow-violet`, blur alto, posicionados detrás de secciones clave. Se desplazan a distinta velocidad que el scroll (parallax con ScrollTrigger `scrub`).
 3. **Grano** — overlay de ruido a 3% de opacidad, PNG tileable de 128px. Evita el banding de los degradés en pantallas grandes y le quita el aspecto plástico al dark.
 
@@ -245,6 +247,9 @@ Fijo. Al scrollear pasa de transparente a `--bg-elevated` con `backdrop-filter: 
 ```
 
 - Logo tipográfico en Clash Display 600. `Eter` en `--text-hi`, `ia` con el degradé de marca.
+- **Servicios abre un dropdown** con las tres landings. El enlace propio sigue llevando a la sección de la home; los hijos van a su página. Un item de `navegacion` abre dropdown por tener `hijos` en `/content/marca.ts`, así que sumar otro submenú no requiere tocar componentes.
+  - En desktop abre con hover y con foco de teclado, cierra con `Esc` y cuando el foco sale del item. El cierre por hover tiene 120ms de retardo: sin eso el hueco entre el disparador y el panel alcanza para que el mouse "salga" y el panel se cierre en el camino.
+  - En mobile el submenú se despliega con un botón aparte, no al tocar la etiqueta: si el toque abriera el submenú no habría forma de llegar a la sección de la home. Se anima con `grid-template-rows` de `0fr` a `1fr`, que no requiere medir el alto del contenido, y los hijos quedan con `tabIndex -1` mientras está plegado.
 - Links con scroll suavizado a la sección (ScrollSmoother o Lenis, ver 8.1).
 - Botón "Contacto" con degradé + glow, va a la sección de contacto.
 - Scrollbar del navegador finita (8px) con thumb violeta.

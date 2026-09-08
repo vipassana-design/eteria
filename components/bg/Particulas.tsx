@@ -12,8 +12,8 @@ import { BP_DESKTOP } from '@/lib/motion'
  */
 
 const CANTIDAD = 60
-const OPACIDAD_MIN = 0.08
-const OPACIDAD_MAX = 0.14
+const OPACIDAD_MIN = 0.16
+const OPACIDAD_MAX = 0.42
 /** Velocidad de deriva en px por segundo. */
 const VELOCIDAD = 7
 
@@ -24,7 +24,18 @@ interface Punto {
   vy: number
   radio: number
   opacidad: number
+  /** Índice en TONOS. Da variedad para que no se lean todos iguales. */
+  tono: number
 }
+
+/** Del violeta de marca al blanco. La mezcla evita que el campo se lea
+ *  como una sola trama plana. */
+const TONOS = [
+  '196, 181, 253',
+  '244, 242, 255',
+  '255, 255, 255',
+  '167, 139, 250',
+] as const
 
 export default function Particulas() {
   const canvas = useRef<HTMLCanvasElement>(null)
@@ -64,6 +75,7 @@ export default function Particulas() {
               vy: Math.sin(angulo) * VELOCIDAD,
               radio: 0.8 + Math.random() * 1.4,
               opacidad: OPACIDAD_MIN + Math.random() * (OPACIDAD_MAX - OPACIDAD_MIN),
+              tono: Math.floor(Math.random() * TONOS.length),
             }
           })
         }
@@ -87,7 +99,7 @@ export default function Particulas() {
 
             ctx.beginPath()
             ctx.arc(p.x, p.y, p.radio, 0, Math.PI * 2)
-            ctx.fillStyle = `rgba(196, 181, 253, ${p.opacidad})`
+            ctx.fillStyle = `rgba(${TONOS[p.tono]}, ${p.opacidad})`
             ctx.fill()
           }
         }
@@ -95,10 +107,6 @@ export default function Particulas() {
         // El loop va en el ticker de GSAP: un solo rAF en toda la
         // página, compartido con Lenis y ScrollTrigger.
         gsap.ticker.add(dibujar)
-
-        // Fade-in: las partículas entran al final de la secuencia
-        // del hero (§4.2).
-        gsap.fromTo(cv, { opacity: 0 }, { opacity: 1, duration: 1.2, delay: 1.1 })
 
         const observador = new ResizeObserver(() => {
           redimensionar()

@@ -25,6 +25,8 @@ export type PantallaMockup =
 export interface EnlaceNav {
   etiqueta: string
   href: string
+  /** Enlaces hijos, para los elementos que abren submenú. */
+  hijos?: EnlaceNav[]
 }
 
 /** Una de las tres cards apiladas de la home. */

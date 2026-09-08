@@ -72,7 +72,7 @@
    así que van fuera de @theme. */
 :root {
   --grad-brand: linear-gradient(100deg, #c4b5fd 0%, #8b5cf6 45%, #3b82f6 100%);
-  --glow-violet: radial-gradient(circle, rgba(139, 92, 246, 0.22) 0%, transparent 70%);
+  --glow-violet: radial-gradient(circle, rgba(139, 92, 246, 0.24) 0%, transparent 70%);
   --padding-lateral: 1.5rem;
   color-scheme: dark;
 }
