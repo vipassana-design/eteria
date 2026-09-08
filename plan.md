@@ -184,6 +184,7 @@ Tres capas, todas sutiles, ninguna protagonista:
   /privacidad/page.tsx
   /design-system/page.tsx       revisión visual — queda, con noindex
   /heros/                       5 propuestas de hero — temporal, con noindex
+  /fondos/                      4 fondos para el hero — temporal, con noindex
   not-found.tsx
   /api/contacto/route.ts        POST → envío de mail
 /components
@@ -226,6 +227,7 @@ Tres capas, todas sutiles, ninguna protagonista:
   servicios.ts  proceso.ts  stack.ts
   designSystem.ts               contenido de /design-system
   heros.ts                      contenido de las propuestas de hero
+  fondos.ts                     contenido de los fondos
 /public
   /fonts  /mockups  /og
   grano.png                     ruido tileable de 128px generado, no descargado
@@ -818,3 +820,41 @@ Para reemplazarlo: pisar `/public/heros/abstracto.mp4` manteniendo el nombre, o 
 2. Borrar `/app/heros/`, `/components/heros/`, `/content/heros.ts` y, si no se eligió la propuesta 4, `/public/heros/`.
 3. Quitar `/heros` del `disallow` en `/app/robots.ts`.
 4. Actualizar §4.2 con la dirección elegida y borrar esta sección.
+
+---
+
+## 13. Fondos para el hero (en revisión)
+
+El fondo actual (glows suaves y partículas) se siente flojo. Se armaron cuatro variantes en `/fondos`, cada una con **el hero completo de la home encima** para ver cómo conviven: la comparación es de fondo, no de hero. Las cuatro son `noindex` y están excluidas en `robots.txt`.
+
+| # | Ruta | Nombre | Qué hace | Técnica |
+|---|---|---|---|---|
+| 1 | `/fondos/mesh` | Mesh | Manchas de gradiente grandes que derivan lento y se solapan | CSS: cuatro radiales con blur, animados con GSAP sobre `x/y/scale` |
+| 2 | `/fondos/grilla` | Grilla | Retícula fina con celdas que se encienden un instante | Retícula como `background` repetido; los destellos son divs que GSAP enciende al azar |
+| 3 | `/fondos/halo` | Halo | Patrón de puntos apagado que se revela donde pasa el cursor | `mask-image` radial sobre el patrón, seguimiento con `quickTo` |
+| 4 | `/fondos/flujo` | Flujo | Trazos finos con estela corta que se desvanece | Canvas: la estela sale de **no** limpiar el frame, sino pintar un velo encima |
+
+### Por qué CSS en tres y canvas en uno
+
+- **Mesh, Grilla y Halo van en CSS** porque lo que se mueve son transformaciones y máscaras: el compositor las resuelve sin repintar. Mesh en canvas obligaría a redibujar gradientes de 620px en cada frame; Halo obligaría a redibujar el patrón enmascarado en cada movimiento del mouse.
+- **Flujo va en canvas** porque la estela se consigue por acumulación: cada frame pinta un velo semitransparente sobre lo anterior en vez de limpiar. Con divs habría que mantener un elemento por segmento de estela.
+- El loop de Flujo corre en `gsap.ticker`, que es el único `requestAnimationFrame` de la página.
+
+### Mobile y reduced-motion
+
+Verificado en los cuatro:
+
+| | Mobile | `prefers-reduced-motion` |
+|---|---|---|
+| Mesh | 3 manchas, estáticas (el blur de 100px es lo que más cuesta en GPU móvil) | 4 manchas visibles, 0 animadas |
+| Grilla | Retícula igual, destellos a la mitad | Retícula igual, 0 destellos |
+| Halo | Sin cursor: el halo queda fijo | Halo fijo |
+| Flujo | Mitad de trazos y más lentos | Canvas vacío, el loop no se monta |
+
+### Cuando se elija
+
+1. Llevar el fondo elegido a `/components/bg/` y montarlo en el hero de la home (y en el de landing si corresponde).
+2. Decidir qué pasa con las partículas y los glows actuales: el fondo nuevo puede reemplazarlos o convivir.
+3. Borrar `/app/fondos/`, `/components/fondos/` y `/content/fondos.ts`.
+4. Quitar `/fondos` del `disallow` en `/app/robots.ts`.
+5. Actualizar §2.5 con la capa nueva y borrar esta sección.
