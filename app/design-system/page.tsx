@@ -167,12 +167,12 @@ export default function DesignSystemPage() {
             <div>
               <p className="text-label text-low">Secundario</p>
               <div className="mt-5 flex flex-wrap items-center gap-4">
-                <Boton variante="secundario">Ver ejemplos</Boton>
+                <Boton variante="secundario">Ver soluciones</Boton>
                 <Boton variante="secundario" tamano="chico">
-                  Ver ejemplos
+                  Ver soluciones
                 </Boton>
                 <Boton variante="secundario" disabled>
-                  Ver ejemplos
+                  Ver soluciones
                 </Boton>
               </div>
             </div>

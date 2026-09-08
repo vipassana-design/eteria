@@ -54,7 +54,7 @@ export interface EtapaProceso {
   ilustracion: 'documento' | 'wireframe' | 'codigo' | 'check'
 }
 
-/** Mockup del carrusel de ejemplos.
+/** Mockup del carrusel de soluciones.
  *  Mientras no haya imágenes reales del cliente, cada uno se dibuja con
  *  la pantalla SVG que le corresponde. */
 export interface Mockup {

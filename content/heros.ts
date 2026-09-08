@@ -12,7 +12,7 @@ export const copyComun = {
   bajada:
     'Ecommerce, plataformas de gestión y sitios institucionales. Cada proyecto se construye sobre el alcance que definimos con el cliente.',
   ctaPrimario: { etiqueta: 'Cotizar mi proyecto', href: '/#contacto' },
-  ctaSecundario: { etiqueta: 'Ver ejemplos', href: '/#ejemplos' },
+  ctaSecundario: { etiqueta: 'Ver soluciones', href: '/#soluciones' },
   prueba: '+20 años construyendo software',
 }
 

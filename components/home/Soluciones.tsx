@@ -4,11 +4,11 @@ import { useCallback, useRef, useState } from 'react'
 import { Draggable, Flip, gsap, useGSAP } from '@/lib/gsap'
 import { bloquearScroll } from '@/lib/lenis'
 import TituloSeccion from '@/components/ui/TituloSeccion'
-import { mockups, seccionEjemplos } from '@/content/mockups'
+import { mockups, seccionSoluciones } from '@/content/mockups'
 import { PANTALLAS } from './PantallasMockup'
 import MockupModal from './MockupModal'
 
-/** Sección "Ejemplos" — carrusel de mockups (PLAN.md §4.6).
+/** Sección "Soluciones" — carrusel de mockups (PLAN.md §4.6).
  *
  *  Marcha automática continua e infinita. Las cards se pueden arrastrar
  *  para los dos lados sin tope; al soltar, el carrusel espera un momento
@@ -31,7 +31,7 @@ const PAUSA_TRAS_SOLTAR = 1600
 const APAGADO = 'grayscale(0.7) brightness(0.62)'
 const ENCENDIDO = 'grayscale(0) brightness(1)'
 
-export default function Ejemplos() {
+export default function Soluciones() {
   const raiz = useRef<HTMLElement>(null)
   const pista = useRef<HTMLDivElement>(null)
   const cards = useRef<(HTMLElement | null)[]>([])
@@ -211,16 +211,16 @@ export default function Ejemplos() {
     if (!sobreCard.current) marcha.current?.resume()
   }, [setAbierto])
 
-  const { ui } = seccionEjemplos
+  const { ui } = seccionSoluciones
   // El segundo set es lo que hace que el loop no muestre el corte.
   const fila = [...mockups, ...mockups]
 
   return (
     <>
-      <section ref={raiz} id="ejemplos" className="seccion relative scroll-mt-24 overflow-hidden">
+      <section ref={raiz} id="soluciones" className="seccion relative scroll-mt-24 overflow-hidden">
         <div className="contenedor">
-          <TituloSeccion degrade={seccionEjemplos.tituloDegrade} bajada={seccionEjemplos.bajada}>
-            {seccionEjemplos.titulo}
+          <TituloSeccion degrade={seccionSoluciones.tituloDegrade} bajada={seccionSoluciones.bajada}>
+            {seccionSoluciones.titulo}
           </TituloSeccion>
         </div>
 

@@ -1,14 +1,15 @@
 import type { Mockup } from '@/types'
 
-/** Sección "Ejemplos" (PLAN.md §4.6).
+/** Sección "Soluciones" (PLAN.md §4.6).
  *
  *  Los mockups son de demostración: no se declara autoría ni se
  *  atribuyen a clientes. Se presentan como capacidades, no como
  *  portfolio (§1). */
-export const seccionEjemplos = {
-  titulo: 'Ejemplos de',
-  tituloDegrade: 'proyectos',
-  bajada: 'Seis casos de demostración, uno por tipo de proyecto.',
+export const seccionSoluciones = {
+  titulo: 'Soluciones',
+  tituloDegrade: 'digitales',
+  bajada:
+    'Explorá algunas propuestas conceptuales de productos y experiencias digitales.',
   /** Etiquetas de la navegación del carrusel y del modal. */
   ui: {
     anterior: 'Ver anterior',
@@ -21,14 +22,6 @@ export const seccionEjemplos = {
 }
 
 export const mockups: Mockup[] = [
-  {
-    id: 'indumentaria',
-    titulo: 'Tienda de retail',
-    rubro: 'Ecommerce',
-    pantalla: 'tienda',
-    url: 'tienda-indumentaria.com',
-    alt: 'Tienda online de indumentaria con grilla de productos y carrito',
-  },
   {
     id: 'vinos',
     titulo: 'Tienda online',
@@ -52,6 +45,14 @@ export const mockups: Mockup[] = [
     pantalla: 'saas',
     url: 'fluxo.app',
     alt: 'Landing de producto SaaS con planes de precios y prueba gratuita',
+  },
+  {
+    id: 'indumentaria',
+    titulo: 'Tienda de retail',
+    rubro: 'Ecommerce',
+    pantalla: 'tienda',
+    url: 'tienda-indumentaria.com',
+    alt: 'Tienda online de indumentaria con grilla de productos y carrito',
   },
   {
     id: 'panel',

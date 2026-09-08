@@ -199,7 +199,7 @@ Va en el hero de la home **y en el de las tres landings**. Reemplaza a los `Glow
     PageTransition.tsx  SmoothScroll.tsx  Logo.tsx
   /home
     Hero.tsx  QueHacemos.tsx  Servicios.tsx  Proceso.tsx
-    Ejemplos.tsx  MockupModal.tsx  Stack.tsx  Contacto.tsx
+    Soluciones.tsx  MockupModal.tsx  Stack.tsx  Contacto.tsx
     VentanaMockup.tsx             marco de navegador de los mockups
     PantallasMockup.tsx           pantallas SVG placeholder del hero
     IlustracionesProceso.tsx      SVG de las 4 etapas
@@ -252,7 +252,7 @@ Todo el texto del sitio vive en `/content`. Ningún copy hardcodeado dentro de u
 Fijo. Al scrollear pasa de transparente a `--bg-elevated` con `backdrop-filter: blur(12px)` y borde inferior hairline.
 
 ```
-[Eteria]        Sobre nosotros  Servicios  Proceso  Ejemplos   [ Contacto ]
+[Eteria]        Sobre nosotros  Servicios  Proceso  Soluciones [ Contacto ]
 ```
 
 - Logo tipográfico en Clash Display 600. `Eter` en `--text-hi`, `ia` con el degradé de marca.
@@ -279,7 +279,7 @@ Fijo. Al scrollear pasa de transparente a `--bg-elevated` con `backdrop-filter: 
 │  se construye sobre el alcance que                       │
 │  definimos con el cliente.                               │
 │                                                          │
-│  [ Cotizar mi proyecto ]  [ Ver ejemplos ]               │
+│  [ Cotizar mi proyecto ]  [ Ver soluciones ]             │
 │                                                          │
 │  +20 años construyendo software                          │
 └──────────────────────────────────────────────────────────┘
@@ -417,10 +417,12 @@ Cuatro cards horizontales con ilustración SVG propia arriba, con una línea con
 
 **Mobile:** cards apiladas en vertical, línea conectora rotada a vertical del lado izquierdo.
 
-### 4.6 Ejemplos — carrusel de mockups
+### 4.6 Soluciones — carrusel de mockups
 
-**Título:** Ejemplos de proyectos
-**Bajada:** Seis casos de demostración, uno por tipo de proyecto.
+**Título:** Soluciones digitales
+**Bajada:** Explorá algunas propuestas conceptuales de productos y experiencias digitales.
+
+**Renombrada por el cliente.** Era "Ejemplos de proyectos" y el ítem del menú decía "Ejemplos". Los seis mockups no son trabajos entregados, así que "ejemplos" y "casos" sugerían un portfolio que no existe; "propuestas conceptuales" dice lo que son. El cambio arrastró el ancla (`#ejemplos` → `#soluciones`), el ítem del menú, el CTA secundario del hero de la home y de las tres landings ("Ver ejemplos" → "Ver soluciones"), y el nombre del componente y del export de contenido (`Ejemplos.tsx` → `Soluciones.tsx`, `seccionEjemplos` → `seccionSoluciones`).
 
 Carrusel horizontal con 6 mockups. Navegación por flechas + drag con inercia (`Draggable` + `InertiaPlugin` de GSAP, ambos gratis). Se ven ~2.5 cards a la vez para que se entienda que hay más.
 
@@ -747,7 +749,7 @@ La sección más importante. Mockups en perspectiva, secuencia de entrada, segui
 **Fase 5 — Secciones de contenido**
 Sobre nosotros → Servicios apiladas → Proceso con ilustraciones y línea → Stack.
 
-**Fase 6 — Ejemplos**
+**Fase 6 — Soluciones**
 Carrusel con drag e inercia, modal con Flip, navegación entre mockups.
 
 **Fase 7 — Contacto**

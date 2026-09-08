@@ -155,7 +155,7 @@ export const landings: Record<LandingSlug, Landing> = {
 export const landingUi = {
   volverAlInicio: 'Volver al inicio',
   ctaHero: 'Cotizar mi proyecto',
-  ctaSecundario: 'Ver ejemplos',
+  ctaSecundario: 'Ver soluciones',
   tituloBeneficios: 'Qué incluye',
   tituloProceso: 'Cómo',
   tituloProcesoDegrade: 'trabajamos',

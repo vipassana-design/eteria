@@ -2,7 +2,7 @@ import Hero from '@/components/home/Hero'
 import QueHacemos from '@/components/home/QueHacemos'
 import Servicios from '@/components/home/Servicios'
 import Proceso from '@/components/home/Proceso'
-import Ejemplos from '@/components/home/Ejemplos'
+import Soluciones from '@/components/home/Soluciones'
 import Stack from '@/components/home/Stack'
 import Contacto from '@/components/home/Contacto'
 
@@ -14,7 +14,7 @@ export default function Home() {
       <QueHacemos />
       <Servicios />
       <Proceso />
-      <Ejemplos />
+      <Soluciones />
       <Stack />
       <Contacto />
     </>

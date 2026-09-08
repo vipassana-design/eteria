@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 import { Flip, gsap, useGSAP } from '@/lib/gsap'
 import { bloquearScroll } from '@/lib/lenis'
 import { prefiereMenosMovimiento } from '@/lib/motion'
-import { mockups, seccionEjemplos } from '@/content/mockups'
+import { mockups, seccionSoluciones } from '@/content/mockups'
 import { PANTALLAS } from './PantallasMockup'
 
 interface Props {
@@ -152,7 +152,7 @@ export default function MockupModal({ indice, onCerrar, onCambiar, estadoOrigen 
   }
 
   const Pantalla = PANTALLAS[mockup.pantalla]
-  const { ui } = seccionEjemplos
+  const { ui } = seccionSoluciones
 
   return (
     <div

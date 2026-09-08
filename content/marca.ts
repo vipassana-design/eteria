@@ -32,7 +32,7 @@ export const navegacion: EnlaceNav[] = [
     ],
   },
   { etiqueta: 'Proceso', href: '/#proceso' },
-  { etiqueta: 'Ejemplos', href: '/#ejemplos' },
+  { etiqueta: 'Soluciones', href: '/#soluciones' },
 ]
 
 /** Enlaces del CTA de contacto, compartidos por header, menú y footer. */

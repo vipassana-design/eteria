@@ -153,7 +153,7 @@ export default function LandingHero({ landing }: { landing: Landing }) {
             <Boton href="#contacto" onClick={(e) => alClick(e, '#contacto')}>
               {landingUi.ctaHero}
             </Boton>
-            <Boton href="/#ejemplos" variante="secundario">
+            <Boton href="/#soluciones" variante="secundario">
               {landingUi.ctaSecundario}
             </Boton>
           </div>
