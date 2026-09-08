@@ -42,6 +42,9 @@
      `titulo-hero`: el clamp mide el viewport, pero la columna es una
      fracción de él y entre 1024 y 1280 queda demasiado angosta. */
   --text-hero: clamp(2.5rem, 1.36rem + 4.2vw, 4rem); /* 40 → 64 */
+  /* El tope, suelto: lo usa la utilidad `titulo-hero-texto`, que mide
+     contra su columna con container queries en vez del viewport. */
+  --text-hero-max: 4rem;
   --text-hero--line-height: 1.05;
   --text-hero--letter-spacing: -0.03em;
 
@@ -78,8 +81,20 @@
 /* Degradé de marca y glow: composiciones, no colores sueltos,
    así que van fuera de @theme. */
 :root {
-  --grad-brand: linear-gradient(100deg, #c4b5fd 0%, #8b5cf6 45%, #3b82f6 100%);
-  --glow-violet: radial-gradient(circle, rgba(139, 92, 246, 0.24) 0%, transparent 70%);
+  /* Los degradés se arman con los tokens de acento y no con hex
+     literales: así siguen la paleta cuando se cambia, y el
+     laboratorio (§15) los repinta en vivo. */
+  --grad-brand: linear-gradient(
+    100deg,
+    var(--color-violet-300) 0%,
+    var(--color-violet-500) 45%,
+    var(--color-blue-500) 100%
+  );
+  --glow-violet: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-violet-500) 24%, transparent) 0%,
+    transparent 70%
+  );
   --padding-lateral: 1.5rem;
   color-scheme: dark;
 }
@@ -220,7 +235,11 @@
 }
 
 @utility titulo-hero-texto {
-  font-size: clamp(2.5rem, 13cqw, 4rem);
+  /* El techo sale de --text-hero y no de un literal: así el título del
+     hero sigue la escala del tema en vez de quedar fijo, y el
+     laboratorio (§15) puede moverlo. --text-hero-max es el tope
+     desnudo; el token con clamp sirve para el resto del sitio. */
+  font-size: clamp(2.5rem, 13cqw, var(--text-hero-max, 4rem));
   line-height: 1.05;
   letter-spacing: -0.03em;
 }

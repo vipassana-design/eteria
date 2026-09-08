@@ -24,18 +24,32 @@ interface Punto {
   vy: number
   radio: number
   opacidad: number
-  /** Índice en TONOS. Da variedad para que no se lean todos iguales. */
+  /** Índice de tono. Da variedad para que no se lean todos iguales. */
   tono: number
 }
 
 /** Del violeta de marca al blanco. La mezcla evita que el campo se lea
  *  como una sola trama plana. */
-const TONOS = [
-  '196, 181, 253',
-  '244, 242, 255',
-  '255, 255, 255',
-  '167, 139, 250',
-] as const
+/** Del violeta de marca al blanco. La mezcla evita que el campo se
+ *  lea como una sola trama plana.
+ *
+ *  Los dos violetas salen de los tokens: así el campo acompaña la
+ *  paleta en vez de quedar fijo. Los blancos son literales porque el
+ *  blanco no es un token de acento. */
+const TONOS_FIJOS = ['244, 242, 255', '255, 255, 255'] as const
+
+/** Lee un token de color y lo devuelve como `r, g, b` para canvas. */
+function tonoDeToken(token: string, respaldo: string): string {
+  const v = getComputedStyle(document.documentElement).getPropertyValue(token).trim()
+  const hex = v.match(/^#([0-9a-f]{6})$/i)
+  if (hex?.[1]) {
+    const n = parseInt(hex[1], 16)
+    return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`
+  }
+  const rgb = v.match(/rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/i)
+  if (rgb) return `${rgb[1]}, ${rgb[2]}, ${rgb[3]}`
+  return respaldo
+}
 
 export default function Particulas() {
   const canvas = useRef<HTMLCanvasElement>(null)
@@ -75,7 +89,7 @@ export default function Particulas() {
               vy: Math.sin(angulo) * VELOCIDAD,
               radio: 0.8 + Math.random() * 1.4,
               opacidad: OPACIDAD_MIN + Math.random() * (OPACIDAD_MAX - OPACIDAD_MIN),
-              tono: Math.floor(Math.random() * TONOS.length),
+              tono: Math.floor(Math.random() * 4),
             }
           })
         }
@@ -86,6 +100,17 @@ export default function Particulas() {
         const dibujar = (_t: number, delta: number) => {
           const dt = Math.min(delta, 50) / 1000
           ctx.clearRect(0, 0, ancho, alto)
+
+          // Tonos y brillo vigentes: el laboratorio los cambia en vivo.
+          const tonos = [
+            tonoDeToken('--color-violet-300', '196, 181, 253'),
+            ...TONOS_FIJOS,
+            tonoDeToken('--color-violet-400', '167, 139, 250'),
+          ]
+          const brillo =
+            Number(
+              getComputedStyle(document.documentElement).getPropertyValue('--lab-particulas'),
+            ) || 1
 
           for (const p of puntos) {
             p.x += p.vx * dt
@@ -99,7 +124,7 @@ export default function Particulas() {
 
             ctx.beginPath()
             ctx.arc(p.x, p.y, p.radio, 0, Math.PI * 2)
-            ctx.fillStyle = `rgba(${TONOS[p.tono]}, ${p.opacidad})`
+            ctx.fillStyle = `rgba(${tonos[p.tono % tonos.length]}, ${p.opacidad * brillo})`
             ctx.fill()
           }
         }

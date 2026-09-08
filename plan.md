@@ -995,3 +995,83 @@ Muestreando el DOM cada 1,4s durante 25s en las cuatro páginas:
 > **Pendiente:** las fotos son de stock. Para la tienda y el institucional funcionan; cuando haya imágenes reales de proyectos, se reemplazan en `/public/mockups` manteniendo el nombre del archivo.
 
 > **Sin decidir:** si los seis mockups del carrusel de Soluciones y los tres de las cards de servicios reciben el mismo tratamiento.
+
+---
+
+## 15. Laboratorio de paleta (herramienta interna)
+
+Panel flotante abajo a la izquierda para explorar colores y escala **en vivo**, sin recompilar ni recargar. Se pidió para definir la paleta más rápido viendo los cambios sobre el sitio real en vez de sobre swatches.
+
+Se colapsa con la flecha de su cabecera y vuelve con el círculo que queda en su lugar.
+
+### Cómo funciona
+
+Escribe las variables CSS del documento con `setProperty`. Como todos los colores del sitio viven en `@theme` de `globals.css`, cambiar un token repinta **todo** —botones, degradés, glows, bordes— sin tocar ningún componente.
+
+### Qué controla
+
+| Pestaña | Contenido |
+|---|---|
+| **Color** | 8 controles: dos superficies, dos acentos, cuatro de texto. Cada uno con picker nativo y sliders H/S/L |
+| **Escala** | Los cinco tamaños de tipografía, los dos radios, el ancho del contenedor y el margen lateral |
+| **Fondo** | Multiplicadores de glows, partículas, mesh y grano |
+| **Contraste** | Los 12 pares texto/superficie con su ratio WCAG, recalculados en vivo |
+
+Son ~8 controles de color y no los 40 tokens del tema: el resto son derivados. El violeta principal arrastra su rampa (`600` más oscuro, `300` más claro) con deltas HSL, así la escala queda coherente sin tener que ajustarla a mano.
+
+### La pestaña de contraste
+
+Es la que más valor da. Cada par muestra el ratio y su nivel (AAA / AA / ✕), y arriba avisa cuántos fallan. **Mide cada color de texto contra todas las superficies sobre las que aparece**, no solo la principal: es la lección de las dos veces que `--color-low` falló AA —pasaba sobre el fondo de página y fallaba sobre las cards.
+
+Los fondos translúcidos se componen antes de medir: `--color-surface` tiene alfa, así que el contraste real del texto encima depende de lo que haya debajo. Sin componer, el número sería fantasía.
+
+### Lo que hubo que cambiar en el sitio
+
+Tres cosas no seguían los tokens y por eso no respondían al panel:
+
+1. **Los degradés `--grad-brand` y `--glow-violet`** tenían los hex escritos a mano. Ahora se arman con `var(--color-violet-500)` y `color-mix()`, así que siguen la paleta. Es una mejora del sitio, no solo de la herramienta: antes cambiar el acento dejaba los degradés en el color viejo.
+2. **El canvas de partículas** lee los colores en JS, y el canvas no hereda variables CSS. Ahora las lee con `getComputedStyle` en cada frame —barato al lado de los 60 arcos que ya pinta— así que el campo acompaña la paleta.
+3. **`titulo-hero-texto`** tenía su propio `clamp(2.5rem, 13cqw, 4rem)` y no leía `--text-hero`: el slider escribía un token que nadie usaba. Ahora el techo sale de `--text-hero-max`, así que el hero sigue midiéndose contra su columna (lo que arregló el título cortado) y además responde a la escala.
+
+**Los mockups quedan afuera a propósito.** Tienen su propia paleta clara —el coral de la tienda, el azul corporativo— porque representan sitios de clientes distintos. Si siguieran la paleta del sitio dejarían de leerse como tres pantallas ajenas.
+
+### Los sliders de tipografía escriben un valor plano
+
+Los tokens de tipografía son `clamp(min, fluido, max)`. Reemplazar solo el máximo no funcionaba: el tramo fluido de `--text-h2` (`1.27rem + 3.11vw`) a 1440px ya da 52,8px, así que pisaba cualquier máximo mayor y subir el slider no tenía efecto.
+
+El panel escribe un tamaño plano, que sí responde a cualquier ancho. **El CSS exportado reconstruye el clamp** con el techo nuevo, para que lo que se pegue en el tema conserve la escala fluida.
+
+### Exportar
+
+"Copiar CSS" deja en el portapapeles solo lo que cambió, agrupado en `@theme` y `:root` según corresponda. El bloque también se muestra en la pestaña de contraste, para copiarlo a mano si el navegador niega el permiso de portapapeles.
+
+Se pueden guardar varias combinaciones y alternar entre ellas. **Viven en memoria**: la regla del proyecto prohíbe `localStorage`, así que al recargar se pierden. Para conservar una hay que copiar el CSS.
+
+### Cómo se enciende y se apaga
+
+```bash
+# .env.local
+NEXT_PUBLIC_LAB=1
+```
+
+Sin esa variable el panel no se monta. Es una constante y no una lectura en runtime a propósito: Next la reemplaza literalmente al compilar, el `if` queda en `false` y el tree-shaking **elimina el panel del bundle**. Un flag dinámico lo dejaría dentro aunque nunca se muestre.
+
+Los multiplicadores de las capas de fondo usan `var(--lab-glow, 1)`: apagado, el fallback deja el sitio exactamente como estaba.
+
+`.env.local` está en `.gitignore`, así que **el panel viene apagado por defecto** para cualquiera que clone el repo.
+
+### Verificado
+
+- El fondo repinta: `rgb(12,10,24)` → `rgb(45,10,61)`.
+- El violeta arrastra su rampa: `#22c55e` deja el `600` en `#1b9e4b` y el `300` en `#80e2a4`, y el degradé de marca y el glow lo siguen.
+- Las capas responden: glow 0,7 → 0,14; grano 0,03 → 0,075; mesh 1 → 0,3.
+- El contraste detecta las fallas: bajar `--color-low` a `#5a5470` marca **2 pares que no pasan AA** (2,74 sobre página y 2,41 sobre card).
+- Los cinco sliders de tipografía mueven el tamaño real: hero 40px, sección 30px, subtítulo 38px, cuerpo 21px, medidos en el DOM.
+- Ocultar y mostrar: el panel colapsa a un círculo de 44×44 y vuelve.
+- El reset devuelve todos los tokens a su valor original.
+
+### Cuando se defina la paleta
+
+1. Copiar el CSS y pegarlo en el `@theme` de `globals.css`.
+2. Borrar `NEXT_PUBLIC_LAB` de `.env.local` (o ponerlo en `0`).
+3. **No borrar el laboratorio**: queda para la próxima vez que haya que revisar contraste o escala. Apagado no pesa nada.

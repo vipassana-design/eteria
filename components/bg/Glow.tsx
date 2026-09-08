@@ -70,7 +70,9 @@ export default function Glow({
         // encarga de recortar lo que asome.
         width: `min(${tamano}px, 130vw)`,
         backgroundImage: 'var(--glow-violet)',
-        opacity: intensidad,
+        // El multiplicador del laboratorio (§15) no existe en
+        // producción: el fallback 1 deja la intensidad del token.
+        opacity: `calc(${intensidad} * var(--lab-glow, 1))`,
       }}
     />
   )

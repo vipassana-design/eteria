@@ -68,12 +68,14 @@ export default function FondoMesh({ conVelo = true }: { conVelo?: boolean } = {}
           className={`absolute rounded-full blur-[100px] will-change-transform ${
             m.soloDesktop ? 'hidden lg:block' : ''
           }`}
+          // El multiplicador del laboratorio (§15). Sin él, 1.
           style={{
             left: m.x,
             top: m.y,
             width: m.tamano,
             height: m.tamano,
             backgroundImage: `radial-gradient(circle, ${m.color} 0%, transparent 70%)`,
+            opacity: 'var(--lab-mesh, 1)',
           }}
         />
       ))}

@@ -8,8 +8,10 @@ export default function Grano() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[2] opacity-[0.03] mix-blend-overlay"
+      className="pointer-events-none fixed inset-0 z-[2] mix-blend-overlay"
       style={{
+        // El multiplicador del laboratorio (§15). Sin él queda en 0.03.
+        opacity: 'calc(0.03 * var(--lab-grano, 1))',
         backgroundImage: 'url(/grano.png)',
         backgroundRepeat: 'repeat',
         backgroundSize: '128px 128px',

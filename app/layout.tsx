@@ -7,6 +7,7 @@ import PageTransition from '@/components/layout/PageTransition'
 import WhatsappFab from '@/components/layout/WhatsappFab'
 import Grano from '@/components/bg/Grano'
 import Particulas from '@/components/bg/Particulas'
+import MontarLaboratorio from '@/components/laboratorio/MontarLaboratorio'
 import { SITIO } from '@/content/sitio'
 import { marca } from '@/content/marca'
 import './globals.css'
@@ -101,6 +102,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </PageTransition>
 
         <WhatsappFab />
+
+        {/* Laboratorio de paleta (§15). Solo con NEXT_PUBLIC_LAB=1:
+            apagado no entra en el bundle. */}
+        <MontarLaboratorio />
       </body>
     </html>
   )
