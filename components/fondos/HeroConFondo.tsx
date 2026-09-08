@@ -2,11 +2,11 @@
 
 import Hero from '@/components/home/Hero'
 import { fondos, type FondoId } from '@/content/fondos'
-import FondoMesh from './FondoMesh'
+import FondoMesh from '@/components/bg/FondoMesh'
 import FondoGrilla from './FondoGrilla'
 import FondoHalo from './FondoHalo'
-import FondoFlujo from './FondoFlujo'
-import FondoMeshFlujo from './FondoMeshFlujo'
+import FondoFlujo from '@/components/bg/FondoFlujo'
+import FondoMeshFlujo from '@/components/bg/FondoHero'
 
 const FONDOS = {
   mesh: FondoMesh,
@@ -39,7 +39,8 @@ export default function HeroConFondo({ fondo }: { fondo: FondoId }) {
       </div>
 
       <div className="relative">
-        <Hero />
+        {/* Sin su fondo propio: el que se compara es el de esta ruta. */}
+        <Hero conFondo={false} />
       </div>
 
       {/* Nota técnica al pie del hero, fuera de la zona que se evalúa. */}

@@ -163,13 +163,17 @@ Con la prop `stagger` la animación pasa a los hijos directos en vez del bloque 
 
 ### 2.5 Fondo vivo
 
-Tres capas, todas sutiles, ninguna protagonista:
+Tres capas globales, todas sutiles, ninguna protagonista:
 
 1. **Campo de partículas** — canvas fijo, ~60 puntos con deriva lenta. Se apaga en mobile y con reduced-motion.
 
    **Ajustado a pedido del cliente:** la opacidad pasó de 8–14% a 16–42% y los puntos toman uno de cuatro tonos al azar (del violeta de marca al blanco puro), para que el campo no se lea como una trama plana. Se sacó el fade-in que los hacía entrar al final de la secuencia del hero: ahora están desde el primer frame.
 2. **Glows de sección** — divs con `--glow-violet`, blur alto, posicionados detrás de secciones clave. Se desplazan a distinta velocidad que el scroll (parallax con ScrollTrigger `scrub`).
 3. **Grano** — overlay de ruido a 3% de opacidad, PNG tileable de 128px. Evita el banding de los degradés en pantallas grandes y le quita el aspecto plástico al dark.
+
+**Fondo del hero.** Además de las tres capas globales, los heros llevan un fondo animado propio: `FondoHero` (`/components/bg/FondoHero.tsx`), elegido entre las propuestas de §13. Son dos capas apiladas —las manchas de gradiente de Mesh como base, los trazos de Flujo encima— con el desvanecido de bordes puesto una sola vez al final. El detalle de por qué apilarlas requiere props (`conVelo`, `conDesvanecido`, `modoBorrado`) está en §13.
+
+Va en el hero de la home **y en el de las tres landings**. Reemplaza a los `Glow` que tenían: las manchas ya aportan el color y la profundidad, y sumarles los glows encima lavaba el contraste del texto. Los `Glow` siguen en el resto de las secciones (Qué hacemos, Contacto, 404, privacidad, design-system).
 
 ---
 
@@ -185,7 +189,7 @@ Tres capas, todas sutiles, ninguna protagonista:
   /privacidad/page.tsx
   /design-system/page.tsx       revisión visual — queda, con noindex
   /heros/                       5 propuestas de hero — temporal, con noindex
-  /fondos/                      4 fondos para el hero — temporal, con noindex
+  /fondos/                      5 fondos para el hero — temporal, con noindex
   not-found.tsx
   /api/contacto/route.ts        POST → envío de mail
 /components
@@ -824,9 +828,11 @@ Para reemplazarlo: pisar `/public/heros/abstracto.mp4` manteniendo el nombre, o 
 
 ---
 
-## 13. Fondos para el hero (en revisión)
+## 13. Fondos para el hero (resuelto: Mesh + Flujo)
 
-El fondo actual (glows suaves y partículas) se siente flojo. Se armaron variantes en `/fondos`, cada una con **el hero completo de la home encima** para ver cómo conviven: la comparación es de fondo, no de hero. Las cuatro son `noindex` y están excluidas en `robots.txt`.
+El fondo original (glows suaves y partículas) se sentía flojo. Se armaron cinco variantes en `/fondos`, cada una con **el hero completo de la home encima** para ver cómo conviven: la comparación es de fondo, no de hero. Las cinco son `noindex` y están excluidas en `robots.txt`.
+
+**Elegido: #5, Mesh + Flujo**, montado como `FondoHero` en el hero de la home y en el de las tres landings (§2.5).
 
 | # | Ruta | Nombre | Qué hace | Técnica |
 |---|---|---|---|---|
@@ -863,10 +869,11 @@ Verificado en los cuatro:
 | Halo | Sin cursor: el halo queda fijo | Halo fijo |
 | Flujo | Mitad de trazos y más lentos | Canvas vacío, el loop no se monta |
 
-### Cuando se elija
+### Qué se hizo al elegirlo
 
-1. Llevar el fondo elegido a `/components/bg/` y montarlo en el hero de la home (y en el de landing si corresponde).
-2. Decidir qué pasa con las partículas y los glows actuales: el fondo nuevo puede reemplazarlos o convivir.
-3. Borrar `/app/fondos/`, `/components/fondos/` y `/content/fondos.ts`.
-4. Quitar `/fondos` del `disallow` en `/app/robots.ts`.
-5. Actualizar §2.5 con la capa nueva y borrar esta sección.
+1. Los tres componentes de la propuesta ganadora pasaron a `/components/bg/`: `FondoMesh.tsx`, `FondoFlujo.tsx` y el combinado como `FondoHero.tsx`.
+2. Montado en `Hero` (home) y `LandingHero`, reemplazando los `Glow` que tenían.
+3. Las partículas y el grano **conviven**: son capas globales fijas y aportan textura sobre cualquier fondo. Los `Glow` se sacaron solo de los heros.
+4. `Hero` recibió una prop `conFondo` (default `true`) que solo se apaga en `/fondos`, que monta el hero real con otro fondo detrás: sin eso se verían los dos apilados.
+
+**La ruta `/fondos` queda**, igual que `/design-system` y `/heros`: por decisión del cliente no se borran las pruebas. Se mantienen con `noindex` y fuera del sitemap, y las cuatro propuestas no elegidas siguen en `/components/fondos/` para poder volver a compararlas.

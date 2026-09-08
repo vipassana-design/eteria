@@ -3,13 +3,13 @@
 import FondoMesh from './FondoMesh'
 import FondoFlujo from './FondoFlujo'
 
-/** Fondo 5 — Mesh + Flujo.
+/** Fondo animado del hero (PLAN.md §2.5, §13).
  *
- *  Las manchas de gradiente de Mesh como base, y los trazos de Flujo
- *  encima. La base da el color y la profundidad; los trazos, el
- *  movimiento puntual.
+ *  Dos capas: las manchas de gradiente de Mesh como base, que dan el
+ *  color y la profundidad, y los trazos de Flujo encima, que aportan el
+ *  movimiento puntual. Elegido entre las cinco propuestas de /fondos.
  *
- *  Apilar los dos no es sumar los componentes tal cual. Dos cosas
+ *  Apilarlas no es montar los dos componentes tal cual. Dos cosas
  *  tapaban la base:
  *
  *  1. Los velos opacos propios de cada uno, encimados, oscurecían todo.
@@ -23,10 +23,17 @@ import FondoFlujo from './FondoFlujo'
  *     `modoBorrado="borrar"`, que baja el alfa de lo pintado en vez de
  *     pintar encima, así el canvas queda transparente donde no hay
  *     trazo.
+ *
+ *  Cada capa maneja su propio mobile y su propio `prefers-reduced-motion`.
  */
-export default function FondoMeshFlujo() {
+export default function FondoHero() {
   return (
-    <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
+    <div
+      aria-hidden="true"
+      // `isolate` crea un contexto de apilado propio: el z-index de las
+      // capas no compite con el del header ni con el del contenido.
+      className="pointer-events-none absolute inset-0 isolate overflow-hidden"
+    >
       {/* Base: las manchas, sin su velo. */}
       <FondoMesh conVelo={false} />
 
@@ -36,7 +43,8 @@ export default function FondoMeshFlujo() {
       <FondoFlujo modoBorrado="borrar" conDesvanecido={false} />
 
       {/* Desvanecido de bordes, una sola vez y al final: cierra las dos
-          capas contra el límite del hero. */}
+          capas contra el límite del hero para que no corten en seco
+          contra la sección siguiente. */}
       <div
         className="absolute inset-0"
         style={{

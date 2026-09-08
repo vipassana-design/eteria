@@ -6,7 +6,7 @@ import { scrollearA } from '@/lib/lenis'
 import { dur, ease } from '@/lib/motion'
 import { etapasHero, etiquetaTerminal, hero, sesionHero } from '@/content/hero'
 import Boton from '@/components/ui/Boton'
-import Glow from '@/components/bg/Glow'
+import FondoHero from '@/components/bg/FondoHero'
 import RollingText from '@/components/ui/RollingText'
 import { POR_PARTES } from './PantallasPorPartes'
 
@@ -31,7 +31,10 @@ const VERDE = '#4EC9A0'
 /** El ciclo: la terminal primero (null) y después las tres pantallas. */
 const CICLO = [null, ...etapasHero] as const
 
-export default function Hero() {
+/** `conFondo` solo se apaga en la ruta de comparación /fondos, que
+ *  monta este hero con otro fondo detrás: sin esto se verían los dos
+ *  apilados. En el sitio va siempre en true. */
+export default function Hero({ conFondo = true }: { conFondo?: boolean } = {}) {
   const raiz = useRef<HTMLElement>(null)
   const [paso, setPaso] = useState(0)
 
@@ -204,8 +207,10 @@ export default function Hero() {
       ref={raiz}
       className="relative flex min-h-svh items-center overflow-hidden pb-20 pt-32 lg:pb-28 lg:pt-40"
     >
-      <Glow className="-right-44 -top-24" tamano={860} />
-      <Glow className="-left-56 top-1/3" tamano={620} intensidad={0.6} />
+      {/* El fondo animado reemplaza a los dos Glow que tenía el hero:
+          las manchas del mesh ya aportan el color y la profundidad, y
+          sumarles los glows encima lavaba el contraste del texto. */}
+      {conFondo ? <FondoHero /> : null}
 
       <div className="contenedor grid w-full items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-12">
         {/* Texto.  declara el contenedor de consulta: el

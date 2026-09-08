@@ -7,7 +7,7 @@ import { dur, ease } from '@/lib/motion'
 import { landingUi } from '@/content/landings'
 import type { Landing } from '@/types'
 import Boton from '@/components/ui/Boton'
-import Glow from '@/components/bg/Glow'
+import FondoHero from '@/components/bg/FondoHero'
 import RollingText from '@/components/ui/RollingText'
 import { PANTALLAS_LANDING } from './PantallasLanding'
 
@@ -125,7 +125,10 @@ export default function LandingHero({ landing }: { landing: Landing }) {
 
   return (
     <section ref={raiz} className="relative overflow-hidden pb-20 pt-32 lg:pb-28 lg:pt-40">
-      <Glow className="-right-32 -top-20" tamano={820} />
+      {/* Mismo fondo animado que el hero de la home, en lugar del Glow
+          que tenía: las manchas del mesh ya aportan el color y la
+          profundidad, y sumarle el glow encima lavaba el contraste. */}
+      <FondoHero />
 
       {/* Mismo grid y mismo w-full que el hero de la home, para que la
           ventana mida igual en las cuatro páginas. Sin w-full el grid se
