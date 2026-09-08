@@ -31,16 +31,23 @@ const VERDE = '#4EC9A0'
 /** El ciclo: la terminal primero (null) y después las tres pantallas. */
 const CICLO = [null, ...etapasHero] as const
 
-/** `conFondo` solo se apaga en la ruta de comparación /fondos, que
- *  monta este hero con otro fondo detrás: sin esto se verían los dos
- *  apilados. En el sitio va siempre en true. */
-export default function Hero({ conFondo = true }: { conFondo?: boolean } = {}) {
+interface PropsHero {
+  /** Solo se apaga en la ruta de comparación /fondos, que monta este
+   *  hero con otro fondo detrás: sin esto se verían los dos apilados.
+   *  En el sitio va siempre en true. */
+  conFondo?: boolean
+  /** Set de pantallas del ciclo. Se cambia en /mockups para ver las
+   *  propuestas corriendo dentro del hero real. */
+  pantallas?: typeof POR_PARTES
+}
+
+export default function Hero({ conFondo = true, pantallas = POR_PARTES }: PropsHero = {}) {
   const raiz = useRef<HTMLElement>(null)
   const [paso, setPaso] = useState(0)
 
   const etapa = CICLO[paso] ?? null
   const esTerminal = etapa === null
-  const Pantalla = etapa ? POR_PARTES[etapa.pantalla] : null
+  const Pantalla = etapa ? pantallas[etapa.pantalla] : null
 
   const avanzar = () => setPaso((p) => (p + 1) % CICLO.length)
 

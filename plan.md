@@ -912,3 +912,58 @@ Verificado en los cuatro:
 4. `Hero` recibió una prop `conFondo` (default `true`) que solo se apaga en `/fondos`, que monta el hero real con otro fondo detrás: sin eso se verían los dos apilados.
 
 **La ruta `/fondos` queda**, igual que `/design-system` y `/heros`: por decisión del cliente no se borran las pruebas. Se mantienen con `noindex` y fuera del sitemap, y las cuatro propuestas no elegidas siguen en `/components/fondos/` para poder volver a compararlas.
+
+---
+
+## 14. Mockups del hero con fotos reales (en revisión)
+
+Los tres mockups del ciclo del hero eran SVG de rectángulos y líneas: se leían como wireframes, no como capturas. Se rehicieron en `/mockups`, con `noindex` y fuera del sitemap igual que `/fondos` y `/heros`.
+
+**El pedido tenía dos partes**, y conviene separarlas porque solo una es costosa:
+
+1. **Fotos reales.** Es lo que hace el salto: sin imágenes ni texto de verdad, el techo de un SVG mejorado es "wireframe prolijo".
+2. **Detalle de SVG.** Sombras de dos capas, jerarquía tipográfica, badges, estados, densidad de datos plausible.
+
+### Qué pantalla muestra cada uno
+
+Cada mockup del hero muestra una pantalla **distinta** de la que muestra su landing, para no repetir:
+
+| Mockup | La landing muestra | El hero muestra |
+|---|---|---|
+| Tienda | ficha de producto | **listado de categoría**: filtros aplicados, orden, grilla con precios y estados, paginado |
+| Panel | detalle de un pedido | **tablero de resumen**: KPIs comparados, dos series, ranking, cola de trabajo |
+| Institucional | panel de contenido | **home pública**: hero con foto, divisiones, cifras, novedades |
+
+### Las fotos
+
+Once imágenes de **Pexels** (licencia libre, uso comercial sin atribución), en `/public/mockups`. Recortadas al slot que ocupan con `sharp` y convertidas a WebP al doble del tamaño de pantalla: **160 KB en total**, menos de lo estimado.
+
+Van como `<image>` dentro del SVG, no como `<img>` aparte: así siguen formando parte del grupo `data-parte` que anima el timeline. `preserveAspectRatio="xMidYMid slice"` es el equivalente de `object-fit: cover`, y cada slot lleva su propio `clipPath` con id único —compartir uno recortaría todas las fotos con la misma caja.
+
+El panel lleva una sola foto (el avatar del usuario): un sistema de gestión no tiene fotos de escena, y ahí el realismo lo dan los datos —importes con decimales, nombres, tiempos relativos.
+
+**Una se descartó por marca visible.** Unas zapatillas con una marca deportiva reconocible: poner una marca real en la tienda ficticia de un mockup es engañoso y además es uso de marca ajena.
+
+### Reemplazar las fotos
+
+Se sobrescribe el archivo en `/public/mockups` manteniendo el nombre. Los tamaños de cada slot están en el `Foto` correspondiente de cada componente; si la foto nueva tiene otra proporción, `slice` la recorta al centro sin deformarla.
+
+### Lo que hubo que corregir al verificar
+
+Medido con capturas del SVG aislado, no a ojo:
+
+- **El toast del carrito** estaba en `y=388..444` y se solapaba con el paginado. Pasó al hueco libre bajo la columna de filtros, que estaba vacío.
+- **La cruz de los chips de filtro** quedaba a 1px del texto: se lee como pisada aunque no se superponga. Se ensancharon los chips.
+- **El panel y el institucional no entraban en los 460 del lienzo**: el contenido llegaba a `y=445` y `y=455`. Se comprimió cada bloque; ahora terminan en 413 y 422.
+- **"Andreani" se pisaba con "Sincronizado 14:02"** en la barra de integraciones del panel.
+
+Se verificó también que ningún elemento salga del `viewBox` y que el SVG se vea entero: la caja del hero es 16:10 (1.600) y el `viewBox` 720×460 (1.565), así que las escalas quedan en 1.597 × 1.563 y no hay recorte.
+
+### Cuando se elijan
+
+1. Reemplazar `POR_PARTES` en `/components/home/PantallasPorPartes.tsx` por los tres nuevos, o cambiar el default de la prop `pantallas` del `Hero`.
+2. Revisar la entrada por partes con las fotos: los grupos son los mismos, pero las fotos pesan más que un `rect` y conviene mirar que el stagger siga leyéndose.
+3. Decidir si los seis mockups del carrusel de Soluciones y los tres de las cards de servicios reciben el mismo tratamiento.
+4. La ruta `/mockups` queda, como `/fondos` y `/heros`: por decisión del cliente no se borran las pruebas.
+
+> **Pendiente:** las fotos son de stock. Para la tienda y el institucional funcionan; cuando haya imágenes reales de proyectos, se reemplazan por nombre de archivo.

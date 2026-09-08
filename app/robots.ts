@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
       // Rutas de revisión interna, no indexables.
-      disallow: ['/design-system', '/heros', '/fondos'],
+      disallow: ['/design-system', '/heros', '/fondos', '/mockups'],
     },
     sitemap: `${SITIO.url}/sitemap.xml`,
   }
