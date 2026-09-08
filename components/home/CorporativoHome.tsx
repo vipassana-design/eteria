@@ -1,4 +1,4 @@
-import { Foto, Lienzo, TENUE } from './Lienzo'
+import { Foto, Lienzo, TENUE } from './LienzoMockup'
 
 /** Sitios institucionales: la home de la empresa.
  *
@@ -44,6 +44,7 @@ export function CorporativoHome() {
         {/* Franja de utilidades: el detalle que distingue un sitio
             corporativo de una landing. */}
         <rect width={720} height={22} fill="#072B45" />
+        <g data-item>
         <text x={36} y={15} fontSize={8} fill="#7FA8C4">
           Inversores
         </text>
@@ -59,6 +60,7 @@ export function CorporativoHome() {
         <text x={666} y={15} fontSize={8} fill="#5B87A6">
           EN
         </text>
+        </g>
 
         <rect y={22} width={720} height={46} fill={AZUL} />
         {/* Marca. */}
@@ -71,7 +73,7 @@ export function CorporativoHome() {
         {['Compañía', 'Divisiones', 'Sustentabilidad', 'Prensa'].map((t, i) => {
           const x = [316, 386, 462, 566][i] ?? 0
           return (
-            <g key={t}>
+            <g key={t} data-item>
               <text x={x} y={50} fontSize={9.5} fill={i === 1 ? '#FFFFFF' : '#B3D2E6'}>
                 {t}
               </text>
@@ -81,10 +83,12 @@ export function CorporativoHome() {
         })}
 
         {/* CTA de contacto en la barra. */}
+        <g data-item>
         <rect x={628} y={35} width={58} height={20} rx={3} fill={CELESTE} />
         <text x={657} y={49} fontSize={9} fontWeight={600} fill={AZUL} textAnchor="middle">
           Contacto
         </text>
+        </g>
       </g>
 
       {/* ── Hero: foto a la derecha, texto a la izquierda ── */}
@@ -102,11 +106,14 @@ export function CorporativoHome() {
         </defs>
 
         {/* Volanta: ubica el sector antes del titular. */}
+        <g data-item>
         <rect x={36} y={88} width={3} height={12} fill={CELESTE} />
         <text x={48} y={98} fontSize={8.5} fontWeight={600} fill={CELESTE} letterSpacing={0.6}>
           ENERGÍA E INFRAESTRUCTURA
         </text>
+        </g>
 
+        <g data-item>
         <text x={36} y={132} fontSize={24} fontWeight={700} fill={AZUL} letterSpacing={-0.7}>
           Infraestructura crítica
         </text>
@@ -116,7 +123,9 @@ export function CorporativoHome() {
         <text x={36} y={180} fontSize={9.5} fill={AZUL_TENUE}>
           Operamos plantas y redes de distribución en toda la región.
         </text>
+        </g>
 
+        <g data-item>
         <rect x={36} y={184} width={112} height={26} rx={3} fill={AZUL} />
         <text x={92} y={201} fontSize={9.5} fontWeight={600} fill="#FFFFFF" textAnchor="middle">
           Conocer la compañía
@@ -125,6 +134,7 @@ export function CorporativoHome() {
           Ver divisiones
         </text>
         <path d="M232 194l5 4-5 4" fill="none" stroke={AZUL} strokeWidth={1.4} strokeLinecap="round" />
+        </g>
       </g>
 
       {/* ── Divisiones: las tres unidades de negocio ── */}
@@ -189,7 +199,7 @@ export function CorporativoHome() {
 
       {/* ── Novedades: tres notas con foto, categoría y fecha ── */}
       <g data-parte="novedades">
-        <text x={36} y={364} fontSize={11.5} fontWeight={700} fill={AZUL}>
+        <text x={36} y={364} fontSize={11.5} fontWeight={700} fill={AZUL} data-item>
           Últimas novedades
         </text>
         <text x={684} y={364} fontSize={9} fill={CELESTE} textAnchor="end">

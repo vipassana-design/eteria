@@ -72,14 +72,12 @@ export const mockupsNuevos: PropuestaMockup[] = [
 export const mockupsUi = {
   titulo: 'Mockups del hero',
   bajada:
-    'Los tres del ciclo, rehechos con fotos reales y más densidad de información. Cada uno se ve al lado del actual para comparar.',
+    'Los tres del ciclo del hero, con fotos reales y densidad de información de una pantalla en uso. Acá se ven quietos y grandes; corriendo se ven en la home y en las landings.',
   aviso: 'Ruta temporal de comparación. No forma parte del sitio.',
-  nuevo: 'Propuesta',
-  actual: 'Actual',
   volverAlSitio: 'Volver al sitio',
   siguiente: 'Siguiente',
   anterior: 'Anterior',
-  verEnHero: 'Ver los tres corriendo en el hero',
+  verEnHero: 'Ver los tres corriendo en el hero de la home',
   tituloCambios: 'Qué cambió',
   tituloFotos: 'Fotos',
   /** Pie de la ruta: de dónde salieron las imágenes. */

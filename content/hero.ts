@@ -1,4 +1,6 @@
 
+import type { LineaTerminal } from '@/types'
+
 /** Contenido del hero (PLAN.md §4.2). */
 export const hero = {
   /** El título se parte en líneas para que cada una entre con su propia
@@ -32,12 +34,12 @@ export const hero = {
 export const etapasHero = [
   {
     pantalla: 'tienda' as const,
-    url: 'tienda-atelier.com',
+    url: 'tienda-atelier.com/mujer',
     etiqueta: 'Ecommerce',
   },
   {
     pantalla: 'panel' as const,
-    url: 'app.gestion.com/panel',
+    url: 'app.gestion.com/resumen',
     etiqueta: 'Panel de administración',
   },
   {
@@ -56,7 +58,7 @@ export const sesionHero = [
   { tipo: 'salida', texto: 'added 24 packages in 3s' },
   { tipo: 'comando', texto: 'npm run build' },
   { tipo: 'ok', texto: 'Deployed to production' },
-] as const
+] as const satisfies readonly LineaTerminal[]
 
 /** Etiqueta de la etapa de terminal en el indicador. */
 export const etiquetaTerminal = 'Desarrollo'

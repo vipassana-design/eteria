@@ -131,3 +131,11 @@ export interface Marca {
   /** Se muestra al usuario, con formato legible. */
   whatsappVisible: string
 }
+
+/** Línea de la sesión de terminal del ciclo del hero.
+ *  `comando` se tipea carácter por carácter; `ok` y `salida` aparecen
+ *  de golpe tras una pausa, como en una terminal real. */
+export interface LineaTerminal {
+  tipo: 'comando' | 'ok' | 'salida'
+  texto: string
+}

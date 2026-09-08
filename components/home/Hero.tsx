@@ -9,6 +9,7 @@ import Boton from '@/components/ui/Boton'
 import FondoHero from '@/components/bg/FondoHero'
 import RollingText from '@/components/ui/RollingText'
 import { POR_PARTES } from './PantallasPorPartes'
+import SesionTerminal from './SesionTerminal'
 
 /** Hero (PLAN.md §4.2).
  *
@@ -23,10 +24,6 @@ import { POR_PARTES } from './PantallasPorPartes'
  *  El texto entra una sola vez, con la secuencia orquestada del sitio, y
  *  después queda quieto: el movimiento vive en la ventana.
  */
-
-/** Verde de terminal. Solo en las líneas de éxito: es acento funcional,
- *  no decoración, y la paleta del sitio no cambia. */
-const VERDE = '#4EC9A0'
 
 /** El ciclo: la terminal primero (null) y después las tres pantallas. */
 const CICLO = [null, ...etapasHero] as const
@@ -281,59 +278,7 @@ export default function Hero({ conFondo = true, pantallas = POR_PARTES }: PropsH
 
             {/* Misma caja para las dos clases de etapa. */}
             <div className="aspect-16/10">
-              {esTerminal ? (
-                <div className="size-full bg-[#0A0814] p-5 font-mono text-[12.5px] leading-[1.85] lg:p-7 lg:text-[14px]">
-                  {sesionHero.map((l, i) => (
-                    <p
-                      key={`${l.texto}-${i}`}
-                      data-linea-term
-                      data-tipo={l.tipo}
-                      className="flex gap-2 whitespace-nowrap"
-                      // display:none hasta entrar, así las líneas no
-                      // reservan alto y el cursor queda pegado al
-                      // último comando.
-                      style={{ opacity: 0, display: 'none' }}
-                    >
-                      <span
-                        aria-hidden="true"
-                        className={`shrink-0 text-violet-300 ${
-                          l.tipo === 'comando' ? '' : 'opacity-0'
-                        }`}
-                      >
-                        $
-                      </span>
-                      <span
-                        data-texto-term
-                        className="block will-change-[clip-path]"
-                        style={{
-                          clipPath: 'inset(0 100% 0 0)',
-                          color:
-                            l.tipo === 'ok'
-                              ? VERDE
-                              : l.tipo === 'comando'
-                                ? '#F4F2FF'
-                                : '#8B85AD',
-                        }}
-                      >
-                        {l.texto}
-                      </span>
-                    </p>
-                  ))}
-
-                  <p className="flex gap-2">
-                    <span aria-hidden="true" className="shrink-0 text-violet-300">
-                      $
-                    </span>
-                    <span
-                      data-cursor
-                      aria-hidden="true"
-                      className="inline-block h-[1.15em] w-[0.55em] translate-y-[0.15em] bg-violet-300"
-                    />
-                  </p>
-                </div>
-              ) : (
-                Pantalla && <Pantalla />
-              )}
+              {esTerminal ? <SesionTerminal lineas={sesionHero} /> : Pantalla && <Pantalla />}
             </div>
           </div>
 

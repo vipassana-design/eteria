@@ -1,15 +1,6 @@
 import Link from 'next/link'
-import { POR_PARTES } from '@/components/home/PantallasPorPartes'
 import { mockupsNuevos, mockupsUi, type MockupId } from '@/content/mockupsNuevos'
-import { TiendaListado } from './TiendaListado'
-import { PanelDashboard } from './PanelDashboard'
-import { CorporativoHome } from './CorporativoHome'
-
-const NUEVOS = {
-  tienda: TiendaListado,
-  panel: PanelDashboard,
-  corporativo: CorporativoHome,
-} as const
+import { POR_PARTES } from '@/components/home/PantallasPorPartes'
 
 /** Marco de ventana, igual al del hero: el mockup se juzga dentro del
  *  cromo que va a tener, no suelto. */
@@ -43,8 +34,7 @@ export default function Comparador({ id }: { id: MockupId }) {
   const propuesta = mockupsNuevos.find((m) => m.id === id)
   if (!propuesta) return null
 
-  const Nuevo = NUEVOS[id]
-  const Actual = POR_PARTES[id]
+  const Pantalla = POR_PARTES[id]
 
   const indice = mockupsNuevos.findIndex((m) => m.id === id)
   const anterior = mockupsNuevos[indice - 1]
@@ -58,24 +48,15 @@ export default function Comparador({ id }: { id: MockupId }) {
       <h1 className="text-h2 mt-4 font-semibold">{propuesta.nombre}</h1>
       <p className="text-cuerpo-lg medida mt-4 text-mid">{propuesta.linea}</p>
 
-      {/* La propuesta, al ancho que tiene en el hero. */}
+      {/* El mockup quieto y grande. La entrada por partes se ve en el
+          hero, que es donde corre; acá se revisa el diseño. */}
       <div className="mt-14">
-        <p className="text-label mb-4 text-violet-300">{mockupsUi.nuevo}</p>
         <Ventana url={URLS[id]}>
-          <Nuevo />
+          <Pantalla />
         </Ventana>
       </div>
 
-      <div className="mt-16 grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        {/* El actual, para comparar. */}
-        <div>
-          <p className="text-label mb-4 text-low">{mockupsUi.actual}</p>
-          <Ventana url={URLS[id]}>
-            <Actual />
-          </Ventana>
-        </div>
-
-        {/* Qué cambió. */}
+      <div className="mt-14 grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <div>
           <p className="text-label mb-4 text-low">{mockupsUi.tituloCambios}</p>
           <ul className="flex flex-col gap-3">
@@ -86,8 +67,10 @@ export default function Comparador({ id }: { id: MockupId }) {
               </li>
             ))}
           </ul>
+        </div>
 
-          <p className="text-label mb-2 mt-8 text-low">{mockupsUi.tituloFotos}</p>
+        <div>
+          <p className="text-label mb-2 text-low">{mockupsUi.tituloFotos}</p>
           <p className="text-cuerpo text-mid">{propuesta.fotos}</p>
         </div>
       </div>
@@ -115,7 +98,7 @@ export default function Comparador({ id }: { id: MockupId }) {
 
         <div className="flex gap-6">
           <Link
-            href="/mockups/hero"
+            href="/"
             className="text-cuerpo text-violet-300 transition-colors duration-300 hover:text-hi"
           >
             {mockupsUi.verEnHero}

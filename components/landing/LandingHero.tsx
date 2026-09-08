@@ -4,32 +4,44 @@ import { useRef, useState } from 'react'
 import { gsap, useGSAP } from '@/lib/gsap'
 import { scrollearA } from '@/lib/lenis'
 import { dur, ease } from '@/lib/motion'
-import { landingUi } from '@/content/landings'
+import {
+  landingUi,
+  pantallaLanding,
+  sesionesLanding,
+  urlsLanding,
+} from '@/content/landings'
 import type { Landing } from '@/types'
 import Boton from '@/components/ui/Boton'
 import FondoHero from '@/components/bg/FondoHero'
 import RollingText from '@/components/ui/RollingText'
-import { PANTALLAS_LANDING } from './PantallasLanding'
+import { POR_PARTES } from '@/components/home/PantallasPorPartes'
+import SesionTerminal from '@/components/home/SesionTerminal'
 
-/** Hero de las landings (PLAN.md §5).
+/** Hero de las landings (PLAN.md §5, §14).
  *
  *  Split: titular con rolling text a la izquierda, y a la derecha una
- *  ventana donde la interfaz del servicio se arma sola por partes, se
- *  desarma y vuelve a armarse.
+ *  ventana con un ciclo de dos etapas que se repite: la terminal
+ *  levantando el proyecto y después la pantalla del servicio
+ *  armándose por partes.
  *
- *  Es la misma mecánica del hero de la home, sin la etapa de terminal:
- *  esa es de la home. Acá la pantalla es una sola y más detallada (seis
- *  partes contra cuatro), así que el ciclo dura más.
+ *  Es la misma mecánica del hero de la home, con dos diferencias: la
+ *  sesión de terminal es la del stack de cada servicio, y la pantalla
+ *  es una sola —la que corresponde a la landing— en vez de tres.
  *
  *  La ventana va alineada, sin perspectiva: el mockup es el
  *  protagonista del hero y rotarlo le quitaba legibilidad.
  */
 export default function LandingHero({ landing }: { landing: Landing }) {
   const raiz = useRef<HTMLElement>(null)
-  /** Se incrementa al terminar cada ciclo, para rearmar la animación. */
-  const [ciclo, setCiclo] = useState(0)
+  /** 0 = terminal, 1 = pantalla. Vuelve a 0 y el ciclo se repite. */
+  const [paso, setPaso] = useState(0)
 
-  const Pantalla = PANTALLAS_LANDING[landing.slug]
+  const esTerminal = paso === 0
+  const sesion = sesionesLanding[landing.slug]
+  const urls = urlsLanding[landing.slug]
+  const Pantalla = POR_PARTES[pantallaLanding[landing.slug]]
+
+  const avanzar = () => setPaso((v) => (v + 1) % 2)
 
   // --- Entrada: corre una sola vez, al montar ---
   useGSAP(
@@ -59,22 +71,80 @@ export default function LandingHero({ landing }: { landing: Landing }) {
     { scope: raiz },
   )
 
-  // --- Ciclo de armado de la pantalla ---
+  // --- Ciclo de la ventana: se rearma en cada paso ---
   useGSAP(
     () => {
       const mm = gsap.matchMedia()
 
-      // Sin movimiento: la pantalla se muestra armada y no se rearma.
+      // Sin movimiento: se muestra la etapa armada y el ciclo no avanza.
       mm.add('(prefers-reduced-motion: reduce)', () => {
+        gsap.set('[data-linea-term]', { opacity: 1, display: 'flex' })
+        gsap.set('[data-texto-term]', { clipPath: 'inset(0 0% 0 0)' })
+        gsap.set('[data-cursor]', { opacity: 0 })
         gsap.set('[data-parte]', { opacity: 1, y: 0 })
         gsap.set('[data-item]', { opacity: 1, y: 0 })
       })
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
+        // ── Etapa de terminal ──
+        if (esTerminal) {
+          const lineas = gsap.utils.toArray<HTMLElement>('[data-linea-term]', raiz.current)
+          const cursor = raiz.current?.querySelector<HTMLElement>('[data-cursor]')
+          if (lineas.length === 0) return
+
+          const parpadeo = cursor
+            ? gsap.to(cursor, {
+                opacity: 0,
+                duration: 0.5,
+                repeat: -1,
+                yoyo: true,
+                ease: 'steps(1)',
+              })
+            : null
+
+          const tl = gsap.timeline({ onComplete: avanzar })
+
+          gsap.set(lineas, { opacity: 0, display: 'none' })
+          for (const l of lineas) {
+            const t = l.querySelector('[data-texto-term]')
+            if (t) gsap.set(t, { clipPath: 'inset(0 100% 0 0)' })
+          }
+
+          for (const linea of lineas) {
+            const texto = linea.querySelector<HTMLElement>('[data-texto-term]')
+            const esComando = linea.dataset.tipo === 'comando'
+            const largo = (texto?.textContent ?? '').length
+
+            tl.set(linea, { opacity: 1, display: 'flex' })
+
+            if (esComando && texto) {
+              // El tipeo revela caracteres con clip-path: reescribir
+              // textContent en cada frame forzaría layout.
+              tl.to(texto, {
+                clipPath: 'inset(0 0% 0 0)',
+                duration: largo * 0.018,
+                ease: `steps(${Math.max(largo, 1)})`,
+              })
+            } else if (texto) {
+              // La salida no se tipea: aparece de golpe tras una pausa
+              // de "procesamiento", como en una terminal real.
+              tl.to(texto, { clipPath: 'inset(0 0% 0 0)', duration: 0.01 }, '+=0.22')
+            }
+          }
+
+          tl.to(lineas, { opacity: 0, duration: 0.3, stagger: 0.03, ease: 'power2.in' }, '+=0.9')
+
+          return () => {
+            tl.kill()
+            parpadeo?.kill()
+          }
+        }
+
+        // ── Etapa de pantalla ──
         const partes = gsap.utils.toArray<SVGGElement>('[data-parte]', raiz.current)
         if (partes.length === 0) return
 
-        const tl = gsap.timeline({ onComplete: () => setCiclo((c) => c + 1) })
+        const tl = gsap.timeline({ onComplete: avanzar })
         gsap.set(partes, { opacity: 0, y: 18 })
 
         partes.forEach((parte, i) => {
@@ -115,7 +185,7 @@ export default function LandingHero({ landing }: { landing: Landing }) {
         return () => tl.kill()
       })
     },
-    { scope: raiz, dependencies: [ciclo] },
+    { scope: raiz, dependencies: [paso] },
   )
 
   const alClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -171,12 +241,18 @@ export default function LandingHero({ landing }: { landing: Landing }) {
                 <span className="size-2 rounded-full bg-[#4A4370]" />
               </span>
               <span className="flex-1 truncate rounded-(--radius-pill) bg-black/25 px-3 py-1 text-[11px] leading-none text-low">
-                {landing.mockup.url}
+                {esTerminal ? urls.terminal : urls.pantalla}
               </span>
             </div>
 
-            <div role="img" aria-label={landing.mockup.alt} className="aspect-16/10">
-              <Pantalla />
+            {/* Misma caja para las dos clases de etapa, así el ciclo no
+                cambia de tamaño al pasar de una a la otra. */}
+            <div
+              role={esTerminal ? undefined : 'img'}
+              aria-label={esTerminal ? undefined : landing.mockup.alt}
+              className="aspect-16/10"
+            >
+              {esTerminal ? <SesionTerminal lineas={sesion} /> : <Pantalla />}
             </div>
           </div>
         </div>

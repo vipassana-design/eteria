@@ -1,4 +1,4 @@
-import { Foto, Lienzo, LINEA, TENUE, TINTA } from './Lienzo'
+import { Foto, Lienzo, LINEA, TENUE, TINTA } from './LienzoMockup'
 
 /** Ecommerce: el listado de categoría con filtros.
  *
@@ -38,7 +38,7 @@ export function TiendaListado() {
         </text>
 
         {['Mujer', 'Hombre', 'Accesorios'].map((t, i) => (
-          <g key={t}>
+          <g key={t} data-item>
             <text
               x={124 + i * 66}
               y={28}
@@ -57,14 +57,17 @@ export function TiendaListado() {
         </text>
 
         {/* Buscador con placeholder: da la pista de que el catálogo es grande. */}
+        <g data-item>
         <rect x={430} y={12} width={168} height={23} rx={11.5} fill="#F4F2FA" />
         <circle cx={445} cy={23.5} r={4} fill="none" stroke={TENUE} strokeWidth={1.4} />
         <path d="M448 26.5l3.5 3.5" stroke={TENUE} strokeWidth={1.4} strokeLinecap="round" />
         <text x={456} y={27} fontSize={9.5} fill={TENUE}>
           Buscar productos
         </text>
+        </g>
 
         {/* Cuenta y carrito. */}
+        <g data-item>
         <circle cx={624} cy={23} r={9} fill="#F2EFFB" />
         <circle cx={624} cy={20.5} r={2.6} fill="none" stroke="#7C3AED" strokeWidth={1.3} />
         <path
@@ -80,6 +83,7 @@ export function TiendaListado() {
           strokeWidth={1.4}
           strokeLinejoin="round"
         />
+        </g>
         <rect y={46} width={720} height={1} fill={LINEA} />
       </g>
 
@@ -113,6 +117,7 @@ export function TiendaListado() {
         ))}
 
         {/* Precio con el slider en una posición intermedia. */}
+        <g data-item>
         <text x={32} y={128} fontSize={10} fontWeight={600} fill={TINTA}>
           Precio
         </text>
@@ -125,6 +130,7 @@ export function TiendaListado() {
         <text x={164} y={158} fontSize={8.5} fill={TENUE} textAnchor="end">
           $130.000
         </text>
+        </g>
 
         {/* Talles con contador por opción: el detalle que delata un
             catálogo con datos detrás. */}
@@ -167,6 +173,7 @@ export function TiendaListado() {
 
       {/* ── Grilla: 4 productos con foto real, precio y estado ── */}
       <g data-parte="grilla">
+        <g data-item>
         <text x={212} y={74} fontSize={13} fontWeight={700} fill={TINTA} letterSpacing={-0.2}>
           Mujer
         </text>
@@ -185,6 +192,7 @@ export function TiendaListado() {
           strokeWidth={1.3}
           strokeLinecap="round"
         />
+        </g>
 
         {PRODUCTOS.map((p, i) => {
           const x = 212 + i * 120
@@ -321,6 +329,7 @@ export function TiendaListado() {
           fill="#FFFFFF"
           filter="url(#sombraFlotante)"
         />
+        <g data-item>
         <Foto id="carritoThumb" href="/mockups/tienda-carrito.webp" x={42} y={354} w={40} h={40} rx={6} />
         <circle cx={96} cy={365} r={7} fill="#EAF6EF" />
         <path
@@ -339,12 +348,15 @@ export function TiendaListado() {
         <text x={218} y={386} fontSize={10.5} fontWeight={700} fill={TINTA} textAnchor="end">
           $74.900
         </text>
+        </g>
 
         {/* Contador del carrito, en la barra de arriba. */}
+        <g data-item>
         <circle cx={670} cy={14} r={8} fill="#7C3AED" />
         <text x={670} y={17.5} fontSize={8.5} fontWeight={700} fill="#FFF" textAnchor="middle">
           1
         </text>
+        </g>
       </g>
     </Lienzo>
   )

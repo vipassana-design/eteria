@@ -1,4 +1,4 @@
-import type { Landing, LandingSlug } from '@/types'
+import type { Landing, LandingSlug, LineaTerminal } from '@/types'
 
 /** Contenido de las tres landings internas (PLAN.md §5).
  *
@@ -162,4 +162,52 @@ export const landingUi = {
   bajadaProceso: 'El mismo proceso en los cuatro casos.',
   tituloContacto: 'Contacto',
   tituloContactoDegrade: 'y presupuesto',
+}
+
+/** Sesión de terminal de la primera etapa del ciclo del hero de cada
+ *  landing (PLAN.md §5, §14).
+ *
+ *  El ciclo abre levantando el proyecto y sigue con la pantalla del
+ *  servicio armándose. Los comandos son del stack que corresponde a
+ *  cada uno: no es decoración, es lo que se usaría de verdad.
+ */
+export const sesionesLanding: Record<LandingSlug, readonly LineaTerminal[]> = {
+  ecommerce: [
+    { tipo: 'comando', texto: 'npx create-next-app tienda' },
+    { tipo: 'ok', texto: 'Success! Created tienda' },
+    { tipo: 'comando', texto: 'npm i @mercadopago/sdk-react' },
+    { tipo: 'salida', texto: 'added 24 packages in 3s' },
+    { tipo: 'comando', texto: 'npm run build' },
+    { tipo: 'ok', texto: 'Deployed to production' },
+  ],
+  'sitios-institucionales': [
+    { tipo: 'comando', texto: 'npx create-next-app sitio' },
+    { tipo: 'ok', texto: 'Success! Created sitio' },
+    { tipo: 'comando', texto: 'npm i @payloadcms/next' },
+    { tipo: 'salida', texto: 'added 31 packages in 4s' },
+    { tipo: 'comando', texto: 'npm run build' },
+    { tipo: 'ok', texto: 'Sitemap generado · 24 páginas' },
+  ],
+  'software-a-medida': [
+    { tipo: 'comando', texto: 'npx create-next-app gestion' },
+    { tipo: 'ok', texto: 'Success! Created gestion' },
+    { tipo: 'comando', texto: 'npx prisma migrate dev' },
+    { tipo: 'salida', texto: 'applied 6 migrations' },
+    { tipo: 'comando', texto: 'npm run build' },
+    { tipo: 'ok', texto: 'Deployed to production' },
+  ],
+}
+
+/** URL que muestra la barra de la ventana en cada etapa. */
+export const urlsLanding: Record<LandingSlug, { terminal: string; pantalla: string }> = {
+  ecommerce: { terminal: 'eteria — bash', pantalla: 'tienda-atelier.com/mujer' },
+  'sitios-institucionales': { terminal: 'eteria — bash', pantalla: 'norvex.com' },
+  'software-a-medida': { terminal: 'eteria — bash', pantalla: 'app.gestion.com/resumen' },
+}
+
+/** Qué pantalla del set del hero usa cada landing. */
+export const pantallaLanding: Record<LandingSlug, 'tienda' | 'corporativo' | 'panel'> = {
+  ecommerce: 'tienda',
+  'sitios-institucionales': 'corporativo',
+  'software-a-medida': 'panel',
 }

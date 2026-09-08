@@ -20,7 +20,7 @@ export default function IndiceMockups() {
 
       <p className="mt-8">
         <Link
-          href="/mockups/hero"
+          href="/"
           className="text-cuerpo font-medium text-violet-300 transition-colors duration-300 hover:text-hi"
         >
           {mockupsUi.verEnHero} &rarr;

@@ -915,9 +915,11 @@ Verificado en los cuatro:
 
 ---
 
-## 14. Mockups del hero con fotos reales (en revisión)
+## 14. Mockups del hero con fotos reales (adoptados)
 
-Los tres mockups del ciclo del hero eran SVG de rectángulos y líneas: se leían como wireframes, no como capturas. Se rehicieron en `/mockups`, con `noindex` y fuera del sitemap igual que `/fondos` y `/heros`.
+Los tres mockups del ciclo del hero eran SVG de rectángulos y líneas: se leían como wireframes, no como capturas. Se rehicieron con fotos reales y más densidad de información, y **están en uso en la home y en las tres landings**.
+
+`/mockups` queda como ruta de revisión —`noindex` y fuera del sitemap, igual que `/fondos` y `/heros`—: ahí se ven quietos y grandes, con la lista de qué cambió en cada uno. Corriendo se ven en la home y en las landings.
 
 **El pedido tenía dos partes**, y conviene separarlas porque solo una es costosa:
 
@@ -959,11 +961,37 @@ Medido con capturas del SVG aislado, no a ojo:
 
 Se verificó también que ningún elemento salga del `viewBox` y que el SVG se vea entero: la caja del hero es 16:10 (1.600) y el `viewBox` 720×460 (1.565), así que las escalas quedan en 1.597 × 1.563 y no hay recorte.
 
-### Cuando se elijan
+### Puestos en uso
 
-1. Reemplazar `POR_PARTES` en `/components/home/PantallasPorPartes.tsx` por los tres nuevos, o cambiar el default de la prop `pantallas` del `Hero`.
-2. Revisar la entrada por partes con las fotos: los grupos son los mismos, pero las fotos pesan más que un `rect` y conviene mirar que el stagger siga leyéndose.
-3. Decidir si los seis mockups del carrusel de Soluciones y los tres de las cards de servicios reciben el mismo tratamiento.
-4. La ruta `/mockups` queda, como `/fondos` y `/heros`: por decisión del cliente no se borran las pruebas.
+`POR_PARTES` pasó a exportar los tres nuevos, así que la home los recibió sin tocar el `Hero`. Los componentes viven en `/components/home/`, con la base compartida en `LienzoMockup.tsx`.
 
-> **Pendiente:** las fotos son de stock. Para la tienda y el institucional funcionan; cuando haya imágenes reales de proyectos, se reemplazan por nombre de archivo.
+**Los `data-item` había que completarlos.** El timeline hace stagger sobre los `[data-item]` de cada parte, pero solo si hay más de uno: las partes con elementos sueltos entraban de golpe. Los mockups nuevos tenían 4, 4 y 3; se agruparon los elementos que se pueblan juntos y quedaron en **11, 10 y 10**. Sin eso el mockup aparecía entero en vez de armarse.
+
+### El ciclo de las landings
+
+Antes cada landing armaba su pantalla, la desarmaba y la volvía a armar. Ahora tienen el mismo ciclo de dos etapas que la home, con su propio mockup:
+
+| Landing | Ciclo |
+|---|---|
+| `/ecommerce` | terminal → listado de tienda → loop |
+| `/sitios-institucionales` | terminal → home institucional → loop |
+| `/software-a-medida` | terminal → tablero de gestión → loop |
+
+Cada una tiene **su propia sesión de terminal**, con los comandos del stack que corresponde: `@mercadopago/sdk-react` en ecommerce, `@payloadcms/next` en institucionales, `prisma migrate` en software. No es decoración: es lo que se usaría de verdad.
+
+La terminal se extrajo a `/components/home/SesionTerminal.tsx`. Estaba inline en el `Hero` y copiarla en el `LandingHero` habría duplicado 50 líneas de JSX con los marcadores que busca el timeline.
+
+Los mockups de 6 partes de `/components/landing/PantallasLanding.tsx` quedaron sin uso. Se dejan como referencia de diseño: fueron los que marcaron el nivel de densidad al que se llevaron estos.
+
+### Verificado
+
+Muestreando el DOM cada 1,4s durante 25s en las cuatro páginas:
+
+- **La home** recorre las cuatro etapas en orden y vuelve: Desarrollo (terminal) → Ecommerce → Panel de administración → Sitio institucional → Desarrollo.
+- **Las tres landings** alternan terminal → pantalla → terminal, cada una con su mockup y su URL en la barra de la ventana.
+- **Las partes se arman de a poco**, no de golpe: la secuencia va 1/5 → 3/5 → 5/5 (o /6 en el panel).
+- **La caja no cambia de tamaño entre etapas**: 721,7 × 451,1 en las cuatro, con la columna de texto en 491px. Medido con decimales —redondeado parecía variar 2px, y era el redondeo.
+
+> **Pendiente:** las fotos son de stock. Para la tienda y el institucional funcionan; cuando haya imágenes reales de proyectos, se reemplazan en `/public/mockups` manteniendo el nombre del archivo.
+
+> **Sin decidir:** si los seis mockups del carrusel de Soluciones y los tres de las cards de servicios reciben el mismo tratamiento.

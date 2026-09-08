@@ -1,4 +1,4 @@
-import { Foto, Lienzo, LINEA, TENUE, TINTA } from './Lienzo'
+import { Foto, Lienzo, LINEA, TENUE, TINTA } from './LienzoMockup'
 
 /** Software a medida: el tablero de resumen.
  *
@@ -66,7 +66,7 @@ export function PanelDashboard() {
         </text>
 
         {NAV.map((n, i) => (
-          <g key={n.t}>
+          <g key={n.t} data-item>
             {n.on ? <rect x={10} y={64 + i * 32} width={156} height={26} rx={7} fill="#2A2352" /> : null}
             <rect
               x={24}
@@ -91,6 +91,7 @@ export function PanelDashboard() {
         ))}
 
         {/* Pie de la barra: el usuario con sesión abierta. */}
+        <g data-item>
         <line x1={16} y1={370} x2={160} y2={370} stroke="#2A2352" strokeWidth={1} />
         <Foto id="panelAvatar" href="/mockups/panel-thumb.webp" x={22} y={386} w={26} h={26} rx={13} />
         <text x={58} y={397} fontSize={9.5} fontWeight={600} fill="#F4F2FF">
@@ -99,8 +100,10 @@ export function PanelDashboard() {
         <text x={58} y={409} fontSize={8} fill="#7B739F">
           Administrador
         </text>
+        </g>
 
         {/* Cabecera del contenido. */}
+        <g data-item>
         <text x={200} y={38} fontSize={17} fontWeight={700} fill={TINTA} letterSpacing={-0.4}>
           Resumen
         </text>
@@ -116,6 +119,7 @@ export function PanelDashboard() {
           Últimos 30 días
         </text>
         <path d="M670 32l3.5 3.5 3.5-3.5" fill="none" stroke={TENUE} strokeWidth={1.3} strokeLinecap="round" />
+        </g>
       </g>
 
       {/* ── KPIs con comparación contra el período anterior ── */}
@@ -165,6 +169,7 @@ export function PanelDashboard() {
         </text>
 
         {/* Leyenda de las dos series. */}
+        <g data-item>
         <circle cx={392} cy={159} r={3.5} fill={VIOLETA} />
         <text x={401} y={162} fontSize={8} fill={TENUE}>
           Este mes
@@ -173,6 +178,7 @@ export function PanelDashboard() {
         <text x={461} y={162} fontSize={8} fill={TENUE}>
           Anterior
         </text>
+        </g>
 
         <defs>
           <linearGradient id="areaDashboard" x1="0" y1="0" x2="0" y2="1">
@@ -199,6 +205,7 @@ export function PanelDashboard() {
 
         {/* Punto del último valor con su tooltip: el detalle que hace
             que se lea como un gráfico en uso y no como una ilustración. */}
+        <g data-item>
         <circle cx={472} cy={206} r={4} fill="#FFFFFF" stroke={VIOLETA} strokeWidth={2} />
         <rect x={430} y={172} width={74} height={26} rx={5} fill={TINTA} />
         <text x={467} y={183} fontSize={7.5} fill="#A79FC9" textAnchor="middle">
@@ -207,6 +214,7 @@ export function PanelDashboard() {
         <text x={467} y={193} fontSize={9} fontWeight={700} fill="#FFF" textAnchor="middle">
           $342.100
         </text>
+        </g>
 
         {['S1', 'S2', 'S3', 'S4'].map((s, i) => (
           <text key={s} x={232 + i * 82} y={262} fontSize={8} fill="#B4AEC6">
@@ -218,7 +226,7 @@ export function PanelDashboard() {
       {/* ── Ranking de productos con barra de proporción ── */}
       <g data-parte="ranking">
         <rect x={524} y={142} width={160} height={130} rx={9} fill="#FFFFFF" filter="url(#sombraCard)" />
-        <text x={538} y={162} fontSize={10.5} fontWeight={600} fill={TINTA}>
+        <text x={538} y={162} fontSize={10.5} fontWeight={600} fill={TINTA} data-item>
           Más vendidos
         </text>
 
