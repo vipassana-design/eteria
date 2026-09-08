@@ -6,7 +6,7 @@ export const queHacemos = {
   titulo: 'Sobre',
   tituloDegrade: 'nosotros',
   parrafos: [
-    'Somos un equipo de desarrollo. No revendemos plantillas ni tercerizamos el trabajo: el código lo escribimos nosotros y lo mantenemos después de entregarlo.',
+    'Somos un equipo de desarrollo. El código lo escribimos nosotros y seguimos a cargo del sistema después de entregarlo: quien lo construyó es quien lo mantiene.',
     'Trabajamos con empresas que ya tienen un sistema funcionando y necesitan ampliarlo o reemplazarlo, y con equipos que están armando la primera versión de un producto. En los dos casos empezamos por definir qué tiene que hacer el sistema y con qué se integra.',
   ],
   /** Los valores van en Clash Display grande con degradé, el label

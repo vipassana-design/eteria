@@ -23,7 +23,7 @@ export const seccionEjemplos = {
 export const mockups: Mockup[] = [
   {
     id: 'indumentaria',
-    titulo: 'Tienda de indumentaria',
+    titulo: 'Tienda de retail',
     rubro: 'Ecommerce',
     pantalla: 'tienda',
     url: 'tienda-indumentaria.com',
@@ -31,7 +31,7 @@ export const mockups: Mockup[] = [
   },
   {
     id: 'vinos',
-    titulo: 'Tienda de vinos',
+    titulo: 'Tienda online',
     rubro: 'Ecommerce de nicho',
     pantalla: 'vinos',
     url: 'bodega-vinos.com',

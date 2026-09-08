@@ -316,7 +316,7 @@ Sin card. Texto grande sobre el fondo, dos columnas asimétricas.
 > **Título:** Sobre nosotros
 >
 > **Cuerpo:**
-> Somos un equipo de desarrollo. No revendemos plantillas ni tercerizamos el trabajo: el código lo escribimos nosotros y lo mantenemos después de entregarlo.
+> Somos un equipo de desarrollo. El código lo escribimos nosotros y seguimos a cargo del sistema después de entregarlo: quien lo construyó es quien lo mantiene.
 >
 > Trabajamos con empresas que ya tienen un sistema funcionando y necesitan ampliarlo o reemplazarlo, y con equipos que están armando la primera versión de un producto. En los dos casos empezamos por definir qué tiene que hacer el sistema y con qué se integra.
 
@@ -331,6 +331,8 @@ Los valores en Clash Display con degradé, el label debajo en `--text-low`. Los 
 **Reescrito por el cliente.** La sección pasó de "Qué hacemos" a **"Sobre nosotros"**: el título anterior repetía lo que ya dicen el hero y servicios, y el copy arrancaba con "cada proyecto arranca en cero", que no dice nada. Ahora la sección habla del equipo.
 
 De los datos originales se sacaron dos: "24h tiempo de respuesta" (ya está en la sección de contacto) y "Ecommerce · Plataformas · Sitios", que no era un número y desbalanceaba el bloque.
+
+**Primer párrafo reformulado (cliente).** Decía "no revendemos plantillas ni tercerizamos el trabajo". Se sacó: negar algo lo instala como tema, y la comparación con el proveedor barato baja el registro en vez de subirlo. El mismo contenido va ahora en positivo —el equipo escribe el código y queda a cargo del sistema— que además es lo que sostiene el dato de `Soporte`.
 
 **Segunda pasada de los datos (cliente).** Los tres pasaron a `+20 años acompañando clientes`, `End to end` y `Soporte`. Con esto se resuelve el pendiente que había: las dos cifras sin verificar (`+100 proyectos` y `9 de 10 clientes siguen con nosotros`) ya no están, y los datos describen el alcance del trabajo en lugar de afirmar volumen. El flag `esTexto` de `DatoHero`, que había quedado sin uso, vuelve a usarse en los dos últimos.
 
