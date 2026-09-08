@@ -54,6 +54,17 @@ const COLORES = [
 ]
 
 interface PropsFlujo {
+  /** Cómo se borra la estela.
+   *
+   *  'pintar' cubre el canvas con `colorVelo` cada frame: sirve cuando
+   *  el canvas es la capa de fondo, porque además repone el color base.
+   *
+   *  'borrar' usa `destination-out`, que baja el alfa de lo ya pintado
+   *  en vez de pintar encima. Es lo que hay que usar cuando el canvas
+   *  está apilado sobre otra capa: pintando, el velo se acumula sobre
+   *  todo el canvas y termina tapando lo que está debajo.
+   */
+  modoBorrado?: 'pintar' | 'borrar'
   /** Color del velo que borra la estela. Apilado sobre otro fondo hay
    *  que pasar uno más transparente que el opaco por defecto. */
   colorVelo?: string
@@ -65,6 +76,7 @@ interface PropsFlujo {
 export default function FondoFlujo({
   colorVelo = VELO_BASE,
   conDesvanecido = true,
+  modoBorrado = 'pintar',
 }: PropsFlujo = {}) {
   const canvas = useRef<HTMLCanvasElement>(null)
 
@@ -126,16 +138,25 @@ export default function FondoFlujo({
         const dibujar = (_t: number, delta: number) => {
           const dt = Math.min(delta, 50) / 1000
 
-          // El velo es lo que hace la estela: en vez de limpiar, se
-          // oscurece lo ya pintado.
+          // El velo es lo que hace la estela: cada frame apaga un poco
+          // lo ya pintado, y lo que queda es el rastro reciente.
           //
-          // Todo el dibujado va con `source-over`. Antes los trazos
-          // usaban `lighter`, que suma luz sobre lo anterior: el rastro
-          // se volvía más brillante donde el trazo pasaba despacio, y
-          // el velo ya no alcanzaba a borrarlo. De ahí las franjas
-          // colgadas.
-          ctx.fillStyle = colorVelo
-          ctx.fillRect(0, 0, ancho, alto)
+          // Los trazos van con `source-over`. Antes usaban `lighter`,
+          // que suma luz sobre lo anterior: el rastro se volvía más
+          // brillante donde el trazo pasaba despacio y el velo ya no
+          // alcanzaba a borrarlo. De ahí las franjas colgadas.
+          if (modoBorrado === 'borrar') {
+            // Baja el alfa de lo pintado sin agregar color: el canvas
+            // queda transparente donde no hay trazo, así lo de abajo se
+            // ve intacto.
+            ctx.globalCompositeOperation = 'destination-out'
+            ctx.fillStyle = `rgba(0,0,0,${DESVANECIDO})`
+            ctx.fillRect(0, 0, ancho, alto)
+            ctx.globalCompositeOperation = 'source-over'
+          } else {
+            ctx.fillStyle = colorVelo
+            ctx.fillRect(0, 0, ancho, alto)
+          }
 
           for (let i = 0; i < trazos.length; i++) {
             const t = trazos[i]!

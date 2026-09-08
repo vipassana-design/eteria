@@ -836,7 +836,13 @@ El fondo actual (glows suaves y partículas) se siente flojo. Se armaron variant
 | 4 | `/fondos/flujo` | Flujo | Trazos finos con estela corta que se desvanece | Canvas: la estela sale de **no** limpiar el frame, sino pintar un velo encima |
 | 5 | `/fondos/mesh-flujo` | Mesh + Flujo | Las manchas de Mesh como base y los trazos de Flujo encima | Los dos componentes apilados, cada uno sin su velo propio |
 
-**Combinación Mesh + Flujo (pedido del cliente).** Apilar los dos no era sumar los componentes tal cual: cada uno traía su propio velo opaco para separarse del fondo de la página, y dos velos encimados oscurecían todo. Para que se pudieran componer, ambos recibieron props: Mesh puede ir sin su velo, y Flujo sin su desvanecido de bordes —que es opaco y taparía las manchas— y con un velo de estela transparente en vez del color base, que si lo pintara en cada frame borraría la base. Verificado: las 4 manchas visibles con el canvas activo y 0 velos opacos duplicados.
+**Combinación Mesh + Flujo (pedido del cliente).** Apilar los dos no era sumar los componentes tal cual. Dos cosas tapaban la base:
+
+1. **Los velos opacos propios de cada uno**, encimados, oscurecían todo. Mesh acepta `conVelo={false}` y Flujo `conDesvanecido={false}`: el velo y el desvanecido los pone la capa combinada, una sola vez.
+
+2. **El velo que borra la estela.** Flujo lo pinta sobre *todo* el canvas cada frame, y ese canvas está encima de las manchas: el fondo se veía brillante al cargar y se iba oscureciendo a medida que el loop acumulaba velo. Se resuelve con `modoBorrado="borrar"`, que usa `destination-out` para bajar el alfa de lo pintado en vez de pintar encima, así el canvas queda transparente donde no hay trazo.
+
+Verificado midiendo el brillo del fondo a lo largo de 5,6s: **17,4 → 18,6** y estable, contra 15,4 de Mesh solo y 13,4 de Flujo solo. Antes de la corrección era el más oscuro de los tres. El contraste del párrafo del hero sobre el fondo más claro con los trazos pasando da **6,3 — pasa AA**.
 
 **Ajuste de la estela (revisión del cliente).** La primera versión dejaba franjas colgadas que ensuciaban la pantalla. Eran tres causas sumadas: el velo borraba a 0.075 por frame (unos 40 frames para desaparecer), los trazos usaban `lighter`, que *suma* luz sobre lo anterior y volvía el rastro más brillante donde el trazo pasaba despacio, y el degradé no llegaba a cero en la cola. Ahora el velo borra a 0.3, todo el dibujado va con `source-over` y los trazos son más cortos. Verificado: la superficie con tinta visible queda en 0,02–0,03% y **estable en el tiempo** —antes crecía—, con brillo promedio de 1 sobre el fondo.
 
