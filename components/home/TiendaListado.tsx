@@ -345,21 +345,21 @@ export function TiendaListado() {
                   necesidad de un borde duro. */}
               <rect
                 x={x}
-                y={200}
+                y={210}
                 width={108}
-                height={236}
+                height={190}
                 rx={9}
                 fill="#FFFFFF"
                 filter="url(#sombraCard)"
               />
 
-              <Foto id={`prodListado${i}`} href={p.foto} x={x + 6} y={206} w={96} h={116} rx={6} />
+              <Foto id={`prodListado${i}`} href={p.foto} x={x + 6} y={216} w={96} h={112} rx={6} />
 
               {p.badge ? (
                 <>
                   <rect
                     x={x + 12}
-                    y={212}
+                    y={222}
                     width={anchoBadge}
                     height={16}
                     rx={8}
@@ -367,7 +367,7 @@ export function TiendaListado() {
                   />
                   <text
                     x={x + 12 + anchoBadge / 2}
-                    y={223.5}
+                    y={233.5}
                     fontSize={8}
                     fontWeight={700}
                     fill="#FFF"
@@ -379,28 +379,28 @@ export function TiendaListado() {
               ) : null}
 
               {/* Favorito: estado que tienen todas las tiendas reales. */}
-              <circle cx={x + 88} cy={220} r={9} fill="#FFFFFF" opacity={0.92} />
+              <circle cx={x + 88} cy={230} r={9} fill="#FFFFFF" opacity={0.92} />
               <path
-                d={`M${x + 88} 223.5c-3-2.2-5-3.8-5-5.8 0-1.5 1.2-2.5 2.5-2.5 1 0 1.9.5 2.5 1.4.6-.9 1.5-1.4 2.5-1.4 1.3 0 2.5 1 2.5 2.5 0 2-2 3.6-5 5.8Z`}
+                d={`M${x + 88} 233.5c-3-2.2-5-3.8-5-5.8 0-1.5 1.2-2.5 2.5-2.5 1 0 1.9.5 2.5 1.4.6-.9 1.5-1.4 2.5-1.4 1.3 0 2.5 1 2.5 2.5 0 2-2 3.6-5 5.8Z`}
                 fill={i === 1 ? CORAL : 'none'}
                 stroke={i === 1 ? CORAL : '#B4AEC6'}
                 strokeWidth={1.3}
               />
 
-              <text x={x + 10} y={342} fontSize={10} fontWeight={600} fill={TINTA}>
+              <text x={x + 10} y={348} fontSize={10} fontWeight={600} fill={TINTA}>
                 {p.nombre}
               </text>
 
-              <text x={x + 10} y={366} fontSize={12.5} fontWeight={700} fill={TINTA}>
+              <text x={x + 10} y={370} fontSize={12.5} fontWeight={700} fill={TINTA}>
                 {p.precio}
               </text>
               {p.antes ? (
-                <text x={x + 10} y={384} fontSize={8.5} fill="#B4AEC6" textDecoration="line-through">
+                <text x={x + 10} y={386} fontSize={8.5} fill="#B4AEC6" textDecoration="line-through">
                   {p.antes}
                 </text>
               ) : null}
               {p.stock ? (
-                <text x={x + 10} y={384} fontSize={8.5} fontWeight={600} fill={ROJO}>
+                <text x={x + 10} y={386} fontSize={8.5} fontWeight={600} fill={ROJO}>
                   {p.stock}
                 </text>
               ) : null}
@@ -409,15 +409,15 @@ export function TiendaListado() {
               {['#1B1733', '#C9B8A8', '#8FA5B8'].map((c, j) => (
                 <circle
                   key={c}
-                  cx={x + 14 + j * 13}
-                  cy={404}
-                  r={4.5}
+                  cx={x + 64 + j * 11}
+                  cy={382}
+                  r={4}
                   fill={c}
                   stroke={j === 0 ? '#FFFFFF' : 'none'}
                   strokeWidth={1.4}
                 />
               ))}
-              <text x={x + 56} y={407} fontSize={7.5} fill="#B4AEC6">
+              <text x={x + 92} y={385} fontSize={7.5} fill="#B4AEC6">
                 +2
               </text>
             </g>
@@ -426,15 +426,18 @@ export function TiendaListado() {
       </g>
 
       {/* ── Paginado: cierra el listado y sugiere que hay más ── */}
+      {/* El paginado va a la izquierda porque el toast ocupa la
+          derecha: los números quedan pegados al conteo, que es una
+          disposición que las tiendas usan igual. */}
       <g data-parte="paginado">
-        <text x={212} y={451} fontSize={9} fill={TENUE}>
+        <text x={212} y={425} fontSize={9} fill={TENUE}>
           Mostrando 4 de 61
         </text>
         {['1', '2', '3', '…', '9'].map((n, i) => (
           <g key={n} data-item>
             <rect
-              x={554 + i * 26}
-              y={436}
+              x={212 + i * 26}
+              y={434}
               width={20}
               height={20}
               rx={4}
@@ -442,8 +445,8 @@ export function TiendaListado() {
               stroke={i === 0 ? 'none' : '#E2DEEE'}
             />
             <text
-              x={564 + i * 26}
-              y={450}
+              x={222 + i * 26}
+              y={448}
               fontSize={9}
               fontWeight={i === 0 ? 700 : 400}
               fill={i === 0 ? '#FFF' : TENUE}
@@ -457,41 +460,41 @@ export function TiendaListado() {
 
       {/* ── Carrito: el toast que confirma el agregado ──
 
-          Va a la derecha, del lado del ícono del carrito: es de donde
-          sale y es donde toda tienda lo pone. Antes iba abajo a la
-          izquierda, en el hueco que dejaban los filtros; con la columna
-          poblada ese hueco no existe más.
+          Abajo a la derecha, que es donde toda tienda lo pone. Se apoya
+          entre el pie de las cards (400) y el borde, encima del
+          paginado sin taparlo: el paginado ocupa x 554-680 y el toast
+          arranca en 452.
 
-          A la altura de la grilla y no del banner: apoyado arriba
-          tapaba la mitad de la franja de campaña, que es justo lo que
-          el mockup acaba de presentar. */}
+          Pasó por dos lugares antes: abajo a la izquierda, cuando los
+          filtros dejaban ese hueco —hoy la columna llega al pie— y a la
+          altura de la grilla, donde quedaba demasiado arriba. */}
       <g data-parte="carrito">
         <rect
-          x={476}
-          y={218}
-          width={208}
-          height={58}
+          x={452}
+          y={406}
+          width={232}
+          height={50}
           rx={10}
           fill="#FFFFFF"
           filter="url(#sombraFlotante)"
         />
         <g data-item>
-        <Foto id="carritoThumb" href="/mockups/tienda-carrito.webp" x={486} y={226} w={42} h={42} rx={6} />
-        <circle cx={542} cy={238} r={7} fill="#EAF6EF" />
+        <Foto id="carritoThumb" href="/mockups/tienda-carrito.webp" x={461} y={413} w={36} h={36} rx={6} />
+        <circle cx={510} cy={423} r={6.5} fill="#EAF6EF" />
         <path
-          d="M539 238l2.2 2.2 4.2-4.4"
+          d="M507.2 423l2 2 3.9-4.1"
           fill="none"
           stroke={VERDE}
           strokeWidth={1.8}
           strokeLinecap="round"
         />
-        <text x={556} y={241} fontSize={9.5} fontWeight={600} fill={TINTA}>
+        <text x={523} y={426} fontSize={9.5} fontWeight={600} fill={TINTA}>
           Agregado al carrito
         </text>
-        <text x={539} y={259} fontSize={9} fill={TENUE}>
+        <text x={507} y={443} fontSize={9} fill={TENUE}>
           Sweater trenzado
         </text>
-        <text x={674} y={259} fontSize={10.5} fontWeight={700} fill={TINTA} textAnchor="end">
+        <text x={674} y={443} fontSize={10.5} fontWeight={700} fill={TINTA} textAnchor="end">
           $74.900
         </text>
         </g>
