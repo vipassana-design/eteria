@@ -225,6 +225,21 @@ No los repitas:
   siguiente. Un toast decía "Sweater trenzado · M**$74.900**".
 - **Elementos de tamaño 0** → quedan de una idea descartada. Buscá
   `r={0}` y `height={0}`.
+- **Degradé sobre una línea perfectamente horizontal o vertical** → no
+  se pinta, y el DOM no lo delata: el elemento está con `opacity: 1`.
+  Un `linearGradient`/`radialGradient` sin `gradientUnits` usa
+  `objectBoundingBox`, y una línea recta tiene caja de ancho o alto 0,
+  contra la que el degradé no se puede resolver. Pasó con dos radios
+  del diagrama de capacidades. La solución es
+  `gradientUnits="userSpaceOnUse"` con las coordenadas explícitas.
+  Para detectarlo:
+
+  ```js
+  for (const el of sv.querySelectorAll('[stroke^="url("], [fill^="url("]')) {
+    const b = el.getBBox()
+    if (b.width < 0.01 || b.height < 0.01) console.log('CAJA 0:', el.tagName)
+  }
+  ```
 - **Un badge sobre una zona clara de la foto** → el texto blanco
   desaparece. Poné el badge donde la foto es oscura, o dale fondo.
 - **`preserveAspectRatio="slice"` con contenedor de otra proporción** →

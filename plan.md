@@ -381,6 +381,10 @@ Con el quiebre, el pulso ya no puede ser un tween de `cx`/`cy`: cortaría en dia
 
 Las etiquetas subieron a **14px** en mobile —el cliente notó que había espacio de sobra—, el nodo a r=7,5 y el nombre del centro a 14px. La caja creció de 292 a 330 de alto para que las filas no quedaran a 4px entre sí. Verificado en cuatro anchos, de 1440 a 360: **0 trazos sobre texto, 0 etiquetas pisadas, 0 fuera de la caja**.
 
+**El degradé de los radios va en `userSpaceOnUse` anclado al centro.** Con el default (`objectBoundingBox`) cada línea resuelve el degradé contra su propia caja, y con seis nodos dos caen exactamente sobre el eje vertical —"Desarrollo" arriba e "Infraestructura" abajo—: su caja tiene ancho 0, el degradé no se puede resolver y el navegador no las pinta. Desaparecían las dos, y el cliente lo marcó. Anclado al centro el apagado es uno solo para todo el diagrama en lugar de repetirse dentro de cada línea, que además es lo que se quería.
+
+Es un bug que el DOM no muestra: el `<line>` está, con `opacity: 1` y `strokeDashoffset: 0`. Se detectó midiendo el ancho del `getBBox` de cada trazo y preguntando con `elementFromPoint` qué hay pintado en su punto medio.
+
 Se montan los dos SVG y CSS decide cuál se ve. Alternar con JavaScript pediría un estado de ancho de ventana que en el primer render no existe, y eso produce un salto al hidratar. La animación lee cuál está visible con `offsetParent !== null`: animar el oculto no haría nada, porque sus medidas son 0 y el pulso apuntaría al origen.
 
 ### 4.4 Servicios — cards apiladas

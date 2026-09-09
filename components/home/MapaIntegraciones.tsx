@@ -147,8 +147,26 @@ function Svg({ mobile }: { mobile: boolean }) {
     >
       <defs>
         {/* Los radios se apagan hacia afuera: la lectura va del centro
-            a las capacidades y no al revés. */}
-        <radialGradient id={`radioMapa-${suf}`}>
+            a las capacidades y no al revés.
+ 
+            Va en `userSpaceOnUse` y anclado al centro del diagrama, no
+            en el default `objectBoundingBox`. Con el default, cada
+            línea resuelve el degradé contra su propia caja, y las dos
+            exactamente verticales —"Desarrollo" arriba y
+            "Infraestructura" abajo, que con seis nodos caen sobre el
+            eje— tienen caja de ancho 0: el degradé no se puede
+            resolver y el navegador no las pinta. Desaparecían las dos.
+ 
+            Anclado al centro también queda mejor: el apagado es uno
+            solo para todo el diagrama en lugar de repetirse dentro de
+            cada línea. */}
+        <radialGradient
+          id={`radioMapa-${suf}`}
+          gradientUnits="userSpaceOnUse"
+          cx={centro.x}
+          cy={centro.y}
+          r={mobile ? CAJA_M.alto - CENTRO_M.y : RADIO}
+        >
           <stop offset="0%" stopColor="var(--color-violet-500)" stopOpacity={0.55} />
           <stop offset="100%" stopColor="var(--color-violet-500)" stopOpacity={0.12} />
         </radialGradient>
