@@ -2,6 +2,7 @@ import Reveal from '@/components/ui/Reveal'
 import TituloSeccion from '@/components/ui/TituloSeccion'
 import { proceso } from '@/content/proceso'
 import { landingUi } from '@/content/landings'
+import Glow from '@/components/bg/Glow'
 
 /** Versión compacta del proceso para las landings (PLAN.md §5).
  *
@@ -11,6 +12,7 @@ import { landingUi } from '@/content/landings'
 export default function LandingProceso() {
   return (
     <section id="proceso" className="seccion relative scroll-mt-24 border-t border-hairline">
+      <Glow className="-right-56 top-16" tamano={580} intensidad={0.55} soloDesktop />
       <div className="contenedor">
         <TituloSeccion
           degrade={landingUi.tituloProcesoDegrade}

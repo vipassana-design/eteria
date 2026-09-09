@@ -8,6 +8,7 @@ import Boton from '@/components/ui/Boton'
 import { seccionServicios, servicios } from '@/content/servicios'
 import { CicloPantalla } from './CicloPantalla'
 import { PANTALLAS_SERVICIO } from './PantallasServicio'
+import Glow from '@/components/bg/Glow'
 
 /** Sección "Servicios" — cards apiladas (PLAN.md §4.4).
  *
@@ -114,6 +115,7 @@ export default function Servicios() {
 
   return (
     <section ref={raiz} id="servicios" className="seccion relative scroll-mt-24">
+      <Glow className="-right-60 top-24" tamano={620} intensidad={0.6} soloDesktop />
       <div className="contenedor">
         <TituloSeccion degrade={seccionServicios.tituloDegrade} bajada={seccionServicios.bajada}>
           {seccionServicios.titulo}

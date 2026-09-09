@@ -2,6 +2,7 @@ import Reveal from '@/components/ui/Reveal'
 import TituloSeccion from '@/components/ui/TituloSeccion'
 import { landingUi } from '@/content/landings'
 import type { Beneficio } from '@/types'
+import Glow from '@/components/bg/Glow'
 
 /** Beneficios de una landing (PLAN.md §5).
  *
@@ -10,6 +11,7 @@ import type { Beneficio } from '@/types'
 export default function LandingBeneficios({ beneficios }: { beneficios: Beneficio[] }) {
   return (
     <section id="incluye" className="seccion relative scroll-mt-24">
+      <Glow className="-left-60 top-12" tamano={600} intensidad={0.6} soloDesktop />
       <div className="contenedor">
         <TituloSeccion>{landingUi.tituloBeneficios}</TituloSeccion>
 

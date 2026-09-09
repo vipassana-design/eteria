@@ -7,6 +7,7 @@ import TituloSeccion from '@/components/ui/TituloSeccion'
 import { mockups, seccionSoluciones } from '@/content/mockups'
 import { PANTALLAS } from './PantallasMockup'
 import MockupModal from './MockupModal'
+import Glow from '@/components/bg/Glow'
 
 /** Sección "Soluciones" — carrusel de mockups (PLAN.md §4.6).
  *
@@ -218,6 +219,11 @@ export default function Soluciones() {
   return (
     <>
       <section ref={raiz} id="soluciones" className="seccion relative scroll-mt-24 overflow-hidden">
+        {/* La sección lleva overflow-hidden por el drag del carrusel,
+            así que el glow no puede salirse con un offset negativo:
+            quedaría cortado en seco contra el borde. Va adentro y más
+            grande, para que el degradé alcance el borde por su cuenta. */}
+        <Glow className="right-0 top-20" tamano={680} intensidad={0.55} soloDesktop />
         <div className="contenedor">
           <TituloSeccion degrade={seccionSoluciones.tituloDegrade} bajada={seccionSoluciones.bajada}>
             {seccionSoluciones.titulo}

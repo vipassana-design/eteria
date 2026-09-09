@@ -367,6 +367,30 @@ Queda así el reparto: **el azul lleva títulos, botones y enlaces; el violeta e
 
 Verificado midiendo el color resuelto: el glow da `srgb 0.545 0.361 0.965` = #8B5CF6 en la home y en las tres landings.
 
+### El glow de sección, alternado (revisión del cliente)
+
+Existía solo en dos secciones —"Sobre nosotros" a la izquierda y Contacto a la derecha— con cuatro secciones sin nada en medio, así que el recurso se leía como dos apariciones sueltas en lugar de un patrón. Ahora acompaña todo el scroll, alternando de lado:
+
+| | Home | Landings |
+|---|---|---|
+| Hero | fondo mesh + flujo | fondo mesh + flujo |
+| 2ª sección | Sobre nosotros **izq** | Qué incluye **izq** |
+| 3ª | Servicios **der** | Cómo trabajamos **der** |
+| 4ª | Proceso **izq** | Contacto **izq** |
+| 5ª | Soluciones **der** | — |
+| 6ª | Stack **izq** | — |
+| 7ª | Contacto **der** | — |
+
+Verificado midiendo el centro de cada glow contra el de su sección: **IZQ → DER → IZQ → DER → IZQ → DER** en la home y **IZQ → DER → IZQ** en las landings, sin repetir lado.
+
+**Contacto lleva una prop `glowIzquierda`.** Es el mismo componente en la home y en las landings: en la home cierra la alternancia por la derecha, pero en las landings "Cómo trabajamos" ya tiene el suyo a la derecha y Contacto viene enseguida, así que dos secciones seguidas quedaban del mismo lado —lo marcó el cliente. La prop lo invierte sin mover el de la home.
+
+**Soluciones lo lleva adentro de la caja.** Esa sección tiene `overflow-hidden` por el drag del carrusel, así que un offset negativo dejaría el glow cortado en seco contra el borde: va con `right-0` y más grande, para que el degradé alcance el borde por su cuenta.
+
+**Los cuatro nuevos son `soloDesktop`.** Cada glow es una capa con `blur-3xl` y el desenfoque se paga en cada frame aunque el parallax no corra —ya está limitado a `lg`. Con los seis activos, el scroll en un teléfono modesto (CPU 4× más lenta) caía de 56 a 38 fps. Se apagan abajo de `lg` los de refuerzo y se quedan los dos que abren y cierran la página, así en mobile el recurso no desaparece del todo. Verificado: en 390px se renderizan **2 de 6**.
+
+Los tamaños e intensidades bajan hacia el medio del recorrido (0,75 y 0,70 en las puntas, 0,50-0,60 en el medio): seis glows con el mismo peso competirían con el contenido.
+
 ### El halo de la ventana del mockup
 
 Una línea en degradé que recorre el borde de la ventana del hero, como si se fuera encendiendo por tramos. Marca la ventana sin agregarle nada adentro, que es lo que importa: el mockup ya está lleno.

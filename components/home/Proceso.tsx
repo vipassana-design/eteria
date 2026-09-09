@@ -6,6 +6,7 @@ import { dur, ease } from '@/lib/motion'
 import TituloSeccion from '@/components/ui/TituloSeccion'
 import { proceso, seccionProceso } from '@/content/proceso'
 import { ILUSTRACIONES } from './IlustracionesProceso'
+import Glow from '@/components/bg/Glow'
 
 /** Colores del encendido. Se leen de los tokens y no se hardcodean:
  *  GSAP no resuelve `var()` al interpolar un color, así que hay que
@@ -163,6 +164,7 @@ export default function Proceso() {
 
   return (
     <section ref={raiz} id="proceso" className="seccion relative scroll-mt-24">
+      <Glow className="-left-60 top-16" tamano={580} intensidad={0.55} soloDesktop />
       <div className="contenedor">
         <TituloSeccion degrade={seccionProceso.tituloDegrade} bajada={seccionProceso.bajada}>
           {seccionProceso.titulo}

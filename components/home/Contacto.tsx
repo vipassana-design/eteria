@@ -34,6 +34,13 @@ interface Props {
   tipoPreseleccionado?: TipoProyecto
   /** En las landings la sección va sin su propio título. */
   conTitulo?: boolean
+  /** El glow de sección a la izquierda en lugar de la derecha.
+   *
+   *  En la home Contacto cierra la alternancia de glows por la derecha.
+   *  En las landings "Cómo trabajamos" ya tiene el suyo a la derecha y
+   *  Contacto viene enseguida: sin invertir, dos secciones seguidas
+   *  quedan del mismo lado y se pierde la alternancia. */
+  glowIzquierda?: boolean
 }
 
 /** Sección de contacto (PLAN.md §4.8).
@@ -45,7 +52,11 @@ interface Props {
  *  resultado: el hosting no está definido (§8.4). Este componente no
  *  sabe cómo viaja el mensaje.
  */
-export default function Contacto({ tipoPreseleccionado, conTitulo = true }: Props) {
+export default function Contacto({
+  tipoPreseleccionado,
+  conTitulo = true,
+  glowIzquierda = false,
+}: Props) {
   const raiz = useRef<HTMLElement>(null)
   const [datos, setDatos] = useState<DatosConsulta>({
     ...VACIO,
@@ -121,7 +132,11 @@ export default function Contacto({ tipoPreseleccionado, conTitulo = true }: Prop
 
   return (
     <section ref={raiz} id="contacto" className="seccion relative scroll-mt-24">
-      <Glow className="-right-52 top-10" tamano={720} intensidad={0.75} />
+      <Glow
+        className={glowIzquierda ? '-left-52 top-10' : '-right-52 top-10'}
+        tamano={720}
+        intensidad={0.75}
+      />
 
       <div className="contenedor grid gap-14 lg:grid-cols-[1fr_1.15fr] lg:gap-20">
         {/* Columna izquierda: texto y contacto directo */}

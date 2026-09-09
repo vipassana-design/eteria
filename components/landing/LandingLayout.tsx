@@ -16,7 +16,10 @@ export default function LandingLayout({ landing }: { landing: Landing }) {
       <LandingHero landing={landing} />
       <LandingBeneficios beneficios={landing.beneficios} />
       <LandingProceso />
-      <Contacto tipoPreseleccionado={landing.tipoPreseleccionado} />
+      {/* El glow va a la izquierda acá: "Cómo trabajamos", que viene
+          justo antes, ya tiene el suyo a la derecha. En la home Contacto
+          cierra la alternancia por la derecha y se queda así. */}
+      <Contacto tipoPreseleccionado={landing.tipoPreseleccionado} glowIzquierda />
     </>
   )
 }

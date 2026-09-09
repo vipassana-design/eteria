@@ -2,6 +2,7 @@ import Reveal from '@/components/ui/Reveal'
 import TituloSeccion from '@/components/ui/TituloSeccion'
 import { seccionStack, stack } from '@/content/stack'
 import { LOGOS } from './LogosStack'
+import Glow from '@/components/bg/Glow'
 
 /** Sección "Stack" (PLAN.md §4.7).
  *
@@ -15,6 +16,7 @@ import { LOGOS } from './LogosStack'
 export default function Stack() {
   return (
     <section id="stack" className="seccion relative scroll-mt-24">
+      <Glow className="-left-56 top-8" tamano={560} intensidad={0.5} soloDesktop />
       <div className="contenedor">
         <TituloSeccion degrade={seccionStack.tituloDegrade} bajada={seccionStack.bajada}>
           {seccionStack.titulo}

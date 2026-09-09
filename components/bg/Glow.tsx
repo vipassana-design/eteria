@@ -18,6 +18,15 @@ interface Props {
   desplazamiento?: number
   /** Intensidad relativa, 1 = la del token. */
   intensidad?: number
+  /** Solo desde `lg`.
+   *
+   *  Cada glow es una capa con `blur-3xl`, y el desenfoque se paga en
+   *  cada frame aunque el parallax no corra. Con los seis de la home el
+   *  scroll en un teléfono modesto —CPU 4× más lenta— cayó de 56 a 38
+   *  fps. Los glows de refuerzo se apagan ahí; los que abren y cierran
+   *  la página se quedan, para que en mobile el recurso no desaparezca
+   *  del todo. */
+  soloDesktop?: boolean
 }
 
 export default function Glow({
@@ -25,6 +34,7 @@ export default function Glow({
   tamano = 620,
   desplazamiento = 140,
   intensidad = 1,
+  soloDesktop = false,
 }: Props) {
   const raiz = useRef<HTMLDivElement>(null)
 
@@ -63,7 +73,9 @@ export default function Glow({
     <div
       ref={raiz}
       aria-hidden="true"
-      className={`pointer-events-none absolute -z-10 aspect-square rounded-full blur-3xl ${className}`}
+      className={`pointer-events-none absolute -z-10 aspect-square rounded-full blur-3xl ${
+        soloDesktop ? "hidden lg:block" : ""
+      } ${className}`}
       style={{
         // El tope en vw evita que en mobile el glow sea desproporcionado
         // respecto de la pantalla. La capa #capa-sitio del layout se
