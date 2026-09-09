@@ -1,4 +1,4 @@
-import { Foto, Lienzo, TENUE } from './LienzoMockup'
+import { ALTOS, Foto, Lienzo, TENUE } from './LienzoMockup'
 
 /** Sitios institucionales: la home de un estudio profesional.
  *
@@ -10,6 +10,10 @@ import { Foto, Lienzo, TENUE } from './LienzoMockup'
  *
  *  Paleta propia, verde profundo sobre crema: se distingue del azul de
  *  la ficha y del azul corporativo del hero.
+ *
+ *  Va en el lienzo alto de las cards de servicios (720×538): con el
+ *  de 460 quedaban franjas del color de fondo arriba y abajo, porque
+ *  la celda es más alta de proporción que la ventana del hero.
  *
  *  Partes: barra → hero → areas → equipo → cifras → notas.
  */
@@ -31,6 +35,16 @@ const CIFRAS = [
   { v: '14', e: 'profesionales' },
 ]
 
+/** Cuatro socios: las iniciales en un círculo y su especialidad. Sin
+ *  fotos de personas, que en el mockup de un estudio ajeno serían
+ *  fotos de stock de gente en traje. */
+const EQUIPO = [
+  { ini: 'MA', n: 'M. Alvear', esp: 'Societario' },
+  { ini: 'JP', n: 'J. Pereyra', esp: 'Laboral' },
+  { ini: 'CS', n: 'C. Sosa', esp: 'Tributario' },
+  { ini: 'RB', n: 'R. Bustos', esp: 'Litigios' },
+]
+
 const NOTAS = [
   { foto: '/mockups/estudio-nota-1.webp', t: 'Reforma del régimen de contratos', f: '18 mar' },
   { foto: '/mockups/estudio-nota-2.webp', t: 'Nuevo esquema de retenciones', f: '02 mar' },
@@ -39,7 +53,7 @@ const NOTAS = [
 
 export function SitioEstudio() {
   return (
-    <Lienzo fondo={CREMA}>
+    <Lienzo fondo={CREMA} alto={ALTOS.celda}>
       {/* ── Barra: navegación de estudio, con el CTA de consulta ── */}
       <g data-parte="barra">
         <rect width={720} height={52} fill={CREMA} />
@@ -88,10 +102,10 @@ export function SitioEstudio() {
              derecha: así los dos mockups no se leen como el mismo
              layout con otro color. ── */}
       <g data-parte="hero">
-        <Foto id="estHero" href="/mockups/estudio-hero.webp" x={0} y={53} w={300} h={168} rx={0} />
+        <Foto id="estHero" href="/mockups/estudio-hero.webp" x={0} y={53} w={300} h={200} rx={0} />
         {/* Velo verde sobre la foto: la ata a la paleta del sitio y le
             baja el contraste para que el texto de al lado gane peso. */}
-        <rect x={0} y={53} width={300} height={168} fill={VERDE} opacity={0.28} />
+        <rect x={0} y={53} width={300} height={200} fill={VERDE} opacity={0.28} />
 
         <g data-item>
           <rect x={332} y={78} width={26} height={2} fill={DORADO} />
@@ -149,49 +163,79 @@ export function SitioEstudio() {
         ))}
       </g>
 
+      {/* ── Equipo: cuatro socios con su especialidad. Es lo que un
+             estudio pone en su home, y llena la franja que el lienzo
+             alto deja entre las áreas y las cifras. ── */}
+      <g data-parte="equipo">
+        <text x={32} y={340} fontSize={11} fontWeight={700} fill={VERDE}>
+          El equipo
+        </text>
+        {EQUIPO.map((m, i) => (
+          <g key={m.n} data-item>
+            <circle cx={52 + i * 168} cy={374} r={17} fill="#EDE8DC" />
+            <text
+              x={52 + i * 168}
+              y={379}
+              fontSize={11}
+              fontWeight={700}
+              fill={VERDE}
+              textAnchor="middle"
+            >
+              {m.ini}
+            </text>
+            <text x={78 + i * 168} y={370} fontSize={9} fontWeight={600} fill={VERDE}>
+              {m.n}
+            </text>
+            <text x={78 + i * 168} y={382} fontSize={7.5} fill={TENUE}>
+              {m.esp}
+            </text>
+          </g>
+        ))}
+      </g>
+
       {/* ── Cifras del estudio ── */}
       <g data-parte="cifras">
-        <rect y={326} width={720} height={48} fill={VERDE} />
+        <rect y={404} width={720} height={48} fill={VERDE} />
         {CIFRAS.map((c, i) => (
           <g key={c.e} data-item>
-            <text x={40 + i * 230} y={352} fontSize={18} fontWeight={700} fill={CREMA}>
+            <text x={40 + i * 230} y={430} fontSize={18} fontWeight={700} fill={CREMA}>
               {c.v}
             </text>
-            <text x={40 + i * 230} y={365} fontSize={8.5} fill="#A8C4B6">
+            <text x={40 + i * 230} y={443} fontSize={8.5} fill="#A8C4B6">
               {c.e}
             </text>
             {i < CIFRAS.length - 1 ? (
               <line
                 x1={40 + i * 230 + 200}
-                y1={338}
+                y1={416}
                 x2={40 + i * 230 + 200}
-                y2={362}
+                y2={440}
                 stroke={VERDE_CLARO}
                 strokeWidth={1}
               />
             ) : null}
           </g>
         ))}
-        <text x={688} y={358} fontSize={8.5} fill="#A8C4B6" textAnchor="end">
+        <text x={688} y={436} fontSize={8.5} fill="#A8C4B6" textAnchor="end">
           Matrícula CPACF T° 48
         </text>
       </g>
 
       {/* ── Publicaciones ── */}
       <g data-parte="notas">
-        <text x={32} y={398} fontSize={11} fontWeight={700} fill={VERDE}>
+        <text x={32} y={478} fontSize={11} fontWeight={700} fill={VERDE}>
           Publicaciones
         </text>
-        <text x={688} y={398} fontSize={8.5} fill={DORADO} textAnchor="end">
+        <text x={688} y={478} fontSize={8.5} fill={DORADO} textAnchor="end">
           Ver todas
         </text>
         {NOTAS.map((n, i) => (
           <g key={n.t} data-item>
-            <Foto id={`estNota${i}`} href={n.foto} x={32 + i * 224} y={408} w={52} h={34} rx={2} />
-            <text x={92 + i * 224} y={420} fontSize={8.5} fontWeight={600} fill={VERDE}>
+            <Foto id={`estNota${i}`} href={n.foto} x={32 + i * 224} y={490} w={52} h={36} rx={2} />
+            <text x={92 + i * 224} y={504} fontSize={8.5} fontWeight={600} fill={VERDE}>
               {n.t.length > 24 ? `${n.t.slice(0, 23)}…` : n.t}
             </text>
-            <text x={92 + i * 224} y={434} fontSize={7.5} fill={TENUE}>
+            <text x={92 + i * 224} y={518} fontSize={7.5} fill={TENUE}>
               {n.f}
             </text>
           </g>

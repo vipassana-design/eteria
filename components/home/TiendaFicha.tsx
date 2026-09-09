@@ -1,4 +1,4 @@
-import { Foto, Lienzo, LINEA, TENUE, TINTA } from './LienzoMockup'
+import { ALTOS, Foto, Lienzo, LINEA, TENUE, TINTA } from './LienzoMockup'
 
 /** Ecommerce: la ficha de un producto de tecnología.
  *
@@ -11,7 +11,12 @@ import { Foto, Lienzo, LINEA, TENUE, TINTA } from './LienzoMockup'
  *  cliente. Paleta propia, azul frío: es el sitio de otro, no el
  *  nuestro.
  *
- *  Partes: barra → galería → ficha → variantes → envío → relacionados.
+ *  Va en el lienzo alto de las cards de servicios (720×538): con el
+ *  de 460 quedaban franjas del color de fondo arriba y abajo, porque
+ *  la celda es más alta de proporción que la ventana del hero.
+ *
+ *  Partes: barra → galería → ficha → variantes → envío → especificaciones
+ *  → relacionados.
  */
 
 const AZUL = '#2563EB'
@@ -31,6 +36,16 @@ const CAPACIDADES = [
   { t: '512 GB', on: false },
 ]
 
+/** Especificaciones del producto. Cuatro pares clave-valor: es el
+ *  bloque que toda ficha tiene debajo de la compra, y da densidad sin
+ *  necesitar más fotos. */
+const ESPECIFICACIONES = [
+  { k: 'Pantalla', v: '6,7" OLED 120 Hz' },
+  { k: 'Procesador', v: 'Octa-core 3,2 GHz' },
+  { k: 'Cámara', v: '50 + 12 + 10 MP' },
+  { k: 'Batería', v: '5.000 mAh · 45 W' },
+]
+
 const RELACIONADOS = [
   { foto: '/mockups/tec-relacionado-1.webp', nombre: 'Notebook 14"', precio: '$1.240.000' },
   { foto: '/mockups/tec-relacionado-2.webp', nombre: 'Monitor 27"', precio: '$486.000' },
@@ -39,7 +54,7 @@ const RELACIONADOS = [
 
 export function TiendaFicha() {
   return (
-    <Lienzo>
+    <Lienzo alto={ALTOS.celda}>
       {/* ── Barra: categorías de tecnología y buscador ── */}
       <g data-parte="barra">
         <rect width={720} height={44} fill="#FFFFFF" />
@@ -102,8 +117,8 @@ export function TiendaFicha() {
           Celulares / Gama alta / Aurora X9 Pro
         </text>
 
-        <rect x={32} y={78} width={272} height={272} rx={10} fill="#F6F8FC" />
-        <Foto id="fichaHero" href="/mockups/tec-hero.webp" x={32} y={78} w={272} h={272} rx={10} />
+        <rect x={32} y={78} width={272} height={318} rx={10} fill="#F6F8FC" />
+        <Foto id="fichaHero" href="/mockups/tec-hero.webp" x={32} y={78} w={272} h={318} rx={10} />
 
         {/* Badge de stock sobre la foto, en la zona oscura de la madera. */}
         <g data-item>
@@ -116,10 +131,10 @@ export function TiendaFicha() {
 
         {THUMBS.map((src, i) => (
           <g key={src} data-item>
-            <Foto id={`fichaThumb${i}`} href={src} x={32 + i * 62} y={362} w={54} h={54} rx={7} />
+            <Foto id={`fichaThumb${i}`} href={src} x={32 + i * 62} y={408} w={54} h={54} rx={7} />
             <rect
               x={32 + i * 62}
-              y={362}
+              y={408}
               width={54}
               height={54}
               rx={7}
@@ -274,13 +289,40 @@ export function TiendaFicha() {
         </g>
       </g>
 
-      {/* ── Relacionados: cierra la ficha con más catálogo ──
+      {/* ── Especificaciones: es lo que hay debajo del bloque de
+             compra en cualquier ficha, y llena la franja que el lienzo
+             alto deja libre entre los botones y el pie. ── */}
+      <g data-parte="especificaciones">
+        <line x1={330} y1={412} x2={688} y2={412} stroke={LINEA} strokeWidth={1} />
+        <text x={330} y={434} fontSize={10} fontWeight={600} fill={TINTA}>
+          Especificaciones
+        </text>
+        {ESPECIFICACIONES.map((e, i) => (
+          <g key={e.k} data-item>
+            <text x={330 + (i % 2) * 184} y={456 + Math.floor(i / 2) * 20} fontSize={8.5} fill={TENUE}>
+              {e.k}
+            </text>
+            <text
+              x={330 + (i % 2) * 184 + 74}
+              y={456 + Math.floor(i / 2) * 20}
+              fontSize={8.5}
+              fontWeight={600}
+              fill={TINTA}
+            >
+              {e.v}
+            </text>
+          </g>
+        ))}
+      </g>
 
-          Van en la columna derecha, debajo de los botones: abajo de la
-          galería no hay lugar —la foto grande llega a y=350 y las
-          miniaturas a 416— y el lienzo termina en 460. */}
+      {/* ── Relacionados: cierra la ficha con más catálogo.
+
+             Van a todo el ancho al pie, debajo de la galería y de la
+             columna de compra: con el lienzo alto hay lugar para una
+             fila completa en lugar de tres miniaturas apretadas. ── */}
       <g data-parte="relacionados">
-        <text x={330} y={412} fontSize={9.5} fontWeight={600} fill={TINTA}>
+        <rect y={508} width={720} height={30} fill="#F6F8FC" />
+        <text x={32} y={527} fontSize={9} fontWeight={600} fill={TINTA}>
           Quien vio esto también vio
         </text>
         {RELACIONADOS.map((r, i) => (
@@ -288,16 +330,16 @@ export function TiendaFicha() {
             <Foto
               id={`fichaRel${i}`}
               href={r.foto}
-              x={330 + i * 120}
-              y={420}
-              w={34}
-              h={28}
-              rx={4}
+              x={186 + i * 178}
+              y={512}
+              w={30}
+              h={22}
+              rx={3}
             />
-            <text x={370 + i * 120} y={431} fontSize={8} fill={TINTA}>
-              {r.nombre.length > 13 ? `${r.nombre.slice(0, 12)}…` : r.nombre}
+            <text x={222 + i * 178} y={521} fontSize={8} fill={TINTA}>
+              {r.nombre.length > 15 ? `${r.nombre.slice(0, 14)}…` : r.nombre}
             </text>
-            <text x={370 + i * 120} y={443} fontSize={8} fontWeight={600} fill={AZUL}>
+            <text x={222 + i * 178} y={532} fontSize={8} fontWeight={600} fill={AZUL}>
               {r.precio}
             </text>
           </g>

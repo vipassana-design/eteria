@@ -47,10 +47,27 @@ export function DefsComunes() {
   )
 }
 
-export function Lienzo({ children, fondo = PAPEL }: { children: React.ReactNode; fondo?: string }) {
+/** Alto del lienzo según dónde se monta.
+ *
+ *  `ventana` es 16:10, la proporción de la ventana del hero.
+ *  `celda` es 720×538, la de la mitad derecha de las cards de
+ *  servicios: ahí la celda mide 575×430 —ratio 1.337— y con el lienzo
+ *  de 460 el SVG se ajustaba al ancho y dejaba franjas del color de
+ *  fondo arriba y abajo. */
+export const ALTOS = { ventana: 460, celda: 538 } as const
+
+export function Lienzo({
+  children,
+  fondo = PAPEL,
+  alto = ALTOS.ventana,
+}: {
+  children: React.ReactNode
+  fondo?: string
+  alto?: number
+}) {
   return (
-    <svg viewBox="0 0 720 460" className="size-full" aria-hidden="true">
-      <rect width={720} height={460} fill={fondo} />
+    <svg viewBox={`0 0 720 ${alto}`} className="size-full" aria-hidden="true">
+      <rect width={720} height={alto} fill={fondo} />
       <DefsComunes />
       {children}
     </svg>

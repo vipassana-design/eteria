@@ -1,4 +1,4 @@
-import { Lienzo, LINEA, TENUE, TINTA } from './LienzoMockup'
+import { ALTOS, Lienzo, LINEA, TENUE, TINTA } from './LienzoMockup'
 
 /** Software a medida: el tablero de trabajo del equipo.
  *
@@ -13,6 +13,10 @@ import { Lienzo, LINEA, TENUE, TINTA } from './LienzoMockup'
  *
  *  Paleta propia, gris azulado con acento índigo: se distingue del
  *  azul de la ficha y del verde del estudio.
+ *
+ *  Va en el lienzo alto de las cards (720×538). Las columnas llegan
+ *  hasta el pie y cada una lleva dos a cuatro tarjetas: con el lienzo
+ *  corto quedaba media columna vacía debajo de la última.
  *
  *  Partes: barra → filtros → columnas → tarjetas → resumen.
  */
@@ -36,18 +40,29 @@ const TARJETAS = [
   [
     { id: '#5142', cli: 'Distribuidora Sur', monto: '$284.500', quien: 'MF', alta: true },
     { id: '#5141', cli: 'Ferretería Norte', monto: '$62.300', quien: 'LO', alta: false },
+    { id: '#5140', cli: 'Bazar Belgrano', monto: '$41.700', quien: 'CI', alta: false },
+    { id: '#5139', cli: 'Pinturería Río', monto: '$126.800', quien: 'RD', alta: false },
   ],
   [
     { id: '#5138', cli: 'Corralón Este', monto: '$1.120.000', quien: 'RD', alta: true },
     { id: '#5137', cli: 'Kiosco 24hs', monto: '$18.900', quien: 'MF', alta: false },
+    { id: '#5136', cli: 'Vidriería Sur', monto: '$318.200', quien: 'LO', alta: false },
   ],
-  [{ id: '#5130', cli: 'Almacén Central', monto: '$402.000', quien: 'CI', alta: false }],
-  [{ id: '#5122', cli: 'Mayorista Oeste', monto: '$860.400', quien: 'LO', alta: false }],
+  [
+    { id: '#5130', cli: 'Almacén Central', monto: '$402.000', quien: 'CI', alta: false },
+    { id: '#5129', cli: 'Herrería Norte', monto: '$74.600', quien: 'MF', alta: false },
+    { id: '#5128', cli: 'Cerrajería Oeste', monto: '$96.400', quien: 'LO', alta: false },
+  ],
+  [
+    { id: '#5122', cli: 'Mayorista Oeste', monto: '$860.400', quien: 'LO', alta: false },
+    { id: '#5121', cli: 'Panadería Luján', monto: '$28.300', quien: 'RD', alta: false },
+    { id: '#5118', cli: 'Textil Avellaneda', monto: '$540.900', quien: 'CI', alta: false },
+  ],
 ]
 
 export function PanelKanban() {
   return (
-    <Lienzo fondo={GRIS}>
+    <Lienzo fondo={GRIS} alto={ALTOS.celda}>
       {/* ── Barra superior ── */}
       <g data-parte="barra">
         <rect width={720} height={46} fill="#FFFFFF" />
@@ -143,7 +158,7 @@ export function PanelKanban() {
       <g data-parte="columnas">
         {COLUMNAS.map((c, i) => (
           <g key={c.t} data-item>
-            <rect x={28 + i * 168} y={96} width={156} height={318} rx={8} fill="#EAECF0" opacity={0.7} />
+            <rect x={28 + i * 168} y={96} width={156} height={396} rx={8} fill="#EAECF0" opacity={0.7} />
             <circle cx={44 + i * 168} cy={114} r={3.5} fill={c.color} />
             <text x={54 + i * 168} y={117.5} fontSize={9.5} fontWeight={600} fill={TINTA}>
               {c.t}
@@ -170,9 +185,9 @@ export function PanelKanban() {
             <g key={t.id} data-item>
               <rect
                 x={38 + ci * 168}
-                y={132 + ti * 82}
+                y={132 + ti * 89}
                 width={136}
-                height={70}
+                height={76}
                 rx={6}
                 fill="#FFFFFF"
                 filter="url(#sombraCard)"
@@ -180,22 +195,22 @@ export function PanelKanban() {
               {/* Franja del estado, del color de su columna. */}
               <rect
                 x={38 + ci * 168}
-                y={132 + ti * 82}
+                y={132 + ti * 89}
                 width={3}
-                height={70}
+                height={76}
                 rx={1.5}
                 fill={COLUMNAS[ci]!.color}
               />
 
-              <text x={50 + ci * 168} y={148 + ti * 82} fontSize={9} fontWeight={700} fill={TINTA}>
+              <text x={50 + ci * 168} y={148 + ti * 89} fontSize={9} fontWeight={700} fill={TINTA}>
                 {t.id}
               </text>
               {t.alta ? (
                 <>
-                  <rect x={82 + ci * 168} y={139 + ti * 82} width={34} height={13} rx={6.5} fill="#FEF2F2" />
+                  <rect x={82 + ci * 168} y={139 + ti * 89} width={34} height={13} rx={6.5} fill="#FEF2F2" />
                   <text
                     x={99 + ci * 168}
-                    y={148.5 + ti * 82}
+                    y={148.5 + ti * 89}
                     fontSize={7}
                     fontWeight={700}
                     fill="#DC2626"
@@ -206,18 +221,18 @@ export function PanelKanban() {
                 </>
               ) : null}
 
-              <text x={50 + ci * 168} y={165 + ti * 82} fontSize={8.5} fill={TENUE}>
+              <text x={50 + ci * 168} y={165 + ti * 89} fontSize={8.5} fill={TENUE}>
                 {t.cli.length > 18 ? `${t.cli.slice(0, 17)}…` : t.cli}
               </text>
-              <text x={50 + ci * 168} y={182 + ti * 82} fontSize={10} fontWeight={700} fill={TINTA}>
+              <text x={50 + ci * 168} y={182 + ti * 89} fontSize={10} fontWeight={700} fill={TINTA}>
                 {t.monto}
               </text>
 
               {/* Quién lo tiene asignado. */}
-              <circle cx={160 + ci * 168} cy={178 + ti * 82} r={8} fill="#E4E7EC" />
+              <circle cx={160 + ci * 168} cy={178 + ti * 89} r={8} fill="#E4E7EC" />
               <text
                 x={160 + ci * 168}
-                y={181 + ti * 82}
+                y={181 + ti * 89}
                 fontSize={7}
                 fontWeight={700}
                 fill="#5B6472"
@@ -232,17 +247,17 @@ export function PanelKanban() {
 
       {/* ── Resumen al pie ── */}
       <g data-parte="resumen">
-        <rect y={422} width={720} height={38} fill="#FFFFFF" />
+        <rect y={500} width={720} height={38} fill="#FFFFFF" />
         {[
           { t: 'Total de la semana', v: '$4.286.400' },
           { t: 'Promedio', v: '$194.836' },
           { t: 'Pendientes de despacho', v: '13' },
         ].map((r, i) => (
           <g key={r.t} data-item>
-            <text x={28 + i * 200} y={444} fontSize={8.5} fill={TENUE}>
+            <text x={28 + i * 200} y={522} fontSize={8.5} fill={TENUE}>
               {r.t}
             </text>
-            <text x={28 + i * 200 + (i === 2 ? 122 : 102)} y={444} fontSize={8.5} fontWeight={700} fill={TINTA}>
+            <text x={28 + i * 200 + (i === 2 ? 122 : 102)} y={522} fontSize={8.5} fontWeight={700} fill={TINTA}>
               {r.v}
             </text>
           </g>

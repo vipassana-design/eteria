@@ -24,6 +24,14 @@ import { integraciones, mapaUi } from '@/content/integraciones'
  *  de tres debajo, así cada etiqueta tiene media columna de ancho en
  *  lugar de un radio comprimido.
  *
+ *  **La conexión también cambia de forma.** En desktop es un radio
+ *  recto, que es lo que la disposición radial pide. En mobile el mismo
+ *  radio saldría en diagonal del centro hacia cada esquina y cruzaría
+ *  por encima de las etiquetas, que están justo ahí. Se reemplaza por
+ *  una ruta en L: baja por el eje y dobla horizontal a la altura del
+ *  nodo. Nunca pisa texto, y de paso lee como un diagrama de sistema
+ *  en lugar de una estrella apretada.
+ *
  *  Se montan los dos SVG y CSS decide cuál se ve. Alternar con
  *  JavaScript pediría un estado de ancho de ventana que en el primer
  *  render no existe, y eso produce un salto al hidratar.
@@ -45,9 +53,15 @@ const RADIO = 132
 
 // ──────────────────────────── Mobile ────────────────────────────
 
-/** Más alta que ancha: el centro arriba y los nodos debajo. */
-const CAJA_M = { ancho: 320, alto: 292 }
-const CENTRO_M = { x: CAJA_M.ancho / 2, y: 44 }
+/** Más alta que ancha: el centro arriba y los nodos debajo.
+ *
+ *  Creció de 292 a 330 de alto al separar las filas: con las etiquetas
+ *  a 14px las de una fila y la siguiente quedaban a 4px de distancia. */
+const CAJA_M = { ancho: 320, alto: 330 }
+const CENTRO_M = { x: CAJA_M.ancho / 2, y: 46 }
+
+/** Separación entre filas de nodos, en mobile. */
+const PASO_M = 66
 
 /** Radio del bloque central, en cada modo. */
 const R_CENTRO = 46
@@ -78,16 +92,39 @@ function posicion(i: number, total: number): Punto {
 
 /** Posición en mobile: dos columnas de tres debajo del centro.
  *
- *  Los nodos van sobre el borde exterior de cada columna y la etiqueta
- *  hacia adentro, así las dos columnas se leen espejadas y ninguna
- *  etiqueta cruza el eje. */
+ *  El nodo va del lado **interno** de su columna y la etiqueta hacia
+ *  afuera. Es lo contrario de lo que parece natural, y es por la ruta
+ *  en L: el tramo horizontal viene del eje central, así que si el nodo
+ *  estuviera contra el borde exterior la línea tendría que atravesar la
+ *  etiqueta entera para alcanzarlo. Con el nodo adentro, la línea
+ *  termina antes de que el texto empiece. */
 function posicionMobile(i: number): Punto {
   const col = i % 2
+  const dentro = 34
   return {
-    x: col === 0 ? 30 : CAJA_M.ancho - 30,
-    y: 116 + Math.floor(i / 2) * 58,
-    alDerecha: col === 0,
+    x: col === 0 ? CENTRO_M.x - dentro : CENTRO_M.x + dentro,
+    y: 126 + Math.floor(i / 2) * PASO_M,
+    // La etiqueta se aleja del eje: a la izquierda del nodo izquierdo y
+    // a la derecha del derecho.
+    alDerecha: col === 1,
   }
+}
+
+/** La ruta del centro a un nodo, en mobile.
+ *
+ *  Baja por el eje vertical hasta la altura del nodo y ahí dobla. El
+ *  codo va redondeado con un arco de radio 10: en ángulo recto se ve
+ *  como un plano de cableado, con el arco se lee como un diagrama. */
+function rutaMobile({ x, y }: Punto): string {
+  const eje = CENTRO_M.x
+  const hacia = x > eje ? 1 : -1
+  const r = 10
+  return [
+    `M ${eje} ${CENTRO_M.y + R_CENTRO_M}`,
+    `L ${eje} ${y - r}`,
+    `Q ${eje} ${y} ${eje + r * hacia} ${y}`,
+    `L ${x} ${y}`,
+  ].join(' ')
 }
 
 /** Un SVG del mapa.
@@ -134,33 +171,47 @@ function Svg({ mobile }: { mobile: boolean }) {
         const { x, y, alDerecha } = pos(i)
         return (
           <g key={n.nombre}>
-            <line
-              data-radio
-              x1={centro.x}
-              y1={centro.y}
-              x2={x}
-              y2={y}
-              stroke={`url(#radioMapa-${suf})`}
-              strokeWidth={1.5}
-            />
+            {mobile ? (
+              <path
+                data-radio
+                d={rutaMobile({ x, y, alDerecha })}
+                fill="none"
+                stroke={`url(#radioMapa-${suf})`}
+                strokeWidth={1.5}
+              />
+            ) : (
+              <line
+                data-radio
+                x1={centro.x}
+                y1={centro.y}
+                x2={x}
+                y2={y}
+                stroke={`url(#radioMapa-${suf})`}
+                strokeWidth={1.5}
+              />
+            )}
 
             <g data-nodo>
               {/* El relleno es el color del fondo, para tapar el radio
                   que pasa por debajo. */}
-              <circle cx={x} cy={y} r={7} fill="var(--color-base)" />
+              <circle cx={x} cy={y} r={mobile ? 7.5 : 7} fill="var(--color-base)" />
               <circle
                 cx={x}
                 cy={y}
-                r={7}
+                r={mobile ? 7.5 : 7}
                 fill="none"
                 stroke="var(--color-violet-500)"
                 strokeWidth={1.6}
               />
+              {/* En mobile hay ancho de sobra para 14px: la caja son
+                  320 de viewBox escalados al ancho de la columna, así
+                  que el texto llega a la pantalla más chico de lo que
+                  dice el número. */}
               <text
-                x={alDerecha ? x + 14 : x - 14}
-                y={y + 4}
+                x={alDerecha ? x + 15 : x - 15}
+                y={y + 4.5}
                 textAnchor={alDerecha ? 'start' : 'end'}
-                fontSize={12.5}
+                fontSize={mobile ? 14 : 12.5}
                 fill="var(--color-mid)"
               >
                 {n.nombre}
@@ -197,9 +248,9 @@ function Svg({ mobile }: { mobile: boolean }) {
           <text
             key={linea}
             x={centro.x}
-            y={centro.y + (i === 0 ? -3 : 14)}
+            y={centro.y + (i === 0 ? -3 : 15)}
             textAnchor="middle"
-            fontSize={13}
+            fontSize={mobile ? 14 : 13}
             fontWeight={600}
             fill="var(--color-hi)"
           >
@@ -233,7 +284,7 @@ export default function MapaIntegraciones() {
           .find((el) => el.offsetParent !== null)
         if (!visible) return
 
-        const radios = gsap.utils.toArray<SVGLineElement>('[data-radio]', visible)
+        const radios = gsap.utils.toArray<SVGGeometryElement>('[data-radio]', visible)
         const pulsos = gsap.utils.toArray<SVGCircleElement>('[data-pulso]', visible)
         const esMobile = visible.dataset.modo === 'mobile'
         const centro = esMobile ? CENTRO_M : { x: CENTRO, y: CENTRO }
@@ -269,22 +320,48 @@ export default function MapaIntegraciones() {
         // lento y desfasado. Es lo que mantiene el diagrama vivo
         // después de la entrada, sin pedir atención.
         const loops = pulsos.map((punto, i) => {
-          const { x, y } = pos(i)
+          const p = pos(i)
+          const comun = {
+            duration: 1.6,
+            ease: 'power1.inOut',
+            repeat: -1,
+            repeatDelay: 2.4,
+            delay: 1.4 + i * 0.5,
+            // Se apaga al llegar: si desapareciera de golpe se vería
+            // el salto de vuelta al centro.
+            onRepeat: () => gsap.set(punto, { opacity: 0 }),
+          }
+
+          // En mobile la conexión es una L, así que el pulso tiene que
+          // seguir el mismo quiebre: un tween de cx/cy lo cortaría en
+          // diagonal, por fuera de la línea. Se anima un proxy con el
+          // avance sobre la ruta y la opacidad juntos, y el onUpdate
+          // escribe las dos cosas: la opacidad en el mismo objeto es lo
+          // que permite apagarlo entre vueltas — escrita aparte, el
+          // onUpdate del frame siguiente la volvía a prender.
+          const guia = radios[i]
+          if (esMobile && guia) {
+            const largo = guia.getTotalLength()
+            const t = { d: 0, o: 0 }
+            return gsap.fromTo(
+              t,
+              { d: 0, o: 0 },
+              {
+                ...comun,
+                d: largo,
+                o: 1,
+                onUpdate: () => {
+                  const pt = guia.getPointAtLength(t.d)
+                  gsap.set(punto, { attr: { cx: pt.x, cy: pt.y }, opacity: t.o })
+                },
+              },
+            )
+          }
+
           return gsap.fromTo(
             punto,
             { attr: { cx: centro.x, cy: centro.y }, opacity: 0 },
-            {
-              attr: { cx: x, cy: y },
-              opacity: 1,
-              duration: 1.6,
-              ease: 'power1.inOut',
-              repeat: -1,
-              repeatDelay: 2.4,
-              delay: 1.4 + i * 0.5,
-              // Se apaga al llegar: si desapareciera de golpe se vería
-              // el salto de vuelta al centro.
-              onRepeat: () => gsap.set(punto, { opacity: 0 }),
-            },
+            { ...comun, attr: { cx: p.x, cy: p.y }, opacity: 1 },
           )
         })
 
@@ -300,7 +377,7 @@ export default function MapaIntegraciones() {
 
   return (
     <div ref={raiz}>
-      <div data-modo="mobile" className="mx-auto max-w-[320px] lg:hidden">
+      <div data-modo="mobile" className="mx-auto max-w-[330px] lg:hidden">
         <Svg mobile />
       </div>
       <div data-modo="desktop" className="hidden lg:block">

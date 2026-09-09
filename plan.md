@@ -371,7 +371,15 @@ Se descartaron "Soluciones" —la palabra más genérica del rubro—, "Web" —
 
 **Se anima al entrar y una sola vez, no con el scroll.** Proceso ya tiene una línea scroll-driven, y dos secciones seguidas con el mismo recurso se leen como un truco repetido. Después queda un pulso en loop lento que viaja del centro a cada nodo: es lo que lo mantiene vivo sin pedir atención.
 
-**Dos disposiciones.** En desktop los nodos van en círculo. En mobile eso no funciona: la caja se comprime al ancho de la columna y las etiquetas caerían a 9-10px, abajo del mínimo legible —está medido. Ahí el centro va arriba y los nodos en dos columnas de tres debajo, así cada etiqueta tiene media columna de ancho en lugar de un radio comprimido. Verificado: **12,5px en los cinco anchos**, de 1440 a 360.
+**Dos disposiciones.** En desktop los nodos van en círculo. En mobile eso no funciona: la caja se comprime al ancho de la columna y las etiquetas caerían a 9-10px, abajo del mínimo legible —está medido. Ahí el centro va arriba y los nodos en dos columnas de tres debajo, así cada etiqueta tiene media columna de ancho en lugar de un radio comprimido.
+
+**La conexión también cambia de forma (revisión del cliente).** La primera versión de mobile mantenía el radio recto, y el cliente marcó que las líneas pasaban por encima de las palabras. Es geométrico: el centro está arriba y los nodos abajo a los costados, así que cada radio salía en diagonal justo por donde va la etiqueta. Medido muestreando cada trazo contra la caja de cada texto, **las seis** lo cruzaban.
+
+Se reemplazó por una **ruta en L**: baja por el eje vertical y dobla horizontal a la altura del nodo, con el codo redondeado en un arco de radio 10. Y el nodo pasó al lado **interno** de su columna con la etiqueta hacia afuera —al revés de lo que parece natural, y necesario: con el nodo contra el borde exterior el tramo horizontal viene del eje y tiene que atravesar la etiqueta entera para alcanzarlo. Ese fue el segundo bug, y también salió medido.
+
+Con el quiebre, el pulso ya no puede ser un tween de `cx`/`cy`: cortaría en diagonal por fuera de la línea. Se anima un proxy con el avance sobre la ruta y la opacidad juntos, y el `onUpdate` lee `getPointAtLength`. La opacidad va en el mismo objeto a propósito: escrita aparte, el `onUpdate` del frame siguiente pisaba el 0 del `onRepeat` y el punto no se apagaba entre vueltas.
+
+Las etiquetas subieron a **14px** en mobile —el cliente notó que había espacio de sobra—, el nodo a r=7,5 y el nombre del centro a 14px. La caja creció de 292 a 330 de alto para que las filas no quedaran a 4px entre sí. Verificado en cuatro anchos, de 1440 a 360: **0 trazos sobre texto, 0 etiquetas pisadas, 0 fuera de la caja**.
 
 Se montan los dos SVG y CSS decide cuál se ve. Alternar con JavaScript pediría un estado de ancho de ventana que en el primer render no existe, y eso produce un salto al hidratar. La animación lee cuál está visible con `offsetParent !== null`: animar el oculto no haría nada, porque sus medidas son 0 y el pulso apuntaría al origen.
 
@@ -391,7 +399,13 @@ Cada card: mitad texto, mitad mockup a color.
 
 Cada uno con paleta propia —azul, verde sobre crema, índigo— porque representan sitios de clientes distintos. No están atados a los tokens del tema: si el sitio cambia de acento, los mockups no.
 
-**El mockup ocupa la mitad derecha completa.** Antes iba centrado con `p-8` y quedaba flotando con márgenes; el recorte contra el borde es lo que le da el aire de captura. Verificado: 574×430 en una celda de 575×430.
+**El mockup ocupa la mitad derecha completa.** Antes iba centrado con `p-8` y quedaba flotando con márgenes; el recorte contra el borde es lo que le da el aire de captura.
+
+**Y el lienzo tiene su propio alto: 720×538, no 460.** Sacado el padding quedaban franjas del color de fondo arriba y abajo, que el cliente marcó. Es una diferencia de proporción: la celda mide 575×430 = 1.337 y el lienzo del hero 720/460 = 1.565, más ancho, así que al ajustarse al ancho de la celda sobraba alto. Con ancho 720, el alto que iguala la proporción es 538. `LienzoMockup` exporta los dos como `ALTOS.ventana` y `ALTOS.celda`.
+
+Los 78px extra **se llenaron con contenido**, no moviendo los bloques hacia abajo: la ficha ganó una tabla de especificaciones y una galería más grande, el estudio un bloque de equipo con los cuatro socios, y el kanban dos tarjetas más por columna —4/3/3/3 en lugar de 2/2/1/1— con el paso subido de 82 a 89px. El kanban era el caso que el cliente marcó aparte: las columnas terminaban a 100px del pie y leía como media pantalla vacía.
+
+Verificado en las tres: SVG 574×430 en celda de 575×430 (**franja vertical 0**), `maxY` exactamente 538, nada fuera del viewBox, y 7/6/5 partes con 29/21/28 ítems de stagger.
 
 **Jerarquía del texto (revisión del cliente).** Son tres niveles: el **nombre del servicio** como título (`--text-h3`, lleva el enlace a la landing), un **subtítulo** en `--text-cuerpo-lg` sobre `--text-mid`, y la **descripción** en `--text-cuerpo` sobre `--text-low`.
 

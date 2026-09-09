@@ -26,18 +26,51 @@ otra cosa: una ficha, un checkout, un panel de pedidos.
 
 ## La geometría
 
-```
-viewBox="0 0 720 460"     // 16:10, la caja de la ventana del sitio
+Hay **dos lienzos**, y elegir el que no corresponde deja franjas del
+color de fondo arriba y abajo. `LienzoMockup.tsx` los exporta:
+
+```jsx
+import { ALTOS, Lienzo } from './LienzoMockup'
+
+<Lienzo alto={ALTOS.ventana}>   // 720×460 — la ventana del hero, 16:10
+<Lienzo alto={ALTOS.celda}>     // 720×538 — las cards de servicios
 ```
 
-Todo el contenido tiene que terminar **antes de y=460**. Verificalo
-midiendo el `y` más alto que usás:
+**El alto del lienzo se calcula desde la celda que lo contiene, no se
+elige.** Medí la celda real en el navegador y sacá la proporción:
+
+```js
+var c = document.querySelector('#servicios a').getBoundingClientRect()
+console.log(c.width, c.height, c.width / c.height, '→ alto =', Math.round(720 * c.height / c.width))
+```
+
+La celda de servicios da 575×430 = 1.337; con el lienzo de 460 la
+proporción era 1.565, más ancha, así que al ajustar el ancho sobraba
+alto. De ahí el 538.
+
+Todo el contenido tiene que terminar **antes del alto elegido**.
+Verificalo midiendo el `y` más alto que usás:
 
 ```bash
 grep -oE "y=\{[0-9]+\}" components/home/MiMockup.tsx | grep -oE "[0-9]+" | sort -n | tail -1
 ```
 
-Si el máximo pasa de ~440 el contenido queda apretado contra el borde.
+Si el máximo pasa de unos 20px antes del alto, el contenido queda
+apretado contra el borde. Y si queda **más de 40px corto**, el problema
+es el opuesto y también se ve: el kanban tenía las columnas terminando
+a 100px del pie y leía como media pantalla vacía.
+
+**El grep de arriba solo ve los `y` literales.** Lo calculado
+(`y={132 + ti * 89}`) hay que medirlo por DOM:
+
+```js
+var maxY = 0
+for (const el of sv.querySelectorAll('rect,text,image,circle,line,path')) {
+  try { var b = el.getBBox() } catch (e) { continue }
+  maxY = Math.max(maxY, b.y + b.height)
+}
+console.log('maxY', Math.round(maxY))   // tiene que dar cerca del alto
+```
 
 **Márgenes internos.** El contenido arranca en x=32-40 y termina en
 x=680-688. Menos que eso se ve pegado al marco.
@@ -159,14 +192,20 @@ await sharp('origen.jpg')
 
 ## El montaje
 
-La caja del contenedor tiene que ser **16:10 exacto**, y el SVG llenarla
-sin padding:
+La caja del contenedor y el lienzo tienen que tener **la misma
+proporción**, y el SVG llenarla sin padding. En el hero la caja es
+16:10 y se declara así:
 
 ```jsx
 <div className="aspect-16/10">
   <MiMockup />
 </div>
 ```
+
+En las cards de servicios la celda no tiene proporción declarada: la
+define la grilla, y el mockup se estira a lo que le toque. Ahí el
+lienzo se calcula desde la celda medida (`ALTOS.celda`) y el SVG va a
+`size-full` sobre un contenedor sin aspecto fijo.
 
 **No pongas `p-*` en el contenedor del mockup.** Un padding deja el
 mockup flotando con márgenes en lugar de ocupar el espacio, y el
@@ -190,6 +229,19 @@ No los repitas:
   desaparece. Poné el badge donde la foto es oscura, o dale fondo.
 - **`preserveAspectRatio="slice"` con contenedor de otra proporción** →
   recorta los costados. Usá `meet` o alineá la caja.
+- **Lienzo de otra proporción que la celda** → franjas del color de
+  fondo arriba y abajo. No se arregla con `preserveAspectRatio`: hay
+  que darle al lienzo el alto que la celda pide (ver *La geometría*).
+- **Contenido que no llega al pie** → al pasar a un lienzo más alto no
+  alcanza con mover los bloques hacia abajo: hay que **sumar
+  contenido**. Al kanban le entraron dos tarjetas más por columna, al
+  estudio un bloque de equipo, a la ficha una tabla de
+  especificaciones. Un mockup con la mitad de abajo vacía se ve peor
+  que uno chico.
+- **Paso entre ítems repetidos sin recalcular** → el kanban seguía con
+  `ti * 82` en un lienzo 78px más alto, así que las columnas crecían
+  pero las tarjetas quedaban arriba. Si el bloque es un `.map()` con
+  paso fijo, el paso también sube.
 - **Colores del sitio en el mockup** → los mockups representan **sitios
   de clientes** y tienen paleta propia. No los ates a
   `--color-violet-500` ni a ningún token del tema: si el sitio cambia
@@ -242,8 +294,28 @@ Number(getComputedStyle(document.querySelector('#servicios article')).opacity)
 
 Si sigue en 0, el trigger no se disparó y la captura no sirve.
 
-**Igual la verificación por DOM es más confiable que la captura** para
-lo que importa acá —geometría, cantidad de marcadores, si el SVG llena
-su celda, si algo sale del viewBox. Usá la captura solo para juzgar el
-diseño, y si sale negra no insistas: medí por DOM y dejá que el cliente
-lo mire en el navegador.
+**Ya falló cinco veces, y las dos últimas ni forzando el estado.**
+Escribirle `opacity: 1 !important` a todo lo que estuviera en 0 no
+alcanzó: con Lenis el scroll de la página y el `y` que devuelve
+`getBoundingClientRect` no coinciden, así que el `clip` de
+`captureScreenshot` recorta una zona que no es la que se ve.
+
+**No insistas: medí por DOM.** Es más confiable que la captura para
+todo lo que importa acá y no depende del estado de la animación:
+
+| Qué verificar | Cómo |
+|---|---|
+| franjas de fondo | `celda.height - svg.height` tiene que dar 0 |
+| contenido al pie | `maxY` de todos los `getBBox()` cerca del alto |
+| nada desbordado | `getBBox()` contra el `viewBox` |
+| marcadores | `querySelectorAll('[data-parte]').length` |
+| textos pisados | intersección de las cajas de los `<text>` |
+| trazos sobre texto | muestrear `getPointAtLength` contra cada caja |
+
+El último es el que encontró el bug del diagrama en mobile, que a ojo
+se veía en la captura del cliente pero no se podía localizar: muestreando
+cada trazo cada 2 unidades de largo salió que las seis líneas entraban
+por el lado interno de su etiqueta, y con la coordenada exacta del
+punto de contacto quedó claro que el nodo estaba del lado equivocado.
+
+El diseño lo evalúa el cliente en el navegador.
