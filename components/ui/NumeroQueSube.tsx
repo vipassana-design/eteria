@@ -14,6 +14,10 @@ import { gsap, useGSAP } from '@/lib/gsap'
  *  digital. Con `none` el número sube a velocidad constante y se siente
  *  mecánico.
  *
+ *  Dura 3 segundos y arranca en cuanto el número entra en pantalla, no
+ *  cuando llega a media altura: un número visible que espera más scroll
+ *  para empezar a subir se lee como que no funciona.
+ *
  *  Corre una sola vez —`once: true`— porque un número que se reinicia
  *  cada vez que pasás por la sección se vuelve un adorno.
  *
@@ -35,7 +39,7 @@ export default function NumeroQueSube({
   hasta,
   prefijo = '',
   sufijo = '',
-  duracion = 2,
+  duracion = 3,
   className = '',
 }: Props) {
   const raiz = useRef<HTMLSpanElement>(null)
@@ -69,10 +73,21 @@ export default function NumeroQueSube({
           onUpdate: () => escribir(contador.valor),
           scrollTrigger: {
             trigger: el,
-            // Arranca cuando el número está bien dentro del viewport,
-            // no al asomar: si empieza en el borde, el conteo termina
-            // antes de que se lo pueda leer.
-            start: 'top 78%',
+            // Arranca cuando el número se vuelve visible.
+            //
+            // Antes era `top 78%`, que pide que suba hasta el 78% del
+            // alto del viewport: si el módulo aparecía abajo y el
+            // visitante dejaba de scrollear, el trigger no se cumplía
+            // nunca y el número se quedaba en cero a la vista. Que algo
+            // visible esté esperando más scroll para animarse se lee
+            // como que no funciona.
+            //
+            // El 85% no es arbitrario: es el mismo umbral que usa el
+            // `Reveal` que envuelve la franja de datos. Con un valor
+            // más permisivo el conteo arrancaría mientras el bloque
+            // todavía está en `opacity: 0` y el número aparecería ya
+            // terminado. Si ese `start` cambia, este tiene que seguirlo.
+            start: 'top 85%',
             once: true,
           },
         })
