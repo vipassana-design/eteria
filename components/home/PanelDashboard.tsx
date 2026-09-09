@@ -163,7 +163,7 @@ export function PanelDashboard() {
 
       {/* ── Gráfico: dos series comparadas ── */}
       <g data-parte="grafico">
-        <rect x={200} y={142} width={312} height={130} rx={9} fill="#FFFFFF" filter="url(#sombraCard)" />
+        <rect x={200} y={142} width={304} height={130} rx={9} fill="#FFFFFF" filter="url(#sombraCard)" />
         <text x={216} y={162} fontSize={10.5} fontWeight={600} fill={TINTA}>
           Facturación por semana
         </text>
@@ -189,7 +189,7 @@ export function PanelDashboard() {
 
         {/* Guías horizontales: dan escala sin competir con las series. */}
         {[194, 220, 246].map((y) => (
-          <line key={y} x1={218} y1={y} x2={494} y2={y} stroke="#F0EDF6" strokeWidth={1} />
+          <line key={y} x1={218} y1={y} x2={486} y2={y} stroke="#F0EDF6" strokeWidth={1} />
         ))}
 
         <path d={`${SERIE_ACTUAL}v42H218v0Z`} fill="url(#areaDashboard)" />
@@ -204,14 +204,18 @@ export function PanelDashboard() {
         />
 
         {/* Punto del último valor con su tooltip: el detalle que hace
-            que se lea como un gráfico en uso y no como una ilustración. */}
-        <g data-item>
+            que se lea como un gráfico en uso y no como una ilustración.
+
+            `data-tras-trazo` lo hace esperar a que la línea termine de
+            dibujarse. Con el stagger normal aparecía antes de que el
+            trazo saliera, señalando un punto que todavía no existía. */}
+        <g data-item data-tras-trazo>
         <circle cx={472} cy={206} r={4} fill="#FFFFFF" stroke={VIOLETA} strokeWidth={2} />
-        <rect x={430} y={172} width={74} height={26} rx={5} fill={TINTA} />
-        <text x={467} y={183} fontSize={7.5} fill="#A79FC9" textAnchor="middle">
+        <rect x={424} y={168} width={78} height={28} rx={5} fill={TINTA} />
+        <text x={463} y={180} fontSize={7.5} fill="#A79FC9" textAnchor="middle">
           Semana 4
         </text>
-        <text x={467} y={193} fontSize={9} fontWeight={700} fill="#FFF" textAnchor="middle">
+        <text x={463} y={191} fontSize={9} fontWeight={700} fill="#FFF" textAnchor="middle">
           $342.100
         </text>
         </g>
@@ -225,30 +229,30 @@ export function PanelDashboard() {
 
       {/* ── Ranking de productos con barra de proporción ── */}
       <g data-parte="ranking">
-        <rect x={524} y={142} width={160} height={130} rx={9} fill="#FFFFFF" filter="url(#sombraCard)" />
-        <text x={538} y={162} fontSize={10.5} fontWeight={600} fill={TINTA} data-item>
+        <rect x={532} y={142} width={152} height={130} rx={9} fill="#FFFFFF" filter="url(#sombraCard)" />
+        <text x={546} y={162} fontSize={10.5} fontWeight={600} fill={TINTA} data-item>
           Más vendidos
         </text>
 
         {RANKING.map((r, i) => (
           <g key={r.n} data-item>
-            <text x={538} y={186 + i * 30} fontSize={9} fill={TINTA}>
+            <text x={546} y={186 + i * 30} fontSize={9} fill={TINTA}>
               {r.n.length > 17 ? `${r.n.slice(0, 16)}…` : r.n}
             </text>
             <text x={670} y={186 + i * 30} fontSize={8.5} fontWeight={600} fill={TENUE} textAnchor="end">
               {r.u}
             </text>
-            <rect x={538} y={192 + i * 30} width={132} height={4} rx={2} fill="#F0EDF6" />
+            <rect x={546} y={192 + i * 30} width={124} height={4} rx={2} fill="#F0EDF6" />
             <rect
-              x={538}
+              x={546}
               y={192 + i * 30}
-              width={(132 * r.pct) / 100}
+              width={(124 * r.pct) / 100}
               height={4}
               rx={2}
               fill={VIOLETA}
               opacity={1 - i * 0.22}
             />
-            <text x={538} y={207 + i * 30} fontSize={8} fill="#B4AEC6">
+            <text x={546} y={207 + i * 30} fontSize={8} fill="#B4AEC6">
               {r.m}
             </text>
           </g>

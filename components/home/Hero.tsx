@@ -163,7 +163,8 @@ export default function Hero({ conFondo = true, pantallas = POR_PARTES }: PropsH
         gsap.set(partes, { opacity: 0, y: 18 })
 
         partes.forEach((parte, i) => {
-          const items = parte.querySelectorAll('[data-item]')
+          // Los que esperan el trazo se animan aparte, más abajo.
+          const items = parte.querySelectorAll('[data-item]:not([data-tras-trazo])')
 
           tl.to(parte, { opacity: 1, y: 0, duration: 0.42, ease: 'power3.out' }, i * 0.38)
 
@@ -178,13 +179,27 @@ export default function Hero({ conFondo = true, pantallas = POR_PARTES }: PropsH
           }
 
           const trazo = parte.querySelector<SVGPathElement>('[data-trazo]')
+          const dibujaEn = i * 0.38 + 0.15
+          const duraTrazo = 0.75
           if (trazo) {
             const largo = trazo.getTotalLength()
             tl.fromTo(
               trazo,
               { strokeDasharray: largo, strokeDashoffset: largo },
-              { strokeDashoffset: 0, duration: 0.75, ease: 'power2.inOut' },
-              i * 0.38 + 0.15,
+              { strokeDashoffset: 0, duration: duraTrazo, ease: 'power2.inOut' },
+              dibujaEn,
+            )
+          }
+
+          // Lo que la línea tiene que alcanzar antes de aparecer: el
+          // tooltip del último valor de un gráfico señala un punto, y
+          // mostrarlo mientras la línea todavía viaja lo desmiente.
+          const trasTrazo = parte.querySelectorAll('[data-tras-trazo]')
+          if (trasTrazo.length > 0) {
+            tl.from(
+              trasTrazo,
+              { opacity: 0, scale: 0.8, duration: 0.3, ease: 'back.out(2)', transformOrigin: 'center' },
+              trazo ? dibujaEn + duraTrazo - 0.05 : dibujaEn,
             )
           }
         })

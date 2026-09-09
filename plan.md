@@ -387,6 +387,25 @@ Es un bug que el DOM no muestra: el `<line>` está, con `opacity: 1` y `strokeDa
 
 Se montan los dos SVG y CSS decide cuál se ve. Alternar con JavaScript pediría un estado de ancho de ventana que en el primer render no existe, y eso produce un salto al hidratar. La animación lee cuál está visible con `offsetParent !== null`: animar el oculto no haría nada, porque sus medidas son 0 y el pulso apuntaría al origen.
 
+### Ajustes de los mockups del hero (revisión del cliente)
+
+**Tienda (Atelier).** Le quedaba media pantalla vacía: la columna de filtros terminaba en y=282 de 460 y las cards de producto, de 214px de alto, dejaban 150px libres al pie cruzando todo el ancho. Cuatro cambios:
+
+- La columna de filtros baja hasta el pie: **color** en swatches con el aplicado tildado, **material** con contador y **valoración** en estrellas, además del precio y los talles que ya tenía. Va de y=62 a 444.
+- Un **banner de campaña** sobre la grilla (y=62-154), con la foto del hero a la derecha fundida por un degradé, la volanta de temporada y un contador de vigencia. Es la franja que toda tienda pone sobre el catálogo.
+- Las cards **más bajas y apoyadas al pie**: de y=96-310 pasan a 200-436, con la foto de 124 a 116 y 24px de margen abajo.
+- El **toast del carrito a la derecha**, del lado del ícono de donde sale. Antes iba abajo a la izquierda, en el hueco de los filtros, que ya no existe. A la altura de la grilla y no del banner: apoyado arriba tapaba la mitad de la franja de campaña que el mockup acaba de presentar.
+
+Quedó en 6 partes, 35 ítems y 6 fotos, con `maxY` 460 y nada fuera del viewBox.
+
+**Corporativo (Norvex).** La bajada "Operamos plantas y redes…" tenía su baseline en y=180 y el botón arrancaba en 184: 4px, se leía pegada. El texto sube a 174 y el botón baja a 188, con lo que quedan 12px.
+
+**Panel de gestión.** El tooltip del último valor del gráfico —"Semana 4 / $342.100"— aparecía **antes** de que la línea llegara al punto que señala. Entraba con el stagger de los `data-item`, mientras el trazo se dibuja después y durante 0,7-0,75s.
+
+Se resolvió con un marcador nuevo, **`data-tras-trazo`**, agregado a los tres envoltorios (`Hero`, `CicloPantalla`, `LandingHero`): el elemento se excluye del stagger general con `[data-item]:not([data-tras-trazo])` y entra al terminar el trazo, con un `back.out` corto. Sirve para cualquier gráfico que se agregue después.
+
+También se separaron las dos cards de la fila del medio, que tenían 12px de hueco: con la sombra de dos capas se leían como si se tocaran. El gráfico cede 8px de ancho y el ranking arranca 8 más a la derecha, así quedan 20.
+
 ### 4.4 Servicios — cards apiladas
 
 Tres cards que se apilan al scrollear: cada una queda pineada y la siguiente sube por encima, con la anterior escalando levemente hacia atrás y perdiendo opacidad. Es el efecto que viste en Wavespace.

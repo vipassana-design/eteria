@@ -110,6 +110,22 @@ aparece de golpe.
 | `data-parte` | un `<g>` por bloque | entra con fade + `y` |
 | `data-item` | elementos dentro de una parte | stagger, **solo si hay más de uno** |
 | `data-trazo` | un `<path>` de línea | se dibuja con `strokeDashoffset` |
+| `data-tras-trazo` | lo que la línea tiene que alcanzar | espera a que el trazo termine |
+
+**`data-tras-trazo`** es para lo que la línea del gráfico tiene que
+alcanzar antes de aparecer: el tooltip del último valor señala un punto
+concreto de la serie, y mostrarlo mientras la línea todavía viaja lo
+desmiente. Va **junto con** `data-item` en el mismo `<g>`; el
+envoltorio lo excluye del stagger general con
+`[data-item]:not([data-tras-trazo])` y lo entra al terminar el trazo.
+
+```jsx
+<g data-item data-tras-trazo>
+  <circle cx={472} cy={206} r={4} />
+  <rect x={424} y={168} width={78} height={28} rx={5} />
+  <text>Semana 4</text>
+</g>
+```
 
 **El error más común: pocos `data-item`.** Una parte con elementos
 sueltos entra de golpe. Los tres mockups del hero tenían 4, 4 y 3 y
@@ -250,6 +266,23 @@ No los repitas:
   siguiente. Un toast decía "Sweater trenzado · M**$74.900**".
 - **Elementos de tamaño 0** → quedan de una idea descartada. Buscá
   `r={0}` y `height={0}`.
+- **Un tooltip de gráfico que aparece antes que su línea** → señala un
+  punto que todavía no existe. Usá `data-tras-trazo` (ver arriba).
+- **Media pantalla vacía** → el mockup se lee incompleto. Al listado de
+  la tienda le faltaban filtros abajo (la columna terminaba en y=282 de
+  460) y las cards eran tan altas que dejaban 150px libres al pie. Se
+  arregla poblando: más filtros, un banner de campaña, cards más bajas
+  apoyadas al pie. Medí el vacío: `460 - maxY` de todos los
+  `getBBox()`, y también por columna.
+- **Un toast donde ya no hay hueco** → el "agregado al carrito" estaba
+  abajo a la izquierda porque ahí quedaba el vacío de los filtros. Al
+  poblar la columna había que moverlo, y el lugar natural es del lado
+  del ícono del carrito. Pero no encima de un bloque que el mockup
+  acaba de presentar: apoyarlo sobre el banner tapaba justo la franja
+  de campaña.
+- **Componentes a menos de ~16px entre sí** → con la sombra de dos
+  capas se leen como si se tocaran. Las dos cards del panel tenían 12px
+  y pasaron a 20.
 - **Degradé sobre una línea perfectamente horizontal o vertical** → no
   se pinta, y el DOM no lo delata: el elemento está con `opacity: 1`.
   Un `linearGradient`/`radialGradient` sin `gradientUnits` usa

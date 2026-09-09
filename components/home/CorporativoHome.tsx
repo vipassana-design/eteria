@@ -120,20 +120,22 @@ export function CorporativoHome() {
         <text x={36} y={158} fontSize={24} fontWeight={700} fill={CELESTE} letterSpacing={-0.7}>
           para la industria
         </text>
-        <text x={36} y={180} fontSize={9.5} fill={AZUL_TENUE}>
+        {/* La bajada respira contra el botón: con su baseline en 180 y
+            el botón arrancando en 184 quedaban 4px y se leía pegada. */}
+        <text x={36} y={174} fontSize={9.5} fill={AZUL_TENUE}>
           Operamos plantas y redes de distribución en toda la región.
         </text>
         </g>
 
         <g data-item>
-        <rect x={36} y={184} width={112} height={26} rx={3} fill={AZUL} />
-        <text x={92} y={201} fontSize={9.5} fontWeight={600} fill="#FFFFFF" textAnchor="middle">
+        <rect x={36} y={188} width={112} height={26} rx={3} fill={AZUL} />
+        <text x={92} y={205} fontSize={9.5} fontWeight={600} fill="#FFFFFF" textAnchor="middle">
           Conocer la compañía
         </text>
-        <text x={164} y={201} fontSize={9.5} fontWeight={600} fill={AZUL}>
+        <text x={164} y={205} fontSize={9.5} fontWeight={600} fill={AZUL}>
           Ver divisiones
         </text>
-        <path d="M232 194l5 4-5 4" fill="none" stroke={AZUL} strokeWidth={1.4} strokeLinecap="round" />
+        <path d="M232 198l5 4-5 4" fill="none" stroke={AZUL} strokeWidth={1.4} strokeLinecap="round" />
         </g>
       </g>
 

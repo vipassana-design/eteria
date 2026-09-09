@@ -6,7 +6,13 @@ import { Foto, Lienzo, LINEA, TENUE, TINTA } from './LienzoMockup'
  *  paso anterior del flujo, que es donde se ve el catálogo funcionando:
  *  filtros aplicados, orden, grilla con precios y estados, y paginado.
  *
- *  Partes: barra → filtros → grilla → paginado → carrito.
+ *  El lienzo se aprovecha entero: la columna de filtros baja hasta el
+ *  pie con color, material y valoración, y la grilla arranca después de
+ *  un banner de campaña. Antes los filtros terminaban en y=282 y las
+ *  cards a 310, así que quedaba una franja blanca de 150px cruzando
+ *  todo el ancho del mockup.
+ *
+ *  Partes: barra → banner → filtros → grilla → paginado → carrito.
  */
 
 const CORAL = '#C97B5A'
@@ -18,6 +24,21 @@ const PRODUCTOS = [
   { foto: '/mockups/tienda-prod-2.webp', nombre: 'Sweater trenzado', precio: '$74.900', antes: '$93.600', badge: '-20%', stock: '' },
   { foto: '/mockups/tienda-prod-3.webp', nombre: 'Blazer de lana', precio: '$128.000', antes: '', badge: 'Nuevo', stock: '' },
   { foto: '/mockups/tienda-prod-4.webp', nombre: 'Remera de algodón', precio: '$28.900', antes: '', badge: '', stock: 'Últimas 3' },
+]
+
+/** Swatches de color. El tildado es el que está aplicado. */
+const COLORES = [
+  { hex: '#1B1733', on: false },
+  { hex: '#C9B8A8', on: true },
+  { hex: '#8FA5B8', on: false },
+  { hex: '#B5654F', on: false },
+  { hex: '#7C8A6B', on: false },
+]
+
+const MATERIALES = [
+  { t: 'Lino', n: 18, on: true },
+  { t: 'Algodón', n: 26, on: false },
+  { t: 'Lana', n: 11, on: false },
 ]
 
 const TALLES = [
@@ -167,26 +188,147 @@ export function TiendaListado() {
           </g>
         ))}
 
-        {/* Separador: define la columna sin encerrarla en una card. */}
-        <line x1={188} y1={62} x2={188} y2={330} stroke={LINEA} strokeWidth={1} />
+        {/* Color: los swatches son el filtro que toda tienda de ropa
+            tiene, y el tildado muestra la selección en uso. */}
+        <text x={32} y={306} fontSize={10} fontWeight={600} fill={TINTA}>
+          Color
+        </text>
+        {COLORES.map((c, i) => (
+          <g key={c.hex} data-item>
+            <circle
+              cx={40 + (i % 5) * 30}
+              cy={324}
+              r={8.5}
+              fill={c.hex}
+              stroke={c.on ? CORAL : '#E4E0EE'}
+              strokeWidth={c.on ? 2 : 1}
+            />
+            {c.on ? (
+              <circle cx={40 + (i % 5) * 30} cy={324} r={12} fill="none" stroke={CORAL} strokeWidth={1} />
+            ) : null}
+          </g>
+        ))}
+
+        {/* Material con contador, igual que los talles. */}
+        <text x={32} y={362} fontSize={10} fontWeight={600} fill={TINTA}>
+          Material
+        </text>
+        {MATERIALES.map((m, i) => (
+          <g key={m.t} data-item>
+            <rect
+              x={32}
+              y={372 + i * 22}
+              width={11}
+              height={11}
+              rx={2.5}
+              fill={m.on ? CORAL : '#FFFFFF'}
+              stroke={m.on ? CORAL : '#D8D3E4'}
+              strokeWidth={1.3}
+            />
+            {m.on ? (
+              <path
+                d={`M35 ${377.5 + i * 22}l2.2 2.2 4-4.2`}
+                fill="none"
+                stroke="#FFF"
+                strokeWidth={1.6}
+                strokeLinecap="round"
+              />
+            ) : null}
+            <text x={52} y={381 + i * 22} fontSize={9.5} fill={m.on ? TINTA : TENUE}>
+              {m.t}
+            </text>
+            <text x={164} y={381 + i * 22} fontSize={8.5} fill="#B4AEC6" textAnchor="end">
+              {m.n}
+            </text>
+          </g>
+        ))}
+
+        {/* Valoración: cierra la columna al pie con las estrellas, que
+            es lo que ocupa el último tramo sin pedir otro control. */}
+        <g data-item>
+          <text x={32} y={444} fontSize={10} fontWeight={600} fill={TINTA}>
+            Valoración
+          </text>
+          {[0, 1, 2, 3, 4].map((i) => (
+            <path
+              key={i}
+              d={`M${94 + i * 15} 437l1.9 3.9 4.3.6-3.1 3 .7 4.3-3.8-2-3.8 2 .7-4.3-3.1-3 4.3-.6 1.9-3.9Z`}
+              fill={i < 4 ? '#E8B54A' : '#E4E0EE'}
+            />
+          ))}
+        </g>
+
+        {/* Separador: define la columna sin encerrarla en una card.
+            Llega hasta el pie porque la columna ahora también. */}
+        <line x1={188} y1={62} x2={188} y2={438} stroke={LINEA} strokeWidth={1} />
+      </g>
+
+      {/* ── Banner de campaña: la franja que toda tienda pone sobre
+             el catálogo. Ocupa el ancho de la grilla con la foto del
+             hero a la derecha y el mensaje sobre el fondo oscuro. ── */}
+      <g data-parte="banner">
+        <clipPath id="recorteBanner">
+          <rect x={212} y={62} width={472} height={92} rx={9} />
+        </clipPath>
+        <g clipPath="url(#recorteBanner)">
+          <rect x={212} y={62} width={472} height={92} fill="#2E2440" />
+          <Foto
+            id="bannerTienda"
+            href="/mockups/tienda-hero.webp"
+            x={472}
+            y={62}
+            w={212}
+            h={92}
+            rx={0}
+          />
+          {/* El degradé funde la foto con el fondo del banner, si no el
+              corte vertical parte la franja en dos bloques. */}
+          <rect x={432} y={62} width={110} height={92} fill="url(#veloBanner)" />
+        </g>
+        <defs>
+          <linearGradient id="veloBanner" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#2E2440" stopOpacity={1} />
+            <stop offset="100%" stopColor="#2E2440" stopOpacity={0} />
+          </linearGradient>
+        </defs>
+
+        <g data-item>
+          <text x={232} y={90} fontSize={7.5} fontWeight={600} fill={CORAL} letterSpacing={1.2}>
+            NUEVA TEMPORADA
+          </text>
+          <text x={232} y={113} fontSize={17} fontWeight={700} fill="#FFFFFF" letterSpacing={-0.4}>
+            Otoño en lino
+          </text>
+          <text x={232} y={130} fontSize={8.5} fill="#B9B0CC">
+            Hasta 30% en prendas seleccionadas
+          </text>
+        </g>
+        {/* Contador de la campaña: da la sensación de promoción viva
+            en lugar de una franja decorativa. */}
+        <g data-item>
+          <rect x={556} y={122} width={108} height={20} rx={10} fill="#FFFFFF" opacity={0.14} />
+          <text x={610} y={136} fontSize={8} fontWeight={600} fill="#FFFFFF" textAnchor="middle">
+            Termina en 3 días
+          </text>
+        </g>
       </g>
 
       {/* ── Grilla: 4 productos con foto real, precio y estado ── */}
       <g data-parte="grilla">
         <g data-item>
-        <text x={212} y={74} fontSize={13} fontWeight={700} fill={TINTA} letterSpacing={-0.2}>
+        <text x={212} y={180} fontSize={13} fontWeight={700} fill={TINTA} letterSpacing={-0.2}>
           Mujer
         </text>
-        <text x={262} y={74} fontSize={9.5} fill={TENUE}>
+        <text x={262} y={180} fontSize={9.5} fill={TENUE}>
           61 productos
         </text>
 
-        <rect x={578} y={62} width={106} height={22} rx={5} fill="#FFFFFF" stroke="#E2DEEE" />
-        <text x={589} y={76} fontSize={9} fill={TENUE}>
+        <rect x={578} y={168} width={106} height={22} rx={5} fill="#FFFFFF" stroke="#E2DEEE" />
+        <text x={589} y={182} fontSize={9} fill={TENUE}>
           Más vendidos
         </text>
         <path
-          d="M670 72l3.5 3.5 3.5-3.5"
+          d="M670 178l3.5 3.5 3.5-3.5"
           fill="none"
           stroke={TENUE}
           strokeWidth={1.3}
@@ -203,21 +345,21 @@ export function TiendaListado() {
                   necesidad de un borde duro. */}
               <rect
                 x={x}
-                y={96}
+                y={200}
                 width={108}
-                height={214}
+                height={236}
                 rx={9}
                 fill="#FFFFFF"
                 filter="url(#sombraCard)"
               />
 
-              <Foto id={`prodListado${i}`} href={p.foto} x={x + 6} y={102} w={96} h={124} rx={6} />
+              <Foto id={`prodListado${i}`} href={p.foto} x={x + 6} y={206} w={96} h={116} rx={6} />
 
               {p.badge ? (
                 <>
                   <rect
                     x={x + 12}
-                    y={108}
+                    y={212}
                     width={anchoBadge}
                     height={16}
                     rx={8}
@@ -225,7 +367,7 @@ export function TiendaListado() {
                   />
                   <text
                     x={x + 12 + anchoBadge / 2}
-                    y={119.5}
+                    y={223.5}
                     fontSize={8}
                     fontWeight={700}
                     fill="#FFF"
@@ -237,28 +379,28 @@ export function TiendaListado() {
               ) : null}
 
               {/* Favorito: estado que tienen todas las tiendas reales. */}
-              <circle cx={x + 88} cy={116} r={9} fill="#FFFFFF" opacity={0.92} />
+              <circle cx={x + 88} cy={220} r={9} fill="#FFFFFF" opacity={0.92} />
               <path
-                d={`M${x + 88} 119.5c-3-2.2-5-3.8-5-5.8 0-1.5 1.2-2.5 2.5-2.5 1 0 1.9.5 2.5 1.4.6-.9 1.5-1.4 2.5-1.4 1.3 0 2.5 1 2.5 2.5 0 2-2 3.6-5 5.8Z`}
+                d={`M${x + 88} 223.5c-3-2.2-5-3.8-5-5.8 0-1.5 1.2-2.5 2.5-2.5 1 0 1.9.5 2.5 1.4.6-.9 1.5-1.4 2.5-1.4 1.3 0 2.5 1 2.5 2.5 0 2-2 3.6-5 5.8Z`}
                 fill={i === 1 ? CORAL : 'none'}
                 stroke={i === 1 ? CORAL : '#B4AEC6'}
                 strokeWidth={1.3}
               />
 
-              <text x={x + 10} y={246} fontSize={10} fontWeight={600} fill={TINTA}>
+              <text x={x + 10} y={342} fontSize={10} fontWeight={600} fill={TINTA}>
                 {p.nombre}
               </text>
 
-              <text x={x + 10} y={266} fontSize={12.5} fontWeight={700} fill={TINTA}>
+              <text x={x + 10} y={366} fontSize={12.5} fontWeight={700} fill={TINTA}>
                 {p.precio}
               </text>
               {p.antes ? (
-                <text x={x + 10} y={281} fontSize={8.5} fill="#B4AEC6" textDecoration="line-through">
+                <text x={x + 10} y={384} fontSize={8.5} fill="#B4AEC6" textDecoration="line-through">
                   {p.antes}
                 </text>
               ) : null}
               {p.stock ? (
-                <text x={x + 10} y={281} fontSize={8.5} fontWeight={600} fill={ROJO}>
+                <text x={x + 10} y={384} fontSize={8.5} fontWeight={600} fill={ROJO}>
                   {p.stock}
                 </text>
               ) : null}
@@ -268,14 +410,14 @@ export function TiendaListado() {
                 <circle
                   key={c}
                   cx={x + 14 + j * 13}
-                  cy={296}
+                  cy={404}
                   r={4.5}
                   fill={c}
                   stroke={j === 0 ? '#FFFFFF' : 'none'}
                   strokeWidth={1.4}
                 />
               ))}
-              <text x={x + 56} y={299} fontSize={7.5} fill="#B4AEC6">
+              <text x={x + 56} y={407} fontSize={7.5} fill="#B4AEC6">
                 +2
               </text>
             </g>
@@ -285,25 +427,24 @@ export function TiendaListado() {
 
       {/* ── Paginado: cierra el listado y sugiere que hay más ── */}
       <g data-parte="paginado">
-        <line x1={212} y1={334} x2={684} y2={334} stroke={LINEA} strokeWidth={1} />
-        <text x={212} y={358} fontSize={9} fill={TENUE}>
+        <text x={212} y={451} fontSize={9} fill={TENUE}>
           Mostrando 4 de 61
         </text>
         {['1', '2', '3', '…', '9'].map((n, i) => (
           <g key={n} data-item>
             <rect
-              x={532 + i * 32}
-              y={344}
-              width={24}
-              height={24}
-              rx={5}
+              x={554 + i * 26}
+              y={436}
+              width={20}
+              height={20}
+              rx={4}
               fill={i === 0 ? TINTA : '#FFFFFF'}
               stroke={i === 0 ? 'none' : '#E2DEEE'}
             />
             <text
-              x={544 + i * 32}
-              y={360}
-              fontSize={9.5}
+              x={564 + i * 26}
+              y={450}
+              fontSize={9}
               fontWeight={i === 0 ? 700 : 400}
               fill={i === 0 ? '#FFF' : TENUE}
               textAnchor="middle"
@@ -316,36 +457,41 @@ export function TiendaListado() {
 
       {/* ── Carrito: el toast que confirma el agregado ──
 
-          Va en el hueco bajo la columna de filtros, que queda vacío:
-          apoyado abajo a la derecha se solapaba con el paginado y el
-          borde del lienzo lo cortaba. */}
+          Va a la derecha, del lado del ícono del carrito: es de donde
+          sale y es donde toda tienda lo pone. Antes iba abajo a la
+          izquierda, en el hueco que dejaban los filtros; con la columna
+          poblada ese hueco no existe más.
+
+          A la altura de la grilla y no del banner: apoyado arriba
+          tapaba la mitad de la franja de campaña, que es justo lo que
+          el mockup acaba de presentar. */}
       <g data-parte="carrito">
         <rect
-          x={32}
-          y={346}
-          width={196}
-          height={56}
+          x={476}
+          y={218}
+          width={208}
+          height={58}
           rx={10}
           fill="#FFFFFF"
           filter="url(#sombraFlotante)"
         />
         <g data-item>
-        <Foto id="carritoThumb" href="/mockups/tienda-carrito.webp" x={42} y={354} w={40} h={40} rx={6} />
-        <circle cx={96} cy={365} r={7} fill="#EAF6EF" />
+        <Foto id="carritoThumb" href="/mockups/tienda-carrito.webp" x={486} y={226} w={42} h={42} rx={6} />
+        <circle cx={542} cy={238} r={7} fill="#EAF6EF" />
         <path
-          d="M93 365l2.2 2.2 4.2-4.4"
+          d="M539 238l2.2 2.2 4.2-4.4"
           fill="none"
           stroke={VERDE}
           strokeWidth={1.8}
           strokeLinecap="round"
         />
-        <text x={110} y={368} fontSize={9.5} fontWeight={600} fill={TINTA}>
+        <text x={556} y={241} fontSize={9.5} fontWeight={600} fill={TINTA}>
           Agregado al carrito
         </text>
-        <text x={93} y={386} fontSize={9} fill={TENUE}>
+        <text x={539} y={259} fontSize={9} fill={TENUE}>
           Sweater trenzado
         </text>
-        <text x={218} y={386} fontSize={10.5} fontWeight={700} fill={TINTA} textAnchor="end">
+        <text x={674} y={259} fontSize={10.5} fontWeight={700} fill={TINTA} textAnchor="end">
           $74.900
         </text>
         </g>

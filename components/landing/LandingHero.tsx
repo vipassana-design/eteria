@@ -148,7 +148,8 @@ export default function LandingHero({ landing }: { landing: Landing }) {
         gsap.set(partes, { opacity: 0, y: 18 })
 
         partes.forEach((parte, i) => {
-          const items = parte.querySelectorAll('[data-item]')
+          // Los que esperan el trazo se animan aparte, más abajo.
+          const items = parte.querySelectorAll('[data-item]:not([data-tras-trazo])')
 
           tl.to(parte, { opacity: 1, y: 0, duration: 0.42, ease: 'power3.out' }, i * 0.4)
 
@@ -163,13 +164,33 @@ export default function LandingHero({ landing }: { landing: Landing }) {
           }
 
           const trazo = parte.querySelector<SVGPathElement>('[data-trazo]')
+          const DIBUJA = i * 0.4 + 0.15
+          const DURA = 0.7
           if (trazo) {
             const largo = trazo.getTotalLength()
             tl.fromTo(
               trazo,
               { strokeDasharray: largo, strokeDashoffset: largo },
-              { strokeDashoffset: 0, duration: 0.7, ease: 'power2.inOut' },
-              i * 0.4 + 0.15,
+              { strokeDashoffset: 0, duration: DURA, ease: 'power2.inOut' },
+              DIBUJA,
+            )
+          }
+
+          // Lo que la línea tiene que alcanzar antes de aparecer: el
+          // tooltip del último valor de un gráfico señala un punto, y
+          // mostrarlo mientras la línea todavía viaja lo desmiente.
+          const trasTrazo = parte.querySelectorAll('[data-tras-trazo]')
+          if (trasTrazo.length > 0) {
+            tl.from(
+              trasTrazo,
+              {
+                opacity: 0,
+                scale: 0.8,
+                duration: 0.3,
+                ease: 'back.out(2)',
+                transformOrigin: 'center',
+              },
+              trazo ? DIBUJA + DURA - 0.05 : DIBUJA,
             )
           }
         })
