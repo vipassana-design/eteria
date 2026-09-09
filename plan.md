@@ -355,6 +355,18 @@ Quedan dos menciones de "plantilla" en `designSystem.ts` y `heros.ts`, pero son 
 
 **Segunda pasada de los datos (cliente).** Los tres pasaron a `+20 años acompañando clientes`, `End to end` y `Soporte`. Con esto se resuelve el pendiente que había: las dos cifras sin verificar (`+100 proyectos` y `9 de 10 clientes siguen con nosotros`) ya no están, y los datos describen el alcance del trabajo en lugar de afirmar volumen. El flag `esTexto` de `DatoHero`, que había quedado sin uso, vuelve a usarse en los dos últimos.
 
+### Mapa de integraciones
+
+A la derecha del texto. Es la **única pieza del sitio que no es una pantalla**: los nueve mockups son capturas de producto, esto es el plano de cómo se conecta lo que se construye. Un nodo central con el sistema y seis alrededor —Facturación, Pagos, Stock, Logística, CRM, Planillas— unidos por radios que se dibujan.
+
+Dice el argumento de la sección sin texto: *entendemos con qué se integra tu operación*, que es la traducción visual del párrafo que tiene al lado. Los nombres salen del copy que ya está en las landings.
+
+**Se descartó una foto.** Las opciones eran equipo (no hay), oficina (no comunica desarrollo) o stock de gente frente a monitores, que es justamente lo que hace que un sitio se lea como plantilla. Acabábamos de sacar el copy genérico; una foto de stock reintroducía el problema por otra vía.
+
+**Se anima al entrar y una sola vez, no con el scroll.** Proceso ya tiene una línea scroll-driven, y dos secciones seguidas con el mismo recurso se leen como un truco repetido. Después queda un pulso en loop lento que viaja del centro a cada nodo: es lo que lo mantiene vivo sin pedir atención.
+
+No se monta abajo de `lg`: son seis nodos alrededor de un centro y a 340px de ancho deja de ser legible.
+
 ### 4.4 Servicios — cards apiladas
 
 Tres cards que se apilan al scrollear: cada una queda pineada y la siguiente sube por encima, con la anterior escalando levemente hacia atrás y perdiendo opacidad. Es el efecto que viste en Wavespace.
@@ -512,6 +524,13 @@ Dos columnas. Izquierda el texto y los datos, derecha el formulario.
 - El honeypot se posiciona fuera de pantalla en vez de `display:none`, que algunos bots detectan.
 - La validación vive en `/lib/validarConsulta.ts`, aparte del componente, para que el endpoint la reutilice cuando exista.
 
+**Dos piezas nuevas en la columna izquierda (§15).**
+
+**Estado de disponibilidad.** Un punto y una línea que dicen si hay alguien: "Respondemos en el día" con el punto verde pulsando en horario, "Te respondemos mañana a primera hora" fuera de él, "el lunes" el fin de semana. Es lo primero que quiere saber alguien que va a delegar un sistema; un formulario sin esto es un buzón.
+
+El cálculo usa el reloj del visitante. Es una aproximación —no sabemos su huso— pero el mensaje nunca promete más de lo que dice el horario publicado. Se monta con `dynamic` sin SSR: renderizarlo en el servidor daría un HTML calculado en otro huso que después habría que reconciliar. Mientras carga se muestra el horario a secas, que es verdadero siempre y ocupa el mismo alto.
+
+**Qué sigue.** Tres pasos numerados: leemos la consulta, escribimos o llamamos para entender el alcance, enviamos una propuesta con precio y plazo. Van **antes** del formulario y no después: el que duda de llenarlo es el que necesita saber a qué se compromete.
 ### 4.9 Footer
 
 ```
