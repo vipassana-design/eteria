@@ -364,8 +364,12 @@ body[data-menu-abierto] [data-flotante] {
   pointer-events: none;
   /* El tramo encendido es corto —del 0 al 18% de la vuelta— y el resto
      transparente: así se lee como una luz que recorre y no como un
-     marco de color. */
-  background: conic-gradient(
+     marco de color.
+
+     Va en una variable porque lo comparten la línea nítida y el
+     resplandor de abajo: así el mismo ángulo mueve a los dos y no se
+     desfasan. */
+  --halo-luz: conic-gradient(
     from var(--halo-giro),
     transparent 0%,
     color-mix(in srgb, var(--color-acento-2) 35%, transparent) 4%,
@@ -374,6 +378,7 @@ body[data-menu-abierto] [data-flotante] {
     transparent 18%,
     transparent 100%
   );
+  background: var(--halo-luz);
   -webkit-mask:
     linear-gradient(#000 0 0) content-box exclude,
     linear-gradient(#000 0 0);
@@ -381,6 +386,37 @@ body[data-menu-abierto] [data-flotante] {
     linear-gradient(#000 0 0) content-box exclude,
     linear-gradient(#000 0 0);
   animation: halo-vuelta 5.5s linear infinite;
+}
+
+/* El resplandor: el mismo degradé, desenfocado y sangrando hacia
+   afuera del marco.
+
+   Lleva un borde más grueso que la línea para que el blur tenga de
+   dónde sangrar —con 1,5px el desenfoque se come la luz y no queda
+   nada— y va a opacidad baja: es el halo alrededor del filo, no una
+   segunda línea.
+
+   El mix-blend-mode screen es lo que permite ponerlo por delante sin
+   apagar la línea nítida: suma luz en lugar de pintar encima. Con
+   z-index -1 quedaba detrás del marco, que es opaco, y no se veía
+   —medido con una captura del borde, salía gris. */
+.halo-ventana::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: calc(var(--radius-card) + 5px);
+  padding: 7px;
+  background: var(--halo-luz);
+  opacity: 0.5;
+  filter: blur(6px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
 }
 
 @keyframes halo-vuelta {
@@ -396,6 +432,11 @@ body[data-menu-abierto] [data-flotante] {
 @media (prefers-reduced-motion: reduce) {
   .halo-ventana {
     background: color-mix(in srgb, var(--color-acento-2) 20%, transparent);
+  }
+
+  .halo-ventana::after {
+    background: color-mix(in srgb, var(--color-acento-2) 20%, transparent);
+    opacity: 0.4;
   }
 }
 

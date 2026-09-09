@@ -379,7 +379,13 @@ Va en el contenedor de afuera, no en el marco: el marco lleva `overflow-hidden` 
 
 **Pero en un contenedor que abarca solo el marco.** La primera versión lo puso en `data-ventana`, que incluye el indicador de etapa de abajo —la etiqueta "Ecommerce", "Panel de administración"… y las rayitas—, así que con el `inset` negativo la línea pasaba por encima de esas palabras. Hay un div `relative` intermedio que envuelve el marco y nada más. Medido: el halo excede al marco 1px por lado, el grosor del borde, y la etiqueta arranca 15px más abajo.
 
-Con `prefers-reduced-motion` el bloque global ya detiene la animación, pero eso dejaría el cónico congelado con la luz en una esquina: se reemplaza por un color plano tenue.
+**Y un resplandor detrás del filo.** El mismo degradé en un `::after`, con el borde más grueso (7px contra 1,5) para que el `blur(6px)` tenga de dónde sangrar —con el ancho de la línea el desenfoque se come la luz y no queda nada— a opacidad 0,5. El degradé está factorizado en `--halo-luz` para que la línea y el resplandor compartan el mismo ángulo y no se desfasen.
+
+Va **por delante** con `mix-blend-mode: screen`, que suma luz en lugar de pintar encima. La primera versión usó `z-index: -1` para meterlo detrás de la línea, y eso lo mandaba detrás del marco, que es opaco: medido con una captura del borde, salía gris sin nada de violeta.
+
+Con `prefers-reduced-motion` el bloque global ya detiene la animación, pero eso dejaría el cónico congelado con la luz en una esquina: se reemplaza por un color plano tenue, línea y resplandor.
+
+Medido con el resplandor puesto: **60 fps en escritorio y 56 con la CPU 4× más lenta.** Un `blur` sobre una capa que gira es de lo más caro que se le puede pedir al navegador, así que ese número confirma que el `@property` mantiene el trabajo en el compositor.
 
 **Por ahora solo en la home**, a pedido del cliente, para verlo antes de llevarlo a las landings.
 
