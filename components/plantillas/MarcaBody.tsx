@@ -36,7 +36,14 @@ const OCULTAR =
   '#capa-sitio > header:not(.raiz-plantilla *),' +
   '#capa-sitio > footer:not(.raiz-plantilla *),' +
   '[data-flotante]:not(.raiz-plantilla *),' +
-  '[data-capa-fondo]:not(.raiz-plantilla *)' +
+  '[data-capa-fondo]:not(.raiz-plantilla *),' +
+  // El overlay del menú mobile del sitio. Queda en `opacity: 0` y con
+  // `pointer-events: none`, así que no bloquea nada —pero su
+  // `backdrop-filter: blur(24px)` **se aplica igual con opacidad 0**, y
+  // dentro del iframe eso desenfoca la plantilla entera en mobile.
+  // Medido en /plantillas/atelier a 390px: display flex, visibility
+  // visible, 390×844.
+  '#menu-mobile:not(.raiz-plantilla *)' +
   ' { display: none !important }'
 
 export default function MarcaBody() {

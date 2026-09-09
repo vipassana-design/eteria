@@ -128,9 +128,12 @@ export default function Mapa({ elegido, alElegir }: Props) {
           }}
           className="rounded-lg border px-2.5 py-1.5 backdrop-blur-sm"
         >
+          {/* El título de la referencia solo en desktop: en mobile los
+              cuatro colores con su nombre ya se explican, y la línea de
+              arriba le comía alto al mapa. */}
           <p
             style={{ color: 'var(--texto-tenue)', letterSpacing: '0.06em' }}
-            className="mb-1 text-[8.5px] font-semibold uppercase"
+            className="mb-1 hidden text-[8.5px] font-semibold uppercase lg:block"
           >
             {mapa.referencia}
           </p>
@@ -161,7 +164,10 @@ export default function Mapa({ elegido, alElegir }: Props) {
         // completo, y el viewBox ya está en la proporción de la card,
         // así que no quedan franjas muertas.
         preserveAspectRatio="xMidYMid meet"
-        className="h-[260px] w-full flex-1 lg:h-full"
+        // En mobile el mapa necesita alto propio: es la pieza principal
+        // de la plantilla y con 260px la referencia le tapaba media
+        // superficie. En desktop toma el alto de la card.
+        className="h-[340px] w-full flex-1 lg:h-full"
         role="img"
         aria-label={`Mapa esquemático de ${mapa.zona} con ${lista.vehiculos.length} vehículos`}
       >

@@ -340,7 +340,9 @@ body[data-menu-abierto] [data-flotante] {
    plantilla**, que es justo lo que hay que mostrar. Medido: la barra de
    Atelier salía con `display: none` y 0px de alto. */
 body[data-plantilla]
-  :is(header, footer, [data-flotante], [data-capa-fondo]):not(.raiz-plantilla *) {
+  :is(header, footer, [data-flotante], [data-capa-fondo], #menu-mobile):not(
+    .raiz-plantilla *
+  ) {
   display: none;
 }
 
