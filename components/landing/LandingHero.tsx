@@ -181,6 +181,12 @@ export default function LandingHero({ landing }: { landing: Landing }) {
           // mostrarlo mientras la línea todavía viaja lo desmiente.
           const trasTrazo = parte.querySelectorAll('[data-tras-trazo]')
           if (trasTrazo.length > 0) {
+            // Uno solo —un tooltip— espera a que la línea termine. Varios
+            // —los hitos de una línea de estado— se encienden repartidos
+            // a lo largo del dibujado, cada uno cuando la línea lo
+            // alcanza: aparecer todos juntos al final desmiente el
+            // recorrido igual que aparecer antes.
+            const varios = trasTrazo.length > 1
             tl.from(
               trasTrazo,
               {
@@ -189,8 +195,9 @@ export default function LandingHero({ landing }: { landing: Landing }) {
                 duration: 0.3,
                 ease: 'back.out(2)',
                 transformOrigin: 'center',
+                stagger: varios ? (DURA * 0.8) / trasTrazo.length : 0,
               },
-              trazo ? DIBUJA + DURA - 0.05 : DIBUJA,
+              trazo ? (varios ? DIBUJA + DURA * 0.15 : DIBUJA + DURA - 0.05) : DIBUJA,
             )
           }
         })

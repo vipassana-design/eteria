@@ -196,10 +196,23 @@ export default function Hero({ conFondo = true, pantallas = POR_PARTES }: PropsH
           // mostrarlo mientras la línea todavía viaja lo desmiente.
           const trasTrazo = parte.querySelectorAll('[data-tras-trazo]')
           if (trasTrazo.length > 0) {
+            // Uno solo —un tooltip— espera a que la línea termine. Varios
+            // —los hitos de una línea de estado— se encienden repartidos
+            // a lo largo del dibujado, cada uno cuando la línea lo
+            // alcanza: aparecer todos juntos al final desmiente el
+            // recorrido igual que aparecer antes.
+            const varios = trasTrazo.length > 1
             tl.from(
               trasTrazo,
-              { opacity: 0, scale: 0.8, duration: 0.3, ease: 'back.out(2)', transformOrigin: 'center' },
-              trazo ? dibujaEn + duraTrazo - 0.05 : dibujaEn,
+              {
+                opacity: 0,
+                scale: 0.8,
+                duration: 0.3,
+                ease: 'back.out(2)',
+                transformOrigin: 'center',
+                stagger: varios ? (duraTrazo * 0.8) / trasTrazo.length : 0,
+              },
+              trazo ? (varios ? dibujaEn + duraTrazo * 0.15 : dibujaEn + duraTrazo - 0.05) : dibujaEn,
             )
           }
         })

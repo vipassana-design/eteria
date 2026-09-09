@@ -17,7 +17,20 @@ Leé el mockup existente más parecido al que vas a hacer. Los que hay:
 | `components/home/TiendaListado.tsx` | listado de categoría con filtros |
 | `components/home/PanelDashboard.tsx` | tablero de resumen |
 | `components/home/CorporativoHome.tsx` | home institucional |
-| `components/landing/PantallasLanding.tsx` | tres pantallas de 6 partes |
+| `components/landing/PantallasLanding.tsx` | **huérfano**, ver abajo |
+
+**Las landings reutilizan los mockups de la home.** `LandingHero`
+importa `POR_PARTES` de `components/home/PantallasPorPartes`, así que
+un arreglo en `TiendaListado`, `CorporativoHome` o `PanelDashboard`
+llega a la home y a su landing a la vez: no hay nada que copiar.
+
+`PantallasLanding.tsx` tenía tres pantallas propias y quedó sin usar
+cuando las landings pasaron a los mockups de la home. Verificalo antes
+de editarlo:
+
+```bash
+grep -rn "PantallasLanding" --include=*.tsx . | grep -v node_modules
+```
 
 **Cada mockup nuevo tiene que mostrar una pantalla distinta de las que
 ya existen.** Nueve mockups del mismo flujo se leen como repetición. Si
@@ -117,7 +130,14 @@ alcanzar antes de aparecer: el tooltip del último valor señala un punto
 concreto de la serie, y mostrarlo mientras la línea todavía viaja lo
 desmiente. Va **junto con** `data-item` en el mismo `<g>`; el
 envoltorio lo excluye del stagger general con
-`[data-item]:not([data-tras-trazo])` y lo entra al terminar el trazo.
+`[data-item]:not([data-tras-trazo])`.
+
+Distingue dos casos por cantidad:
+
+- **Uno solo** (un tooltip) entra al terminar el trazo.
+- **Varios** (los hitos de una línea de estado) se reparten a lo largo
+  del dibujado, cada uno cuando la línea lo alcanza. Aparecer todos
+  juntos al final desmiente el recorrido igual que aparecer antes.
 
 ```jsx
 <g data-item data-tras-trazo>

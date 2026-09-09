@@ -6,6 +6,11 @@
  *  que el armado dure más.
  *
  *  Misma caja de 720×460 y la misma paleta clara que el resto.
+ *
+ *  Los hitos de la línea de estado del detalle de pedido llevan
+ *  `data-tras-trazo`: se encienden a medida que la línea los alcanza,
+ *  no con el stagger general. Sin eso aparecían antes de que la línea
+ *  llegara a ellos.
  */
 
 const PAPEL = '#F7F6FB'
@@ -424,7 +429,7 @@ export function DetallePedido() {
           fill="none"
         />
         {hitos.map((h, i) => (
-          <g key={h.t} data-item>
+          <g key={h.t} data-item data-tras-trazo>
             <circle cx={204} cy={130 + i * 28} r={5} fill={h.ok ? '#4F9E7F' : '#FFFFFF'} stroke={h.ok ? 'none' : '#DDD8E8'} strokeWidth={1.5} />
             {h.ok && (
               <path
