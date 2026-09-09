@@ -66,6 +66,7 @@ Cuando actualices un archivo, editá la parte que corresponde. No lo reescribas 
 - No instalar dependencias nuevas sin avisar primero.
 - Los tokens de diseño viven en el bloque `@theme` de `app/globals.css`. Tailwind 4 no usa `tailwind.config.js`: no lo crees.
 - Los degradés y todo lo que use un color de acento se arma con `var(--color-…)`, no con el hex literal: así cambiar un token repinta el sitio entero. Lo mismo en canvas, que no hereda variables CSS y tiene que leerlas con `getComputedStyle`.
+- Un contenedor con scroll propio (panel flotante, modal, lista interna) necesita `data-lenis-prevent`: Lenis captura el `wheel` de toda la página, así que sin ese atributo la rueda mueve el sitio de atrás en vez del contenedor.
 - Hay un laboratorio de paleta para explorar colores y escala en vivo (PLAN.md §15). Se enciende con `NEXT_PUBLIC_LAB=1` en `.env.local` y muestra el contraste WCAG de cada par texto/superficie mientras se mueven los colores. Conviene usarlo antes de cambiar un token de color a mano.
 - Las variantes condicionales de animación van con `gsap.matchMedia()`, no con `window.matchMedia` a mano. Se revierte solo al desmontar.
 - El loop de cualquier animación por frame va en `gsap.ticker`, no en un `requestAnimationFrame` propio: así hay un solo rAF compartido con Lenis y ScrollTrigger.

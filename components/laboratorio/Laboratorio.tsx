@@ -140,8 +140,10 @@ export default function Laboratorio() {
         ))}
       </nav>
 
-      {/* Cuerpo */}
-      <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+      {/* Cuerpo. `data-lenis-prevent` es necesario: Lenis captura el
+          wheel de toda la página, y sin esto scrollear acá movía el
+          sitio de atrás en lugar del panel. */}
+      <div data-lenis-prevent className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
         {pestana === 'paletas' ? <PanelPaletas p={p} /> : null}
         {pestana === 'color' ? <PanelColor p={p} /> : null}
         {pestana === 'escala' ? <PanelNumeros p={p} grupos={gruposNumero} /> : null}
@@ -151,8 +153,12 @@ export default function Laboratorio() {
         {pestana === 'contraste' ? <PanelContraste p={p} /> : null}
       </div>
 
-      {/* Pie: acciones */}
-      <footer className="shrink-0 border-t border-white/10 px-4 py-3">
+      {/* Pie: acciones. Scrollea cuando hay varias paletas guardadas,
+          así que también se excluye de Lenis. */}
+      <footer
+        data-lenis-prevent
+        className="max-h-[40%] shrink-0 overflow-y-auto border-t border-white/10 px-4 py-3"
+      >
         <div className="flex gap-2">
           <button
             type="button"
