@@ -46,12 +46,27 @@ interface Trazo {
   deriva: number
 }
 
-const COLORES = [
-  'rgba(196,181,253,',
-  'rgba(139,92,246,',
-  'rgba(96,165,250,',
-  'rgba(244,242,255,',
-]
+/** Los tonos de los trazos.
+ *
+ *  El canvas no hereda variables CSS, así que se leen con
+ *  `getComputedStyle` y se convierten al formato `r,g,b,` que espera
+ *  el `rgba()` del gradiente. Con los rgba escritos a mano los trazos
+ *  quedaban en violeta al cambiar la paleta. */
+const TOKENS_TRAZO = ['--color-violet-300', '--color-violet-500', '--color-blue-400'] as const
+
+/** Lee un token y lo devuelve como `rgba(r,g,b,` listo para cerrar
+ *  con el alfa. */
+function tonoDeToken(token: string, respaldo: string): string {
+  if (typeof document === 'undefined') return respaldo
+  const v = getComputedStyle(document.documentElement).getPropertyValue(token).trim()
+  const hex = v.match(/^#([0-9a-f]{6})$/i)
+  if (hex?.[1]) {
+    const n = parseInt(hex[1], 16)
+    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},`
+  }
+  const rgb = v.match(/rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/i)
+  return rgb ? `rgba(${rgb[1]},${rgb[2]},${rgb[3]},` : respaldo
+}
 
 interface PropsFlujo {
   /** Cómo se borra la estela.
@@ -122,13 +137,23 @@ export default function FondoFlujo({
           ctx.lineCap = 'round'
         }
 
+        // Los tonos se resuelven al montar: el laboratorio los puede
+        // cambiar, pero un fondo que repinta cada trazo en cada frame
+        // no justifica leer el DOM 18 veces por frame.
+        const colores = [
+          ...TOKENS_TRAZO.map((t, i) =>
+            tonoDeToken(t, ['rgba(196,181,253,', 'rgba(139,92,246,', 'rgba(96,165,250,'][i]!),
+          ),
+          'rgba(244,242,255,',
+        ]
+
         const nuevoTrazo = (desdeIzquierda = false): Trazo => ({
           x: desdeIzquierda ? -gsap.utils.random(0, 200) : gsap.utils.random(0, ancho),
           y: gsap.utils.random(0, alto),
           vel: gsap.utils.random(70, 190) * factorVel,
           largo: gsap.utils.random(30, 74),
           grosor: gsap.utils.random(0.7, 1.7),
-          color: COLORES[Math.floor(Math.random() * COLORES.length)]!,
+          color: colores[Math.floor(Math.random() * colores.length)]!,
           deriva: gsap.utils.random(-14, 14),
         })
 

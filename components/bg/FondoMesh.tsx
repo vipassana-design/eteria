@@ -18,10 +18,24 @@ import { gsap, useGSAP } from '@/lib/gsap'
 
 /** Las manchas, con su color y su posición de reposo. */
 const MANCHAS = [
-  { color: 'rgba(139,92,246,0.42)', x: '8%', y: '12%', tamano: 620, soloDesktop: false },
-  { color: 'rgba(59,130,246,0.34)', x: '62%', y: '-6%', tamano: 560, soloDesktop: false },
-  { color: 'rgba(196,181,253,0.26)', x: '34%', y: '52%', tamano: 500, soloDesktop: false },
-  { color: 'rgba(124,58,237,0.3)', x: '78%', y: '46%', tamano: 540, soloDesktop: true },
+  // Los colores salen de los tokens del acento con `color-mix()`: con
+  // los rgba escritos a mano quedaban en violeta al cambiar la paleta.
+  {
+    color: 'color-mix(in srgb, var(--color-violet-500) 42%, transparent)',
+    x: '8%', y: '12%', tamano: 620, soloDesktop: false,
+  },
+  {
+    color: 'color-mix(in srgb, var(--color-blue-500) 34%, transparent)',
+    x: '62%', y: '-6%', tamano: 560, soloDesktop: false,
+  },
+  {
+    color: 'color-mix(in srgb, var(--color-violet-300) 26%, transparent)',
+    x: '34%', y: '52%', tamano: 500, soloDesktop: false,
+  },
+  {
+    color: 'color-mix(in srgb, var(--color-violet-600) 30%, transparent)',
+    x: '78%', y: '46%', tamano: 540, soloDesktop: true,
+  },
 ]
 
 export default function FondoMesh({ conVelo = true }: { conVelo?: boolean } = {}) {

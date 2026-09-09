@@ -41,7 +41,9 @@
 
   /* Bordes */
   --color-hairline: rgba(255, 255, 255, 0.07);
-  --color-hairline-hover: rgba(139, 92, 246, 0.35);
+  /* Del acento, no un literal: con el hex escrito a mano quedaba
+     desactualizado al cambiar la paleta. */
+  --color-hairline-hover: color-mix(in srgb, var(--color-violet-500) 35%, transparent);
 
   /* Tipografía */
   --font-display: var(--font-clash), ui-sans-serif, system-ui, sans-serif;
@@ -207,7 +209,7 @@
   }
 
   ::selection {
-    background-color: rgba(139, 92, 246, 0.32);
+    background-color: color-mix(in srgb, var(--color-violet-500) 32%, transparent);
     color: var(--color-hi);
   }
 

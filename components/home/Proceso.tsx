@@ -7,6 +7,14 @@ import TituloSeccion from '@/components/ui/TituloSeccion'
 import { proceso, seccionProceso } from '@/content/proceso'
 import { ILUSTRACIONES } from './IlustracionesProceso'
 
+/** Colores del encendido. Se leen de los tokens y no se hardcodean:
+ *  GSAP no resuelve `var()` al interpolar un color, así que hay que
+ *  pasarle el valor ya calculado. */
+const leerToken = (t: string) =>
+  typeof document === 'undefined'
+    ? '#ffffff'
+    : getComputedStyle(document.documentElement).getPropertyValue(t).trim()
+
 /** Sección "Proceso" (PLAN.md §4.5).
  *
  *  Cuatro etapas con una línea conectora que cruza por detrás. La
@@ -27,12 +35,23 @@ export default function Proceso() {
 
   useGSAP(
     () => {
+      // Los colores se resuelven acá y no en el módulo: el componente
+      // corre en el cliente, así que el documento ya existe y los
+      // tokens están calculados.
+      const AZUL = leerToken('--color-violet-500')
+      const AZUL_CLARO = leerToken('--color-violet-300')
+      const GRIS = leerToken('--color-hairline-hover')
+      const BASE = leerToken('--color-base')
+      const ANILLO_OFF = `0 0 0 4px ${BASE}`
+      const ANILLO_ON = `0 0 0 4px ${BASE}, 0 0 14px 0 color-mix(in srgb, ${AZUL} 55%, transparent)`
+
       const mm = gsap.matchMedia()
 
       // Sin movimiento: todo visible y la línea completa.
       mm.add('(prefers-reduced-motion: reduce)', () => {
         gsap.set('[data-etapa]', { opacity: 1, y: 0 })
-        gsap.set('[data-punto]', { scale: 1 })
+        gsap.set('[data-punto]', { scale: 1, backgroundColor: AZUL, boxShadow: ANILLO_ON })
+        gsap.set('[data-icono]', { color: AZUL_CLARO })
         gsap.set('[data-linea]', { strokeDashoffset: 0 })
       })
 
@@ -42,18 +61,48 @@ export default function Proceso() {
         const tweens: gsap.core.Tween[] = []
 
         // ── Estado apagado ──
+        //
+        // El punto arranca gris y chico, y la ilustración en el gris
+        // del hairline: al encenderse los dos pasan al acento. Es el
+        // cambio que hace que la etapa se lea como "activada" y no
+        // solo como "aparecida".
         gsap.set(etapas, { opacity: 0.22, y: 26 })
-        gsap.set('[data-punto]', { scale: 0.4 })
+        gsap.set('[data-punto]', { scale: 0.45, backgroundColor: GRIS, boxShadow: ANILLO_OFF })
+        gsap.set('[data-icono]', { color: GRIS })
 
         // Cada etapa tiene su tween de encendido, en pausa. Se dispara
         // desde el progreso de la línea, así el orden es el del trazo.
         const encendidos = etapas.map((etapa) => {
           const punto = etapa.querySelector('[data-punto]')
+          const icono = etapa.querySelector('[data-icono]')
+          // `reversed: true` desde el arranque: así el primer `play()`
+          // lo recorre hacia adelante y `reverse()` lo devuelve, en vez
+          // de tener que distinguir el primer disparo del resto.
           const tl = gsap.timeline({ paused: true })
+
           tl.to(etapa, { opacity: 1, y: 0, duration: dur.base, ease: ease.out })
+
+          // El punto prende primero: es el que la línea toca.
           if (punto) {
-            tl.to(punto, { scale: 1, duration: 0.42, ease: 'back.out(2.6)' }, 0.04)
+            tl.to(
+              punto,
+              {
+                scale: 1,
+                backgroundColor: AZUL,
+                boxShadow: ANILLO_ON,
+                duration: 0.42,
+                ease: 'back.out(2.6)',
+              },
+              0,
+            )
           }
+
+          // La ilustración lo sigue con un retardo corto, así se lee la
+          // secuencia punto → contenido.
+          if (icono) {
+            tl.to(icono, { color: AZUL_CLARO, duration: 0.5, ease: 'power2.out' }, 0.12)
+          }
+
           return tl
         })
 
@@ -79,14 +128,20 @@ export default function Proceso() {
                 scrub: 0.4,
                 onUpdate: (self) => {
                   // La etapa i se enciende cuando el trazo pasó su
-                  // posición. El umbral arranca antes de la fracción
-                  // exacta para que el punto se prenda justo cuando la
-                  // línea lo toca, no después.
+                  // posición, y se apaga cuando el trazo vuelve atrás:
+                  // el timeline está en pausa, así que `play` y
+                  // `reverse` lo recorren en los dos sentidos y la
+                  // animación inversa sale gratis.
+                  //
+                  // Se comparan las direcciones y no el estado: llamar
+                  // `play()` en cada frame reiniciaría el ease.
                   encendidos.forEach((tl, i) => {
                     const umbral = i / encendidos.length + 0.04
-                    if (self.progress >= umbral) {
-                      if (!tl.isActive() && tl.progress() === 0) tl.play()
-                    }
+                    const debeEstar = self.progress >= umbral
+                    const yendo = tl.reversed() === false
+
+                    if (debeEstar && (!yendo || tl.paused())) tl.play()
+                    else if (!debeEstar && yendo && tl.progress() > 0) tl.reverse()
                   })
                 },
               },
@@ -130,7 +185,7 @@ export default function Proceso() {
               data-linea
               d="M0 0.5 H1000"
               stroke="var(--color-hairline-hover)"
-              strokeWidth={1}
+              strokeWidth={2}
               fill="none"
               vectorEffect="non-scaling-stroke"
             />
@@ -149,7 +204,7 @@ export default function Proceso() {
               data-linea
               d="M0.5 0 V1000"
               stroke="var(--color-hairline-hover)"
-              strokeWidth={1}
+              strokeWidth={2}
               fill="none"
               vectorEffect="non-scaling-stroke"
             />
@@ -163,14 +218,17 @@ export default function Proceso() {
                 <li
                   key={etapa.numero}
                   data-etapa
-                  className="group relative pl-9 lg:pl-0 lg:pt-0"
+                  className="relative pl-9 lg:pl-0 lg:pt-0"
                 >
                   {/* Punto sobre la línea. Crece al encenderse, y el
                       anillo del color del fondo lo separa de la línea
                       que pasa por detrás. */}
                   <span
                     data-punto
-                    className="absolute left-0 top-2.5 size-[7px] rounded-full bg-violet-500 shadow-[0_0_0_4px_var(--color-base)] lg:left-0 lg:top-0"
+                    // Sin color en la clase: GSAP lo pasa de gris al
+                    // acento cuando la línea llega. El anillo del color
+                    // del fondo lo separa de la línea que pasa detrás.
+                    className="absolute left-0 top-2.5 size-[9px] rounded-full lg:left-0 lg:top-0"
                   />
 
                   <div className="lg:pt-10">

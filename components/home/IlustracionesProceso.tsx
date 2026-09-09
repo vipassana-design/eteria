@@ -13,7 +13,12 @@ function Base({ children }: { children: React.ReactNode }) {
   return (
     <svg
       viewBox={CAJA}
-      className="h-16 w-28 text-hairline-hover transition-colors duration-500 ease-(--ease-suave) group-hover:text-violet-300"
+      // El color lo controla GSAP desde el encendido de la etapa, no
+      // un `group-hover`: las etapas se iluminan solas con el scroll,
+      // así que depender del mouse dejaba la ilustración apagada
+      // mientras el punto y el texto ya estaban encendidos.
+      data-icono
+      className="h-16 w-28 text-hairline-hover"
       fill="none"
       stroke="currentColor"
       strokeWidth={1.5}

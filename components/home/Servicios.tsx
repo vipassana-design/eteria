@@ -76,9 +76,9 @@ export default function Servicios() {
           const entra = () => {
             gsap.to(bloque, {
               scale: 1.008,
-              borderColor: 'rgba(139,92,246,0.35)',
+              borderColor: 'color-mix(in srgb, var(--color-violet-500) 35%, transparent)',
               boxShadow:
-                '0 0 0 1px rgba(139,92,246,0.12), 0 28px 80px -28px rgba(139,92,246,0.4)',
+                '0 0 0 1px color-mix(in srgb, var(--color-violet-500) 12%, transparent), 0 28px 80px -28px color-mix(in srgb, var(--color-violet-500) 40%, transparent)',
               duration: 0.9,
               ease: 'power2.out',
               overwrite: 'auto',
@@ -88,7 +88,7 @@ export default function Servicios() {
             gsap.to(bloque, {
               scale: 1,
               borderColor: 'rgba(255,255,255,0.07)',
-              boxShadow: '0 0 0 1px rgba(139,92,246,0), 0 28px 80px -28px rgba(139,92,246,0)',
+              boxShadow: '0 0 0 1px transparent, 0 28px 80px -28px transparent',
               duration: 0.9,
               ease: 'power2.out',
               overwrite: 'auto',
