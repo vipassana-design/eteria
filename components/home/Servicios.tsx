@@ -6,7 +6,7 @@ import { gsap, useGSAP } from '@/lib/gsap'
 import TituloSeccion from '@/components/ui/TituloSeccion'
 import Boton from '@/components/ui/Boton'
 import { seccionServicios, servicios } from '@/content/servicios'
-import { PANTALLAS } from './PantallasMockup'
+import { PANTALLAS_SERVICIO } from './PantallasServicio'
 
 /** Sección "Servicios" — cards apiladas (PLAN.md §4.4).
  *
@@ -128,7 +128,7 @@ export default function Servicios() {
           antes de que la siguiente empiece a subir. */}
       <div className="contenedor mt-16 flex flex-col gap-8 lg:mt-20 lg:gap-[28vh]">
         {servicios.map((s, i) => {
-          const Pantalla = PANTALLAS[s.pantalla]
+          const Pantalla = PANTALLAS_SERVICIO[s.id]
 
           return (
             <article
@@ -186,18 +186,22 @@ export default function Servicios() {
                     ventana con la relación 720:460 de las pantallas, así
                     el mockup entra completo: antes se estiraba a la caja
                     y el SVG se recortaba por los costados. */}
+                {/* El mockup ocupa toda la mitad derecha de la card.
+                    Antes iba centrado con `p-8` y quedaba flotando con
+                    márgenes: el recorte contra el borde es lo que le da
+                    el aire de captura. */}
                 <Link
                   href={s.href}
                   aria-label={`${s.titulo}. ${s.textoEnlace}`}
-                  className="relative flex min-h-56 items-center justify-center overflow-hidden border-t border-hairline bg-[#211C3D] p-6 lg:min-h-0 lg:border-l lg:border-t-0 lg:p-8"
+                  className="relative block overflow-hidden border-t border-hairline lg:border-l lg:border-t-0"
                 >
                   <span
                     role="img"
                     aria-label={s.pantallaAlt}
-                    // El fondo va acá y no solo en el SVG: con
-                    // preserveAspectRatio=meet puede sobrar un hilo a
-                    // los costados, y sin fondo se vería el violeta.
-                    className="block aspect-[720/460] w-full overflow-hidden rounded-xl border border-white/10 bg-[#F7F6FB] shadow-[0_16px_50px_-12px_rgba(0,0,0,0.6)]"
+                    // El fondo cubre la celda entera: el SVG es 16:10 y
+                    // la celda no, así que `object-cover` recorta arriba
+                    // y abajo en lugar de dejar franjas.
+                    className="block size-full min-h-56 bg-[#F7F6FB] lg:min-h-0"
                   >
                     <Pantalla />
                   </span>

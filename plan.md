@@ -371,13 +371,27 @@ Se descartaron "Soluciones" —la palabra más genérica del rubro—, "Web" —
 
 **Se anima al entrar y una sola vez, no con el scroll.** Proceso ya tiene una línea scroll-driven, y dos secciones seguidas con el mismo recurso se leen como un truco repetido. Después queda un pulso en loop lento que viaja del centro a cada nodo: es lo que lo mantiene vivo sin pedir atención.
 
-No se monta abajo de `lg`: son seis nodos alrededor de un centro y a 340px de ancho deja de ser legible.
+**Dos disposiciones.** En desktop los nodos van en círculo. En mobile eso no funciona: la caja se comprime al ancho de la columna y las etiquetas caerían a 9-10px, abajo del mínimo legible —está medido. Ahí el centro va arriba y los nodos en dos columnas de tres debajo, así cada etiqueta tiene media columna de ancho en lugar de un radio comprimido. Verificado: **12,5px en los cinco anchos**, de 1440 a 360.
+
+Se montan los dos SVG y CSS decide cuál se ve. Alternar con JavaScript pediría un estado de ancho de ventana que en el primer render no existe, y eso produce un salto al hidratar. La animación lee cuál está visible con `offsetParent !== null`: animar el oculto no haría nada, porque sus medidas son 0 y el pulso apuntaría al origen.
 
 ### 4.4 Servicios — cards apiladas
 
 Tres cards que se apilan al scrollear: cada una queda pineada y la siguiente sube por encima, con la anterior escalando levemente hacia atrás y perdiendo opacidad. Es el efecto que viste en Wavespace.
 
 Cada card: mitad texto, mitad mockup a color.
+
+**Mockups propios (§14).** Las tres cards tienen su propio mockup, y cada uno muestra una pantalla que no aparece en ningún otro lugar del sitio:
+
+| Servicio | El hero muestra | Las landings | La card |
+|---|---|---|---|
+| Ecommerce | listado con filtros | ficha de producto | **ficha de tecnología** |
+| Institucionales | home industrial | panel de contenido | **home de estudio** |
+| Software | tablero de KPIs | detalle de pedido | **tablero kanban** |
+
+Cada uno con paleta propia —azul, verde sobre crema, índigo— porque representan sitios de clientes distintos. No están atados a los tokens del tema: si el sitio cambia de acento, los mockups no.
+
+**El mockup ocupa la mitad derecha completa.** Antes iba centrado con `p-8` y quedaba flotando con márgenes; el recorte contra el borde es lo que le da el aire de captura. Verificado: 574×430 en una celda de 575×430.
 
 **Jerarquía del texto (revisión del cliente).** Son tres niveles: el **nombre del servicio** como título (`--text-h3`, lleva el enlace a la landing), un **subtítulo** en `--text-cuerpo-lg` sobre `--text-mid`, y la **descripción** en `--text-cuerpo` sobre `--text-low`.
 
