@@ -116,10 +116,12 @@ export interface MockupHero {
 export interface DatoHero {
   valor: string
   etiqueta: string
-  /** El valor es una enumeración, no un número: va a cuerpo más chico.
-   *  El tamaño de número grande está reservado para las cifras, que es
-   *  lo que le da peso al bloque. */
-  esTexto?: boolean
+  /** Cuando el valor es una cifra, el número suelto para poder contarlo
+   *  al entrar en viewport. El `valor` sigue siendo la fuente de verdad
+   *  del texto: esto es solo el destino del conteo.
+   *
+   *  Sin este campo el dato se muestra tal cual, sin animar. */
+  cuenta?: { hasta: number; prefijo?: string; sufijo?: string }
 }
 
 /** Datos de marca y contacto. Los valores reales son pendientes del
