@@ -16,24 +16,37 @@ import { gsap, useGSAP } from '@/lib/gsap'
  *  grandes es lo que más cuesta en GPU móvil.
  */
 
-/** Las manchas, con su color y su posición de reposo. */
+/** Las manchas, con su color y su posición de reposo.
+ *
+ *  **Van en violeta, no en el azul del acento principal.** Es lo que
+ *  justifica que `--color-acento-2` exista: el azul lleva títulos,
+ *  botones y enlaces, y el violeta queda para los datos y el fondo. Con
+ *  el fondo en azul el segundo acento aparecía en dos números y no se
+ *  leía como parte del sistema.
+ *
+ *  Ojo con los nombres de los tokens: `--color-violet-*` quedó con
+ *  nombre violeta pero **valor azul** cuando se aplicó la paleta final
+ *  (renombrarlos tocaba las utilidades de Tailwind en ~20 archivos). El
+ *  violeta real es `--color-acento-2`.
+ *
+ *  La variación tonal se mantiene con los dos violetas de la paleta y
+ *  distintos porcentajes: con un solo color y una sola opacidad el
+ *  fondo queda plano. */
 const MANCHAS = [
-  // Los colores salen de los tokens del acento con `color-mix()`: con
-  // los rgba escritos a mano quedaban en violeta al cambiar la paleta.
   {
-    color: 'color-mix(in srgb, var(--color-violet-500) 42%, transparent)',
+    color: 'color-mix(in srgb, var(--color-acento-2) 42%, transparent)',
     x: '8%', y: '12%', tamano: 620, soloDesktop: false,
   },
   {
-    color: 'color-mix(in srgb, var(--color-blue-500) 34%, transparent)',
+    color: 'color-mix(in srgb, var(--color-acento-2-claro) 22%, transparent)',
     x: '62%', y: '-6%', tamano: 560, soloDesktop: false,
   },
   {
-    color: 'color-mix(in srgb, var(--color-violet-300) 26%, transparent)',
+    color: 'color-mix(in srgb, var(--color-acento-2) 26%, transparent)',
     x: '34%', y: '52%', tamano: 500, soloDesktop: false,
   },
   {
-    color: 'color-mix(in srgb, var(--color-violet-600) 30%, transparent)',
+    color: 'color-mix(in srgb, var(--color-acento-2) 34%, transparent)',
     x: '78%', y: '46%', tamano: 540, soloDesktop: true,
   },
 ]

@@ -291,8 +291,13 @@ export default function Hero({ conFondo = true, pantallas = POR_PARTES }: PropsH
         {/* Ventana. Se desborda hacia la derecha: el corte contra el
             borde es parte del efecto, y #capa-sitio lo recorta sin
             generar scroll horizontal. */}
-        <div data-anim data-ventana className="lg:w-[118%]">
-          <div className="overflow-hidden rounded-(--radius-card) border border-white/10 bg-elevated shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]">
+        <div data-anim data-ventana className="relative lg:w-[118%]">
+          {/* El halo que recorre el borde. Va afuera del marco porque
+              el marco lleva overflow-hidden para recortar el mockup, y
+              ahí adentro quedaría cortado justo en el borde que tiene
+              que iluminar. Definido en globals.css. */}
+          <span className="halo-ventana" aria-hidden="true" />
+          <div className="relative overflow-hidden rounded-(--radius-card) border border-white/10 bg-elevated shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]">
             <div className="flex items-center gap-2.5 border-b border-white/[0.07] bg-[#211C3D] px-3.5 py-2.5">
               <span className="flex gap-1.5">
                 <span className="size-2 rounded-full bg-[#4A4370]" />

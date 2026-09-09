@@ -52,7 +52,11 @@ interface Trazo {
  *  `getComputedStyle` y se convierten al formato `r,g,b,` que espera
  *  el `rgba()` del gradiente. Con los rgba escritos a mano los trazos
  *  quedaban en violeta al cambiar la paleta. */
-const TOKENS_TRAZO = ['--color-violet-300', '--color-violet-500', '--color-blue-400'] as const
+/** Los trazos van en violeta, igual que las manchas del mesh: el
+ *  fondo entero es del segundo acento. `--color-violet-*` tiene nombre
+ *  violeta pero valor azul —quedó así al aplicar la paleta final—, así
+ *  que el violeta real sale de `--color-acento-2`. */
+const TOKENS_TRAZO = ['--color-acento-2-claro', '--color-acento-2', '--color-acento-2'] as const
 
 /** Lee un token y lo devuelve como `rgba(r,g,b,` listo para cerrar
  *  con el alfa. */

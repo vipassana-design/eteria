@@ -355,6 +355,32 @@ Quedan dos menciones de "plantilla" en `designSystem.ts` y `heros.ts`, pero son 
 
 **Segunda pasada de los datos (cliente).** Los tres pasaron a `+20 años acompañando clientes`, `End to end` y `Soporte`. Con esto se resuelve el pendiente que había: las dos cifras sin verificar (`+100 proyectos` y `9 de 10 clientes siguen con nosotros`) ya no están, y los datos describen el alcance del trabajo en lugar de afirmar volumen. El flag `esTexto` de `DatoHero`, que había quedado sin uso, vuelve a usarse en los dos últimos.
 
+### El fondo va en violeta (revisión del cliente)
+
+Las capas de fondo —las manchas del mesh, los trazos del flujo, las partículas y el glow de sección— se veían **azules**, y con eso el segundo acento violeta quedaba justificado solo por dos números de "Sobre nosotros".
+
+La causa es una trampa de nombres que arrastramos: **`--color-violet-*` tiene nombre violeta y valor azul** desde que se aplicó la paleta final (`--color-violet-500: #0076fd`, hue 212). Se dejó así porque renombrarlos tocaba las utilidades de Tailwind en ~20 archivos. El violeta real es `--color-acento-2: #8b5cf6`, hue 258.
+
+Los cuatro fondos pasaron a `--color-acento-2` y `--color-acento-2-claro`, manteniendo la variación tonal con distintos porcentajes de `color-mix()`: con un solo color y una sola opacidad el fondo queda plano. También `--glow-violet`, que ya decía violeta en el nombre pero usaba el token azul.
+
+Queda así el reparto: **el azul lleva títulos, botones y enlaces; el violeta el fondo y los datos.** `--grad-brand` sigue en azul a propósito.
+
+Verificado midiendo el color resuelto: el glow da `srgb 0.545 0.361 0.965` = #8B5CF6 en la home y en las tres landings.
+
+### El halo de la ventana del mockup
+
+Una línea en degradé que recorre el borde de la ventana del hero, como si se fuera encendiendo por tramos. Marca la ventana sin agregarle nada adentro, que es lo que importa: el mockup ya está lleno.
+
+Es un `conic-gradient` que gira detrás del marco, recortado a una franja de 1,5px con dos máscaras que se restan —el rectángulo completo menos el interior—, así queda solo el contorno. El tramo encendido cubre el 18% de la vuelta; con más, se lee como un marco de color en lugar de una luz que recorre.
+
+**El giro va por CSS y no por GSAP.** Con `@property` el ángulo es una propiedad animable y el navegador la interpola en el compositor. Un tween que reescriba el `background-image` recalcularía el degradé 60 veces por segundo, y en el ciclo del hero hay cuatro ventanas. Vuelta completa en 5,5s.
+
+Va en el contenedor de afuera, no en el marco: el marco lleva `overflow-hidden` para recortar el mockup, y ahí adentro el halo quedaría cortado justo en el borde que tiene que iluminar.
+
+Con `prefers-reduced-motion` el bloque global ya detiene la animación, pero eso dejaría el cónico congelado con la luz en una esquina: se reemplaza por un color plano tenue.
+
+**Por ahora solo en la home**, a pedido del cliente, para verlo antes de llevarlo a las landings.
+
 ### Mapa de capacidades
 
 A la derecha del texto. Es la **única pieza del sitio que no es una pantalla**: los nueve mockups son capturas de producto, esto es el mapa de lo que el equipo abarca. Un nodo central —"El sistema / a medida", las dos líneas al mismo tamaño— y seis alrededor unidos por radios que se dibujan:

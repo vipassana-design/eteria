@@ -141,9 +141,14 @@
     var(--color-acento-2) 30%,
     var(--color-acento-2) 100%
   );
+  /* El glow de sección va en el violeta del segundo acento, igual que
+     las manchas del mesh: el azul lleva títulos, botones y enlaces, y
+     el violeta el fondo y los datos. El nombre de la variable ya decía
+     violeta pero usaba --color-violet-500, que tiene nombre violeta y
+     valor azul desde que se aplicó la paleta final. */
   --glow-violet: radial-gradient(
     circle,
-    color-mix(in srgb, var(--color-violet-500) 24%, transparent) 0%,
+    color-mix(in srgb, var(--color-acento-2) 26%, transparent) 0%,
     transparent 70%
   );
   --padding-lateral: 1.5rem;
@@ -320,6 +325,78 @@
 body[data-menu-abierto] [data-flotante] {
   opacity: 0 !important;
   pointer-events: none !important;
+}
+
+/* ---------------------------------------------------------------
+   Halo de la ventana del mockup
+   ---------------------------------------------------------------
+
+   Una línea en degradé que recorre el borde de la ventana, como si se
+   fuera encendiendo por tramos. Marca la ventana sin agregarle nada
+   adentro: el mockup ya está lleno.
+
+   Un `conic-gradient` que gira detrás del marco, recortado a una
+   franja del ancho del borde con dos máscaras que se restan —el
+   rectángulo completo menos el interior—, así queda solo el contorno.
+
+   El giro va por CSS y no por GSAP a propósito: con `@property` el
+   ángulo es una propiedad animable y el navegador la interpola en el
+   compositor. Un tween que reescriba el `background-image` en cada
+   frame recalcularía el degradé 60 veces por segundo, y en el ciclo del
+   hero hay cuatro ventanas.
+
+   Va en violeta, igual que el resto del fondo. Ojo con los nombres:
+   --color-violet-* tiene nombre violeta y valor azul desde que se
+   aplicó la paleta final; el violeta real es --color-acento-2. */
+
+@property --halo-giro {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.halo-ventana {
+  --halo-ancho: 1.5px;
+  position: absolute;
+  inset: calc(var(--halo-ancho) * -1);
+  border-radius: calc(var(--radius-card) + var(--halo-ancho));
+  padding: var(--halo-ancho);
+  pointer-events: none;
+  /* El tramo encendido es corto —del 0 al 18% de la vuelta— y el resto
+     transparente: así se lee como una luz que recorre y no como un
+     marco de color. */
+  background: conic-gradient(
+    from var(--halo-giro),
+    transparent 0%,
+    color-mix(in srgb, var(--color-acento-2) 35%, transparent) 4%,
+    var(--color-acento-2-claro) 9%,
+    color-mix(in srgb, var(--color-acento-2) 35%, transparent) 14%,
+    transparent 18%,
+    transparent 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  animation: halo-vuelta 5.5s linear infinite;
+}
+
+@keyframes halo-vuelta {
+  to {
+    --halo-giro: 360deg;
+  }
+}
+
+/* Sin movimiento queda un contorno tenue y parejo. El bloque global de
+   reduced-motion de más abajo ya detiene la animación, pero dejaría el
+   cónico congelado con la luz en una esquina: acá se reemplaza por un
+   color plano, que es la versión quieta del mismo efecto. */
+@media (prefers-reduced-motion: reduce) {
+  .halo-ventana {
+    background: color-mix(in srgb, var(--color-acento-2) 20%, transparent);
+  }
 }
 
 /* ---------------------------------------------------------------

@@ -103,9 +103,9 @@ export default function Particulas() {
 
           // Tonos y brillo vigentes: el laboratorio los cambia en vivo.
           const tonos = [
-            tonoDeToken('--color-violet-300', '196, 181, 253'),
+            tonoDeToken('--color-acento-2-claro', '215, 200, 250'),
             ...TONOS_FIJOS,
-            tonoDeToken('--color-violet-400', '167, 139, 250'),
+            tonoDeToken('--color-acento-2', '139, 92, 246'),
           ]
           const brillo =
             Number(
