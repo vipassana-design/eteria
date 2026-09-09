@@ -58,7 +58,7 @@ export const gruposColor: { titulo: string; controles: ControlColor[] }[] = [
         token: '--color-acento-2',
         etiqueta: 'Segundo acento',
         nota: 'Los valores que son un dato y no una acción: las cifras de Sobre nosotros, los números del proceso y los de los beneficios. Arranca igual al principal; moverlo separa "dato" de "acción".',
-        derivados: [{ token: '--color-acento-2-claro', dl: 22, ds: -6 }],
+        derivados: [{ token: '--color-acento-2-claro', dl: 12, ds: -2 }],
       },
     ],
   },

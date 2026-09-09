@@ -343,7 +343,7 @@ export function TiendaListado() {
           Agregado al carrito
         </text>
         <text x={93} y={386} fontSize={9} fill={TENUE}>
-          Sweater trenzado · M
+          Sweater trenzado
         </text>
         <text x={218} y={386} fontSize={10.5} fontWeight={700} fill={TINTA} textAnchor="end">
           $74.900

@@ -7,7 +7,11 @@ import PageTransition from '@/components/layout/PageTransition'
 import WhatsappFab from '@/components/layout/WhatsappFab'
 import Grano from '@/components/bg/Grano'
 import Particulas from '@/components/bg/Particulas'
-import MontarLaboratorio from '@/components/laboratorio/MontarLaboratorio'
+// Laboratorio de paleta (§15). Comentado a propósito: mientras el
+// módulo esté importado el bundler lo incluye, incluso detrás de un
+// flag y con dynamic(). Para usarlo, descomentar estas dos líneas y
+// poner NEXT_PUBLIC_LAB=1 en .env.local.
+// import MontarLaboratorio from '@/components/laboratorio/MontarLaboratorio'
 import { SITIO } from '@/content/sitio'
 import { marca } from '@/content/marca'
 import './globals.css'
@@ -103,9 +107,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <WhatsappFab />
 
-        {/* Laboratorio de paleta (§15). Solo con NEXT_PUBLIC_LAB=1:
-            apagado no entra en el bundle. */}
-        <MontarLaboratorio />
+        {/* <MontarLaboratorio /> */}
       </body>
     </html>
   )

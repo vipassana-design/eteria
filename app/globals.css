@@ -8,29 +8,36 @@
    --------------------------------------------------------------- */
 @theme {
   /* Superficies */
-  --color-base: #0c0a18;
-  --color-surface: #14112370;
-  --color-elevated: #1b1733;
+  --color-base: #040103;
+  --color-surface: #1f1f1f70;
+  --color-elevated: #0d0c0c;
 
-  /* Acento — rampa completa */
-  --color-violet-300: #c4b5fd;
-  --color-violet-500: #8b5cf6;
-  --color-violet-600: #7c3aed;
-  --color-blue-400: #60a5fa;
-  --color-blue-500: #3b82f6;
+  /* Acento — rampa completa.
+     Los nombres son históricos: el acento pasó de violeta a azul en la
+     revisión de paleta, y renombrar los tokens obligaría a tocar cada
+     utilidad de Tailwind que los usa (text-violet-300, bg-violet-500,
+     hover:border-violet-500/45) en una veintena de archivos. */
+  --color-violet-300: #66b3ff;
+  --color-violet-500: #0076fd;
+  --color-violet-600: #0076fd;
+  --color-blue-400: #33c8eb;
+  --color-blue-500: #00b7e0;
 
-  /* Segundo acento (§15). El sitio usaba un solo color para todo:
-     botones, glows, números, estados. Este separa "acción" de "dato",
-     y arranca igual al principal para que el cambio sea opt-in —
-     moverlo en el laboratorio muestra la diferencia. */
+  /* Segundo acento (§15). Separa "acción" de "dato": el azul es el
+     acento principal —botones, enlaces, glows— y este violeta va en
+     los números y las cifras.
+
+     El violeta no es arbitrario: es el que ya está en los degradés del
+     fondo, así que reaparece en los datos en lugar de sumar un tercer
+     color. */
   --color-acento-2: #8b5cf6;
-  --color-acento-2-claro: #c4b5fd;
+  --color-acento-2-claro: #d7c8fa;
 
   /* Texto */
-  --color-hi: #f4f2ff;
-  --color-mid: #b9b3d6;
-  --color-low: #8b85ad;
-  --color-danger: #fca5a5;
+  --color-hi: #ededed;
+  --color-mid: #b8b8b8;
+  --color-low: #8f8f8f;
+  --color-danger: #ff7a7a;
 
   /* Bordes */
   --color-hairline: rgba(255, 255, 255, 0.07);
@@ -74,8 +81,8 @@
   --text-label--font-weight: 500;
 
   /* Radios (§2.3) */
-  --radius-card: 16px;
-  --radius-control: 12px;
+  --radius-card: 25px;
+  --radius-control: 18px;
   --radius-pill: 999px;
 
   /* Layout (§2.3) */
@@ -97,11 +104,19 @@
     var(--color-violet-500) 45%,
     var(--color-blue-500) 100%
   );
+  /* WhatsApp. El verde es un identificador reconocible: en el azul del
+     acento el botón se lee como "otro botón del sitio", y además
+     competía con el CTA principal por ser el llamado a la acción.
+     Algo menos saturado que el #25D366 oficial para que no sea el
+     color más fuerte de la página sin dejar de identificarse. */
+  --verde-whatsapp: #1fae55;
+  --verde-whatsapp-claro: #34c96b;
+
   /* Header con scroll (§15). El fondo translúcido que aparece detrás
      del logo y el menú al scrollear. Por defecto es el token de card
      al 80%, y se puede cambiar aparte para ajustar cuánto se nota la
      barra sobre el contenido que pasa debajo. */
-  --fondo-header: color-mix(in srgb, var(--color-elevated) 80%, transparent);
+  --fondo-header: color-mix(in srgb, #01080e 81%, transparent);
   --borde-header: var(--color-hairline);
 
   /* Botones (§15). Por defecto derivan de la paleta: el degradé es el
@@ -119,9 +134,9 @@
   /* Degradé del segundo acento. Mismo ángulo que el de marca para que
      los dos se lean del mismo sistema. */
   --grad-acento-2: linear-gradient(
-    100deg,
+    160deg,
     var(--color-acento-2-claro) 0%,
-    var(--color-acento-2) 55%,
+    var(--color-acento-2) 30%,
     var(--color-acento-2) 100%
   );
   --glow-violet: radial-gradient(
