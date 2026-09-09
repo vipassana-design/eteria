@@ -26,7 +26,7 @@ export default function LandingProceso() {
         >
           {proceso.map((etapa) => (
             <div key={etapa.numero} className="border-t border-hairline pt-6">
-              <p className="font-display texto-degrade text-h3 font-semibold leading-none">
+              <p className="font-display texto-degrade-2 text-h3 font-semibold leading-none">
                 {etapa.numero}
               </p>
               <h3 className="text-cuerpo-lg mt-3 font-medium text-hi">{etapa.titulo}</h3>

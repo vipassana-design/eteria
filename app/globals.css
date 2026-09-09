@@ -97,6 +97,13 @@
     var(--color-violet-500) 45%,
     var(--color-blue-500) 100%
   );
+  /* Header con scroll (§15). El fondo translúcido que aparece detrás
+     del logo y el menú al scrollear. Por defecto es el token de card
+     al 80%, y se puede cambiar aparte para ajustar cuánto se nota la
+     barra sobre el contenido que pasa debajo. */
+  --fondo-header: color-mix(in srgb, var(--color-elevated) 80%, transparent);
+  --borde-header: var(--color-hairline);
+
   /* Botones (§15). Por defecto derivan de la paleta: el degradé es el
      de marca, el glow sale del acento principal y el borde en hover
      del token de hairline. Sobrescribirlos permite probar los CTA sin

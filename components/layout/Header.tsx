@@ -69,7 +69,7 @@ export default function Header() {
         ref={raiz}
         className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-500 ease-(--ease-suave) ${
           conScroll
-            ? 'border-b border-hairline bg-elevated/80 backdrop-blur-[12px]'
+            ? 'border-b border-(--borde-header) bg-(--fondo-header) backdrop-blur-[12px]'
             : 'border-b border-transparent bg-transparent'
         }`}
       >

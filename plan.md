@@ -1032,6 +1032,14 @@ Un par del panel estaba mal definido y se descubrió acá: medía `--color-hi` s
 
 **Cuatro candidatas se descartaron por redundancia, no por contraste.** Jade y verde terminal quedaban a 8° y 22° de matiz de teal: los tres se leían igual. Violeta Radix e índigo caían dentro de un racimo de siete paletas entre 206° y 258°. Las trece que quedaron cubren el círculo cromático con la menor distancia en 6°, y en esos casos el fondo las distingue antes que el acento.
 
+### El fondo del header
+
+La barra translúcida que aparece al scrollear sale de dos tokens propios: `--fondo-header` y `--borde-header`. Antes era `bg-elevated/80` escrito en el componente, así que no se podía ajustar sin recompilar.
+
+El control tiene **color y opacidad separados**: el `input[type=color]` nativo no maneja alfa, y la opacidad es justamente lo que decide cuánto se nota la barra sobre el contenido que pasa debajo. Se guarda como `color-mix()` para que el token exportado se lea igual que el resto del CSS del proyecto.
+
+La muestra del panel es una barra con el fondo y el blur reales sobre un degradé que simula el contenido: es la única forma de juzgar una superficie translúcida.
+
 ### Los botones, aparte
 
 Los CTA se prueban por separado del resto de la paleta: son el llamado a la acción, así que necesitan más saturación que un acento de interfaz. En la pestaña Color hay un bloque **Botones** con diez degradés armados, sin picker manual —elegir dos puntos de un degradé a mano es difícil de acertar.
@@ -1052,7 +1060,8 @@ Va en tres lugares, los que son valor y no acción:
 
 - Las cifras de Sobre nosotros (`+20`, `End to end`, `Soporte`)
 - Los números de las cuatro etapas del proceso
-- Los números de los beneficios de cada landing
+- Los números de los beneficios de cada landing («Qué incluye»)
+- Los números del proceso de cada landing («Cómo trabajamos»)
 
 Se aplica con la utilidad `texto-degrade-2`, gemela de `texto-degrade` pero con `--grad-acento-2`. El hover del stack quedó con el principal a propósito: es una interacción.
 

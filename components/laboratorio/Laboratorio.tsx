@@ -12,6 +12,7 @@ import {
   rgbAHsl,
 } from '@/lib/color'
 import {
+  controlHeader,
   controlesFondo,
   gruposColor,
   gruposNumero,
@@ -333,8 +334,113 @@ function PanelColor({ p }: { p: ReturnType<typeof useLaboratorio> }) {
         </section>
       ))}
 
+      <PanelHeader p={p} />
+
       <PanelBotones p={p} />
     </div>
+  )
+}
+
+/** El fondo del header con scroll.
+ *
+ *  Color y opacidad van separados porque el `input[type=color]` nativo
+ *  no maneja alfa: el color decide el tono de la barra, la opacidad
+ *  cuánto se nota sobre el contenido que pasa debajo.
+ *
+ *  El valor se guarda como `color-mix()` y no como rgba: así el token
+ *  exportado se lee igual que el resto del CSS del proyecto. */
+function PanelHeader({ p }: { p: ReturnType<typeof useLaboratorio> }) {
+  const valor = p.valorDe(controlHeader.tokenColor)
+
+  /** Saca el color y la opacidad del `color-mix()` guardado. Si todavía
+   *  es el default —que referencia `var(--color-elevated)`— se resuelve
+   *  contra el valor vigente de ese token. */
+  const mix = valor.match(/color-mix\(in srgb,\s*(.+?)\s+([\d.]+)%/)
+  const colorCrudo = mix?.[1]?.trim() ?? ''
+  const opacidad = mix?.[2] ? Number(mix[2]) : 80
+  const esDefault = colorCrudo.startsWith('var(') || colorCrudo === ''
+  const rgbBase = aRgb(esDefault ? p.valorDe('--color-elevated') : colorCrudo)
+  const hex = rgbBase ? aHex(rgbBase) : '#1b1733'
+
+  const escribir = (nuevoHex: string, nuevaOpacidad: number) => {
+    p.aplicarTokens({
+      [controlHeader.tokenColor]: `color-mix(in srgb, ${nuevoHex} ${nuevaOpacidad}%, transparent)`,
+    })
+  }
+
+  const volverAlDefault = () => {
+    p.borrarToken(controlHeader.tokenColor)
+    p.borrarToken(controlHeader.tokenBorde)
+  }
+
+  return (
+    <section>
+      <p className="mb-1 text-[10px] uppercase tracking-wide text-white/35">
+        {controlHeader.titulo}
+      </p>
+      <p className="mb-2.5 text-[9.5px] leading-relaxed text-white/38">{controlHeader.bajada}</p>
+
+      <div className="rounded-lg bg-black/25 p-2.5">
+        {/* Muestra: una barra con el fondo real y el blur, sobre un
+            degradé que simula el contenido pasando debajo. */}
+        <div
+          aria-hidden="true"
+          className="relative mb-2.5 h-9 overflow-hidden rounded-md"
+          style={{ backgroundImage: 'var(--grad-brand)' }}
+        >
+          <div
+            className="absolute inset-x-0 top-0 flex h-6 items-center gap-1.5 border-b px-2 backdrop-blur-[6px]"
+            style={{
+              background: valor || 'var(--fondo-header)',
+              borderColor: p.valorDe(controlHeader.tokenBorde) || 'var(--borde-header)',
+            }}
+          >
+            <span className="text-[8px] font-semibold text-white/85">Eteria</span>
+            <span className="ml-auto text-[7px] text-white/45">Contacto</span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2.5">
+          <label className="relative size-7 shrink-0 cursor-pointer overflow-hidden rounded-md border border-white/20">
+            <span className="block size-full" style={{ background: hex }} />
+            <input
+              type="color"
+              value={hex}
+              onChange={(e) => escribir(e.target.value, opacidad)}
+              aria-label={controlHeader.etiquetaColor}
+              className="absolute inset-0 cursor-pointer opacity-0"
+            />
+          </label>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-[10.5px] text-white/80">
+              {esDefault ? controlHeader.porDefecto : hex}
+            </span>
+            <span className="block font-mono text-[9px] text-white/35">{opacidad}%</span>
+          </span>
+          {!esDefault ? (
+            <button
+              type="button"
+              onClick={volverAlDefault}
+              className="shrink-0 rounded px-1.5 py-0.5 text-[9px] text-white/40 transition-colors duration-200 hover:bg-white/10 hover:text-white/80"
+            >
+              ↺
+            </button>
+          ) : null}
+        </div>
+
+        <div className="mt-2">
+          <Slider
+            etiqueta="α"
+            valor={opacidad}
+            min={controlHeader.opacidadMin}
+            max={controlHeader.opacidadMax}
+            paso={1}
+            alCambiar={(o) => escribir(hex, o)}
+            sufijo="%"
+          />
+        </div>
+      </div>
+    </section>
   )
 }
 

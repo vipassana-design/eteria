@@ -326,3 +326,27 @@ export const laboratorioUi = {
   aviso: 'Herramienta interna. No forma parte del sitio.',
   nombrePaleta: (n: number) => `Paleta ${n}`,
 }
+
+/** El fondo del header con scroll (§15).
+ *
+ *  Necesita color y opacidad por separado: el color decide el tono de
+ *  la barra y la opacidad cuánto se nota sobre el contenido que pasa
+ *  debajo. Un solo picker con alfa no alcanza porque el `input[color]`
+ *  nativo no maneja transparencia.
+ */
+export const controlHeader = {
+  titulo: 'Header',
+  bajada:
+    'El fondo translúcido que aparece detrás del logo y el menú al scrollear. Por defecto es el color de las cards al 80%.',
+  tokenColor: '--fondo-header',
+  tokenBorde: '--borde-header',
+  etiquetaColor: 'Color de la barra',
+  etiquetaOpacidad: 'Opacidad',
+  etiquetaBorde: 'Línea inferior',
+  notaBorde: 'El hairline que separa la barra del contenido.',
+  porDefecto: 'Del color de las cards',
+  /** Opacidades sugeridas: menos de 60 deja pasar demasiado, más de 95
+   *  hace que la barra se lea como una franja opaca. */
+  opacidadMin: 40,
+  opacidadMax: 100,
+}

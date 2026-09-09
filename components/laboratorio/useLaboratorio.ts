@@ -30,6 +30,9 @@ const TOKENS = [
   // Los tres de botón (§15): no tienen control de color propio, los
   // escribe el selector de degradés. Van en la lista para que el
   // reset los limpie y el CSS exportado los incluya.
+  // Los del header (§15): los escribe su propio control.
+  '--fondo-header',
+  '--borde-header',
   '--grad-boton',
   '--glow-boton',
   '--borde-boton-hover',
@@ -226,7 +229,14 @@ export function useLaboratorio() {
     // (colores, tamaños, radios). Los degradés y el padding lateral
     // viven en :root, y las variables --lab-* no se exportan: son de
     // la herramienta, no del sitio.
-    const enRaizSiempre = ['--padding-lateral', '--grad-boton', '--glow-boton', '--borde-boton-hover']
+    const enRaizSiempre = [
+      '--padding-lateral',
+      '--grad-boton',
+      '--glow-boton',
+      '--borde-boton-hover',
+      '--fondo-header',
+      '--borde-header',
+    ]
     const enTema = entradas.filter(
       ([t]) => !t.startsWith('--lab-') && !enRaizSiempre.includes(t),
     )
