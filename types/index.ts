@@ -73,7 +73,11 @@ export interface Mockup {
 export interface Tecnologia {
   id: 'nextjs' | 'react' | 'typescript' | 'nodejs' | 'postgresql'
   nombre: string
-  /** Color de marca, al que pasa el logo en hover. */
+  /** Color oficial de la marca.
+   *
+   *  Sin uso desde que el hover pasa al acento del sitio: con cinco
+   *  colores distintos la fila perdia unidad. Se conserva por si en
+   *  algun momento se vuelve al color propio de cada tecnologia. */
   color: string
 }
 

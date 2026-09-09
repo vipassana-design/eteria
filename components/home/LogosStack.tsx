@@ -15,7 +15,10 @@ function Base({ children, caja = 24 }: { children: React.ReactNode; caja?: numbe
   return (
     <svg
       viewBox={`0 0 ${caja} ${caja}`}
-      className="size-9"
+      // 36px quedaba chico contra la celda 4:3 y las marcas no se
+      // identificaban. A 44/52 se reconocen sin llenar la caja: quedan
+      // en un tercio del alto de la celda.
+      className="size-11 lg:size-13"
       fill="currentColor"
       aria-hidden="true"
     >
