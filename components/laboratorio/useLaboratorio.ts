@@ -27,6 +27,12 @@ const TOKENS = [
   // El tope suelto del hero: no tiene control propio, lo mueve el
   // slider de --text-hero junto con el token.
   '--text-hero-max',
+  // Los tres de botón (§15): no tienen control de color propio, los
+  // escribe el selector de degradés. Van en la lista para que el
+  // reset los limpie y el CSS exportado los incluya.
+  '--grad-boton',
+  '--glow-boton',
+  '--borde-boton-hover',
   ...gruposColor.flatMap((g) =>
     g.controles.flatMap((c) => [c.token, ...(c.derivados?.map((d) => d.token) ?? [])]),
   ),
@@ -134,19 +140,59 @@ export function useLaboratorio() {
     [escribir],
   )
 
+  /** Escribe varios tokens de una vez, sin tocar el resto.
+   *
+   *  Distinto de `aplicar`, que reemplaza el estado entero: esto suma.
+   *  Lo usa el selector de degradés de botón, que tiene que poder
+   *  combinarse con la paleta ya elegida. */
+  const aplicarTokens = useCallback((t: Cambios) => {
+    for (const [k, v] of Object.entries(t)) {
+      document.documentElement.style.setProperty(k, v)
+    }
+    setCambios((c) => ({ ...c, ...t }))
+  }, [])
+
+  /** Devuelve un token a su valor original y lo saca de los cambios,
+   *  así el CSS exportado no lo incluye. */
+  const borrarToken = useCallback((token: string) => {
+    document.documentElement.style.removeProperty(token)
+    setCambios((c) => {
+      const { [token]: _, ...resto } = c
+      return resto
+    })
+  }, [])
+
   const reset = useCallback(() => {
     for (const t of TOKENS) document.documentElement.style.removeProperty(t)
     setCambios({})
   }, [])
 
-  /** Aplica un conjunto de cambios de una vez (paleta guardada). */
-  const aplicar = useCallback((c: Cambios) => {
-    for (const t of TOKENS) document.documentElement.style.removeProperty(t)
-    for (const [t, v] of Object.entries(c)) {
-      document.documentElement.style.setProperty(t, v)
-    }
-    setCambios(c)
-  }, [])
+  /** Aplica una paleta completa, reemplazando el estado.
+   *
+   *  Los tokens de botón sobreviven: son una elección independiente de
+   *  la paleta —el punto es poder combinar cualquier fondo con
+   *  cualquier CTA— y una paleta que los pisara obligaría a volver a
+   *  elegir el degradé cada vez.
+   *
+   *  Una paleta guardada, en cambio, ya los trae adentro si estaban
+   *  puestos, así que se aplican con ella. */
+  const aplicar = useCallback(
+    (c: Cambios) => {
+      const deBoton = ['--grad-boton', '--glow-boton', '--borde-boton-hover']
+      const conserva: Cambios = {}
+      for (const t of deBoton) {
+        if (cambios[t] && !(t in c)) conserva[t] = cambios[t]
+      }
+
+      for (const t of TOKENS) document.documentElement.style.removeProperty(t)
+      const final = { ...c, ...conserva }
+      for (const [t, v] of Object.entries(final)) {
+        document.documentElement.style.setProperty(t, v)
+      }
+      setCambios(final)
+    },
+    [cambios],
+  )
 
   const guardar = useCallback(() => {
     setGuardadas((g) => [...g, { nombre: `Paleta ${g.length + 1}`, cambios: { ...cambios } }])
@@ -176,10 +222,15 @@ export function useLaboratorio() {
       })
     if (entradas.length === 0) return ''
 
-    // Los tokens del tema van en @theme; las variables propias del
-    // laboratorio y --padding-lateral viven en :root.
-    const enTema = entradas.filter(([t]) => !t.startsWith('--lab-') && t !== '--padding-lateral')
-    const enRaiz = entradas.filter(([t]) => t === '--padding-lateral')
+    // @theme es solo para lo que Tailwind convierte en utilidades
+    // (colores, tamaños, radios). Los degradés y el padding lateral
+    // viven en :root, y las variables --lab-* no se exportan: son de
+    // la herramienta, no del sitio.
+    const enRaizSiempre = ['--padding-lateral', '--grad-boton', '--glow-boton', '--borde-boton-hover']
+    const enTema = entradas.filter(
+      ([t]) => !t.startsWith('--lab-') && !enRaizSiempre.includes(t),
+    )
+    const enRaiz = entradas.filter(([t]) => enRaizSiempre.includes(t))
 
     const lineas: string[] = []
     if (enTema.length > 0) {
@@ -205,6 +256,8 @@ export function useLaboratorio() {
     setColor,
     setPx,
     escribir,
+    aplicarTokens,
+    borrarToken,
     reset,
     aplicar,
     guardadas,

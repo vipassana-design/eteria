@@ -1032,6 +1032,18 @@ Un par del panel estaba mal definido y se descubrió acá: medía `--color-hi` s
 
 **Cuatro candidatas se descartaron por redundancia, no por contraste.** Jade y verde terminal quedaban a 8° y 22° de matiz de teal: los tres se leían igual. Violeta Radix e índigo caían dentro de un racimo de siete paletas entre 206° y 258°. Las trece que quedaron cubren el círculo cromático con la menor distancia en 6°, y en esos casos el fondo las distingue antes que el acento.
 
+### Los botones, aparte
+
+Los CTA se prueban por separado del resto de la paleta: son el llamado a la acción, así que necesitan más saturación que un acento de interfaz. En la pestaña Color hay un bloque **Botones** con diez degradés armados, sin picker manual —elegir dos puntos de un degradé a mano es difícil de acertar.
+
+Tres tokens nuevos: `--grad-boton`, `--glow-boton` y `--borde-boton-hover`. El primario cambia su degradé y el color del glow en hover; el secundario, que es transparente, cambia solo el borde en hover.
+
+**El glow estaba hardcodeado.** El componente tenía `rgba(139,92,246,0.55)` escrito a mano, así que cambiar el acento dejaba el resplandor en violeta. Ahora sale de `--glow-boton`, que por defecto deriva del acento principal: es una mejora del sitio además de la herramienta.
+
+Los diez están entre 78% y 96% de saturación en su color medio y pasan AA contra el texto oscuro que llevan encima, con el peor punto del degradé entre 4,68 y 10,64. La muestra en el panel es el degradé real del tamaño de un botón chico, con su glow: se juzga la pieza, no el color suelto.
+
+**Sin elegir ninguno**, los tres tokens derivan de la paleta vigente. Elegir uno los desacopla, y **una paleta ya no pisa el CTA elegido**: son dos decisiones independientes, así que se puede combinar cualquier fondo con cualquier botón. Una paleta guardada sí los trae adentro, porque el guardado captura el estado completo.
+
 ### El segundo acento
 
 El sitio usaba **un solo color para todo**: botones, glows, bordes en hover, números, cifras. Se agregó `--color-acento-2` para separar dos cosas que no son lo mismo: "hacé click" y "esto es un dato".

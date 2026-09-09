@@ -97,6 +97,18 @@
     var(--color-violet-500) 45%,
     var(--color-blue-500) 100%
   );
+  /* Botones (§15). Por defecto derivan de la paleta: el degradé es el
+     de marca, el glow sale del acento principal y el borde en hover
+     del token de hairline. Sobrescribirlos permite probar los CTA sin
+     tocar el resto del sitio.
+
+     El glow estaba hardcodeado en el componente como
+     rgba(139,92,246,0.55), así que no seguía la paleta: cambiar el
+     acento dejaba el resplandor en violeta. */
+  --grad-boton: var(--grad-brand);
+  --glow-boton: color-mix(in srgb, var(--color-violet-500) 55%, transparent);
+  --borde-boton-hover: var(--color-hairline-hover);
+
   /* Degradé del segundo acento. Mismo ángulo que el de marca para que
      los dos se lean del mismo sistema. */
   --grad-acento-2: linear-gradient(

@@ -16,13 +16,15 @@ const BASE =
 
 const VARIANTES: Record<VarianteBoton, string> = {
   // El degradé va en background-image para poder animar el glow aparte.
+  // El degradé y el glow salen de sus propios tokens (§15): el glow
+  // estaba hardcodeado en violeta y no seguía la paleta.
   primario:
-    'text-base font-semibold rounded-(--radius-control) bg-(image:--grad-brand) ' +
-    'shadow-[0_0_0_0_rgba(139,92,246,0)] hover:shadow-[0_8px_32px_-4px_rgba(139,92,246,0.55)] ' +
+    'text-base font-semibold rounded-(--radius-control) bg-(image:--grad-boton) ' +
+    'shadow-[0_0_0_0_transparent] hover:shadow-[0_8px_32px_-4px_var(--glow-boton)] ' +
     'hover:-translate-y-0.5',
   secundario:
     'text-hi rounded-(--radius-control) border border-hairline bg-transparent ' +
-    'hover:border-hairline-hover hover:bg-white/[0.03] hover:-translate-y-0.5',
+    'hover:border-(--borde-boton-hover) hover:bg-white/[0.03] hover:-translate-y-0.5',
   enlace:
     'text-violet-300 hover:text-hi px-0 py-0 ' +
     // La flecha del "Ver más →" se desplaza en hover.

@@ -20,6 +20,7 @@ import {
   type ControlColor,
   type ControlNumero,
 } from '@/content/laboratorio'
+import { botonesUi, degradesBoton, tokensDeBoton } from '@/content/botones'
 import { paletas, paletasUi } from '@/content/paletas'
 import { useLaboratorio } from './useLaboratorio'
 
@@ -325,7 +326,107 @@ function PanelColor({ p }: { p: ReturnType<typeof useLaboratorio> }) {
           </div>
         </section>
       ))}
+
+      <PanelBotones p={p} />
     </div>
+  )
+}
+
+/** Los CTA, aparte del resto de la paleta.
+ *
+ *  No hay picker: son diez degradés armados y verificados. Un CTA
+ *  necesita más saturación que un acento de interfaz, y elegir dos
+ *  puntos de un degradé a mano es difícil de acertar.
+ *
+ *  El primario cambia su degradé y su glow; el secundario, que es
+ *  transparente, cambia solo el borde en hover. */
+function PanelBotones({ p }: { p: ReturnType<typeof useLaboratorio> }) {
+  const actual = p.valorDe('--grad-boton')
+
+  /** Cuál está elegido: se compara contra el degradé que escribiría
+   *  cada uno, así el estado sale del documento y no de un useState
+   *  paralelo que podría desincronizarse con el reset. */
+  const elegido = degradesBoton.find((d) => tokensDeBoton(d)['--grad-boton'] === actual)
+
+  /** Vuelve a derivar de la paleta: se borran los tres tokens. */
+  const volverALaPaleta = () => {
+    for (const t of ['--grad-boton', '--glow-boton', '--borde-boton-hover']) {
+      p.borrarToken(t)
+    }
+  }
+
+  return (
+    <section>
+      <p className="mb-1 text-[10px] uppercase tracking-wide text-white/35">
+        {botonesUi.titulo}
+      </p>
+      <p className="mb-2.5 text-[9.5px] leading-relaxed text-white/38">{botonesUi.bajada}</p>
+
+      {/* Vuelta al default. Queda marcado cuando ningún degradé está
+          elegido, que es el estado inicial. */}
+      <button
+        type="button"
+        onClick={volverALaPaleta}
+        className={`mb-2 flex w-full items-center gap-2 rounded-lg border px-2 py-1.5 text-left transition-colors duration-200 ${
+          elegido
+            ? 'border-white/10 hover:border-white/30'
+            : 'border-violet-500/60 bg-violet-500/10'
+        }`}
+      >
+        <span
+          aria-hidden="true"
+          className="size-5 shrink-0 rounded border border-white/15"
+          style={{ backgroundImage: 'var(--grad-brand)' }}
+        />
+        <span className="min-w-0 flex-1">
+          <span className="block text-[10.5px] font-medium text-white/85">
+            {botonesUi.porDefecto}
+          </span>
+          <span className="block text-[9px] text-white/35">{botonesUi.porDefectoNota}</span>
+        </span>
+      </button>
+
+      {/* Los diez, en una grilla de dos columnas. */}
+      <div className="grid grid-cols-2 gap-1.5">
+        {degradesBoton.map((d) => {
+          const t = tokensDeBoton(d)
+          const activo = elegido?.id === d.id
+          return (
+            <button
+              key={d.id}
+              type="button"
+              onClick={() => p.aplicarTokens(t)}
+              title={`${d.nombre} · contraste ${d.contraste.toFixed(2)} con el texto del botón`}
+              className={`rounded-lg border p-1.5 text-left transition-colors duration-200 ${
+                activo
+                  ? 'border-violet-500/60 bg-violet-500/10'
+                  : 'border-white/10 hover:border-white/30'
+              }`}
+            >
+              {/* La muestra es el degradé real, del tamaño de un botón
+                  chico: se juzga la pieza, no el color suelto. */}
+              <span
+                aria-hidden="true"
+                className="mb-1 flex h-7 items-center justify-center rounded-md text-[9px] font-semibold"
+                style={{
+                  backgroundImage: t['--grad-boton'],
+                  color: 'var(--color-base)',
+                  boxShadow: activo ? `0 4px 16px -3px ${t['--glow-boton']}` : 'none',
+                }}
+              >
+                Cotizar
+              </span>
+              <span className="block truncate text-[9.5px] text-white/70">{d.nombre}</span>
+              <span className="block font-mono text-[8.5px] text-white/30">
+                {d.contraste.toFixed(2)} {botonesUi.contraste}
+              </span>
+            </button>
+          )
+        })}
+      </div>
+
+      <p className="mt-2 text-[9px] leading-relaxed text-white/30">{botonesUi.nota}</p>
+    </section>
   )
 }
 
