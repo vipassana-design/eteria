@@ -18,6 +18,17 @@ export const seccionSoluciones = {
     cerrar: 'Cerrar',
     pista: 'Arrastrá para ver más',
     contador: (actual: number, total: number) => `${actual} de ${total}`,
+    /** El switch de vista del modal.
+     *
+     *  Las plantillas son responsivas, así que la vista mobile estrecha
+     *  el iframe a 390px y el documento embebido responde con sus
+     *  propios breakpoints: se ve la versión mobile real, no una
+     *  maqueta. */
+    vista: {
+      grupo: 'Cambiar la vista',
+      escritorio: 'Escritorio',
+      mobile: 'Mobile',
+    },
   },
 }
 

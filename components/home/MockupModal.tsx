@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { Flip, gsap, useGSAP } from '@/lib/gsap'
 import { bloquearScroll } from '@/lib/lenis'
@@ -68,6 +68,21 @@ export default function MockupModal({
   /** A dónde devolver el foco al cerrar: la card que abrió el modal. */
   const volverElFoco = useRef<HTMLElement | null>(null)
 
+  /** Qué vista muestra el iframe.
+   *
+   *  Las plantillas son responsivas, así que en lugar de simular un
+   *  teléfono con una imagen se estrecha el iframe a 390px y el
+   *  documento embebido responde con sus propios breakpoints: lo que se
+   *  ve es la plantilla real en mobile, no una maqueta de ella.
+   *
+   *  Arranca en escritorio siempre, incluso si el visitante está en un
+   *  teléfono: ahí el modal ya es angosto y el switch no tendría con
+   *  qué contrastar. */
+  const [vista, setVista] = useState<'escritorio' | 'mobile'>('escritorio')
+
+  /** El poster que cubre el marco hasta que la plantilla carga. */
+  const poster = useRef<HTMLImageElement>(null)
+
   /** El iframe recién se muestra cuando la plantilla cargó: hasta
    *  entonces se ve el preview.
    *
@@ -81,6 +96,15 @@ export default function MockupModal({
   const abierto = indice !== null
   const plantilla = indice !== null ? listas[indice] : null
 
+  /** Cierra y devuelve la vista a escritorio.
+   *
+   *  El reset va acá y no en el efecto de cierre: un `setState`
+   *  síncrono dentro de un efecto puede cascadear renders, y el linter
+   *  lo marca con razón. Todos los caminos de cierre —Escape, click
+   *  fuera, el botón, el `postMessage` del iframe— pasan por esta
+   *  función, así que el estado queda limpio para la próxima apertura. */
+
+
   useGSAP(
     () => {
       const contenedor = raiz.current
@@ -89,6 +113,13 @@ export default function MockupModal({
 
       // --- Apertura ---
       if (abierto && previo.current === null) {
+        // La vista arranca en escritorio en cada apertura. Va acá y no
+        // en el cierre porque un `setState` dentro del efecto de cierre
+        // dispara el aviso de renders en cascada, y escribir un ref
+        // durante el render tampoco se permite. Mientras el modal está
+        // cerrado el valor no se lee, así que resetear al abrir alcanza.
+        setVista('escritorio')
+
         const estado = estadoOrigen.current
 
         gsap.set(contenedor, { pointerEvents: 'auto' })
@@ -130,6 +161,9 @@ export default function MockupModal({
       // El flag se baja acá y no en el render: en el render correría en
       // cada pasada y el iframe nunca llegaría a mostrarse.
       if (abierto && previo.current !== null && previo.current !== indice) {
+        // El poster vuelve: el iframe nuevo tarda en cargar y sin esto
+        // se vería el marco vacío.
+        if (poster.current) poster.current.style.opacity = '1'
         gsap.fromTo(
           caja.querySelector('[data-pantalla]'),
           { opacity: 0, x: 24 },
@@ -232,7 +266,7 @@ export default function MockupModal({
       role="dialog"
       aria-modal="true"
       aria-label={plantilla.titulo}
-      className="fixed inset-0 z-60 flex items-center justify-center p-4 lg:p-10"
+      className="fixed inset-0 z-60 flex items-center justify-center p-4 lg:p-6"
     >
       {/* Fondo con blur. El click cierra. */}
       <div
@@ -260,7 +294,16 @@ export default function MockupModal({
         // de la barra y el pie —medido, 273px, la plantilla se veía por
         // una rendija. `h-full` sobre el contenedor `p-10` da todo el
         // viewport menos el margen.
-        className="relative z-[1] flex h-full max-h-full w-full max-w-6xl flex-col overflow-hidden rounded-(--radius-card) border border-white/10 bg-elevated shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)]"
+        // El ancho es relativo al viewport con tope, no un `max-w`
+        // fijo: `max-w-6xl` daba 1152px y en los paneles —sidebar de
+        // 240 más tabla más columna de actividad— las tres columnas
+        // quedaban comprimidas. Con 94vw/1600px un monitor de 1920 da
+        // 1600 y uno de 1440 da ~1354.
+        //
+        // No es pantalla completa a propósito: el fondo con blur sigue
+        // visible por los bordes y el modal se lee como una ventana
+        // sobre el sitio, que es lo que el Flip desde la card cuenta.
+        className="relative z-[1] flex h-full max-h-full w-full max-w-[94vw] flex-col overflow-hidden rounded-(--radius-card) border border-white/10 bg-elevated shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)] lg:max-w-[min(94vw,1600px)]"
       >
         <div className="flex items-center gap-2.5 border-b border-white/[0.07] bg-[#211C3D] px-3.5 py-2.5">
           <span className="flex gap-1.5">
@@ -298,40 +341,120 @@ export default function MockupModal({
           data-pantalla
           data-lenis-prevent
           className="relative min-h-0 flex-1 overflow-hidden bg-[#F7F6FB]"
+          // En vista mobile el fondo se oscurece: el iframe angosto
+          // deja franjas a los costados y sobre el gris claro se leerían
+          // como parte de la plantilla.
+          style={vista === 'mobile' ? { background: '#151318' } : undefined}
         >
+          {/* El poster: cubre el marco durante el Flip y mientras la
+              plantilla carga. Se apaga cuando el iframe está listo —si
+              no, en vista mobile asoma a los costados del iframe
+              angosto, que mide 390px sobre un contenedor de 1598. */}
           <Image
+            ref={poster}
             src={`/plantillas/${plantilla.slug}/preview.webp`}
             alt=""
             fill
-            sizes="(min-width: 1024px) 72rem, 100vw"
-            className="object-cover object-top"
+            sizes="(min-width: 1024px) 96rem, 100vw"
+            className="object-cover object-top transition-opacity duration-300"
             aria-hidden="true"
           />
 
+          {/* El iframe se centra y se estrecha a 390px en vista
+              mobile. La plantilla es responsiva, así que responde con
+              sus propios breakpoints: lo que se ve es la versión mobile
+              real, no una simulación. */}
           <iframe
             ref={iframe}
             key={plantilla.slug}
             src={`/plantillas/${plantilla.slug}`}
             title={`${plantilla.titulo} · ${plantilla.rubro}`}
             onLoad={() => {
-              // Directo al DOM: es una opacidad y no hay razón para que
-              // pase por un render.
+              // Directo al DOM: son dos opacidades y no hay razón para
+              // que pasen por un render.
               if (iframe.current) iframe.current.style.opacity = '1'
+              if (poster.current) poster.current.style.opacity = '0'
             }}
             // `scrollea: false` son los paneles: son one page y el
             // scroll vive en sus columnas internas, no en el documento.
             scrolling={plantilla.scrollea ? 'yes' : 'no'}
-            className="relative size-full border-0 transition-opacity duration-500"
+            // El ancho cambia de golpe y lo que se anima es la
+            // opacidad. Con `transition` sobre el `width`, el documento
+            // embebido re-renderiza en cada frame y el navegador pinta
+            // el layout viejo y el nuevo superpuestos —medido, se veía
+            // el panel ancho detrás del angosto.
+            className={`relative h-full border-0 transition-opacity duration-300 ${
+              vista === 'mobile' ? 'mx-auto w-full max-w-[390px] shadow-2xl' : 'w-full'
+            }`}
             style={{ opacity: 0 }}
           />
         </div>
 
-        <div className="flex items-center justify-between border-t border-white/[0.07] px-5 py-3">
-          <div>
-            <p className="text-cuerpo text-hi">{plantilla.titulo}</p>
+        <div className="flex items-center justify-between gap-4 border-t border-white/[0.07] px-5 py-3">
+          <div className="min-w-0">
+            <p className="text-cuerpo truncate text-hi">{plantilla.titulo}</p>
             <p className="text-label text-low">{plantilla.rubro}</p>
           </div>
-          <p className="text-label text-low">{ui.contador(indice + 1, listas.length)}</p>
+
+          <div className="flex shrink-0 items-center gap-4">
+            {/* El switch de vista. Dos botones en un riel, con el activo
+                marcado: es más claro que un toggle de un solo control,
+                porque dice cuáles son las dos opciones sin que haya que
+                probarlo.
+
+                Solo desde `sm`: en un teléfono el modal ya es angosto
+                y estrecharlo más no tendría con qué contrastar. */}
+            <div
+              role="group"
+              aria-label={ui.vista.grupo}
+              className="hidden items-center rounded-(--radius-pill) border border-white/10 bg-black/25 p-0.5 sm:flex"
+            >
+              {(['escritorio', 'mobile'] as const).map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => {
+                    if (v === vista) return
+                    // Se apaga antes de cambiar el ancho: el documento
+                    // embebido reacomoda su layout con el iframe
+                    // invisible, y `onLoad` no vuelve a dispararse
+                    // porque el iframe no recarga.
+                    // Solo el iframe se apaga. El poster queda
+                    // oculto: el documento no recarga al cambiar de
+                    // ancho, así que `onLoad` no vuelve a dispararse y
+                    // prenderlo acá lo dejaría visible para siempre.
+                    const el = iframe.current
+                    if (el) el.style.opacity = '0'
+                    setVista(v)
+                    window.setTimeout(() => {
+                      if (iframe.current) iframe.current.style.opacity = '1'
+                    }, 260)
+                  }}
+                  aria-pressed={vista === v}
+                  className={`flex items-center gap-1.5 rounded-(--radius-pill) px-3 py-1.5 text-[11px] transition-colors duration-300 ease-(--ease-suave) ${
+                    vista === v
+                      ? 'bg-white/10 text-hi'
+                      : 'text-low hover:text-mid'
+                  }`}
+                >
+                  {v === 'escritorio' ? (
+                    <svg viewBox="0 0 14 14" className="size-3.5" fill="none" stroke="currentColor" strokeWidth={1.3}>
+                      <rect x="1" y="2" width="12" height="8" rx="1" />
+                      <path d="M5 12.5h4" strokeLinecap="round" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 14 14" className="size-3.5" fill="none" stroke="currentColor" strokeWidth={1.3}>
+                      <rect x="4" y="1" width="6" height="12" rx="1.2" />
+                      <path d="M6.4 11.4h1.2" strokeLinecap="round" />
+                    </svg>
+                  )}
+                  {ui.vista[v]}
+                </button>
+              ))}
+            </div>
+
+            <p className="text-label text-low">{ui.contador(indice + 1, listas.length)}</p>
+          </div>
         </div>
       </div>
 

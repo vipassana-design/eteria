@@ -30,8 +30,18 @@ const VELOCIDAD = 46
 const PAUSA_TRAS_SOLTAR = 1600
 
 /** Estado apagado de las cards: el hover las devuelve a color pleno. */
-const APAGADO = 'grayscale(0.7) brightness(0.62)'
-const ENCENDIDO = 'grayscale(0) brightness(1)'
+/** El reposo y el hover de la ventana.
+ *
+ *  Las plantillas van **a color desde el reposo**: son el producto que
+ *  el sitio vende y esconderlas detrás de un gris hasta que alguien
+ *  pase el mouse dejaba la sección apagada. La versión anterior usaba
+ *  `grayscale(0.7) brightness(0.62)`.
+ *
+ *  El hover se mantiene como realce y no como revelado: el brillo sube
+ *  de 0.94 a 1. Ese 6% apenas se percibe en reposo y alcanza para que
+ *  el hover se sienta, sin desaturar la plantilla. */
+const REPOSO = 'brightness(0.94)'
+const ACTIVO = 'brightness(1)'
 
 /** Las plantillas que ya tienen componente.
  *
@@ -161,12 +171,12 @@ export default function Soluciones() {
             sobreCard.current = true
             frenar()
             gsap.to(card, { scale: 1.03, y: -10, duration: 0.45, ease: 'power3.out' })
-            if (ventana) gsap.to(ventana, { filter: ENCENDIDO, duration: 0.45, ease: 'power3.out' })
+            if (ventana) gsap.to(ventana, { filter: ACTIVO, duration: 0.45, ease: 'power3.out' })
           }
           const sale = () => {
             sobreCard.current = false
             gsap.to(card, { scale: 1, y: 0, duration: 0.5, ease: 'power3.out' })
-            if (ventana) gsap.to(ventana, { filter: APAGADO, duration: 0.5, ease: 'power3.out' })
+            if (ventana) gsap.to(ventana, { filter: REPOSO, duration: 0.5, ease: 'power3.out' })
             if (modalAbierto.current) return
             if (marcha.current) gsap.to(marcha.current, { timeScale: 1, duration: 0.8 })
           }
@@ -267,12 +277,12 @@ export default function Soluciones() {
                     className="group block w-full text-left"
                   >
                     {/* El filtro va acá y no en el article: sobre el
-                        article desaturaría también el título, que lleva
+                        article también alcanzaría al título, que lleva
                         el degradé de marca. */}
                     <div
                       data-ventana
                       className="overflow-hidden rounded-(--radius-card) border border-hairline bg-elevated transition-colors duration-500 ease-(--ease-suave) group-hover:border-hairline-hover"
-                      style={{ filter: APAGADO }}
+                      style={{ filter: REPOSO }}
                     >
                       <div className="flex items-center gap-2.5 border-b border-white/[0.07] bg-[#211C3D] px-3.5 py-2.5">
                         <span className="flex gap-1.5">

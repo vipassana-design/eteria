@@ -27,12 +27,14 @@ import type { LandingSlug } from '@/types'
  *  flechas ←/→ del modal recorren las tres del servicio, que es el
  *  conjunto que el visitante está mirando.
  *
- *  El hover repite el gesto del carrusel de la home —de gris a color,
- *  la card sube— para que los dos módulos se lean como el mismo
- *  recurso en dos escalas.
+ *  El hover repite el gesto del carrusel de la home —la card sube y
+ *  gana brillo— para que los dos módulos se lean como el mismo recurso
+ *  en dos escalas.
  */
-const APAGADO = 'grayscale(0.7) brightness(0.62)'
-const ENCENDIDO = 'grayscale(0) brightness(1)'
+/** Mismo criterio que el carrusel de la home: a color desde el
+ *  reposo, y el hover como realce por brillo. */
+const REPOSO = 'brightness(0.94)'
+const ACTIVO = 'brightness(1)'
 
 export default function EjemplosLanding({ slug }: { slug: LandingSlug }) {
   const raiz = useRef<HTMLElement>(null)
@@ -62,11 +64,11 @@ export default function EjemplosLanding({ slug }: { slug: LandingSlug }) {
 
           const entrar = () => {
             gsap.to(card, { y: -8, duration: 0.4, ease: 'power3.out' })
-            gsap.to(ventana, { filter: ENCENDIDO, duration: 0.5, ease: 'power2.out' })
+            gsap.to(ventana, { filter: ACTIVO, duration: 0.5, ease: 'power2.out' })
           }
           const salir = () => {
             gsap.to(card, { y: 0, duration: 0.4, ease: 'power3.out' })
-            gsap.to(ventana, { filter: APAGADO, duration: 0.5, ease: 'power2.out' })
+            gsap.to(ventana, { filter: REPOSO, duration: 0.5, ease: 'power2.out' })
           }
 
           card.addEventListener('mouseenter', entrar)
@@ -135,7 +137,7 @@ export default function EjemplosLanding({ slug }: { slug: LandingSlug }) {
                   <div
                     data-ventana
                     className="overflow-hidden rounded-(--radius-card) border border-hairline bg-elevated transition-colors duration-500 ease-(--ease-suave) group-hover:border-hairline-hover"
-                    style={{ filter: APAGADO }}
+                    style={{ filter: REPOSO }}
                   >
                     {/* El marco de navegador, igual que en la home. La
                         barra de direcciones va vacía a propósito: las
