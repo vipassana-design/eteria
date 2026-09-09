@@ -1,0 +1,124 @@
+/* Hoja de las plantillas de muestra (PLAN.md §16).
+   ---------------------------------------------------------------
+
+   Las plantillas son sitios ajenos: cada una tiene su paleta, su
+   tipografía y su escala. Esta hoja les da Tailwind con un `@theme`
+   NEUTRO —la paleta y la escala default— y nada de los tokens de
+   Eteria, así ninguna hereda la identidad del sitio anfitrión.
+
+   No se importa desde `app/layout.tsx`: la importa el layout de
+   `(plantillas)`, que es el único subárbol que la usa. */
+
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------
+   Neutralización de lo que hereda del sitio anfitrión
+   ---------------------------------------------------------------
+
+   Las plantillas viven en una ruta bajo `app/`, así que el root
+   layout es inescapable y `globals.css` ya cargó. Nueve reglas de esa
+   hoja se filtran hacia adentro, y `@scope` no las detendría porque
+   son propiedades heredables, no selectores. Se redeclaran acá una
+   sola vez, en el nodo más alto del subárbol.
+
+   El reset va casi todo dentro de `@layer base`, y eso importa: los
+   selectores son `.raiz-plantilla …`, o sea especificidad de clase, y
+   fuera de layer le ganarían a las utilidades de Tailwind que escribe
+   cada plantilla. Medido: un `<button class="text-white">` salía en el
+   color heredado. Dentro de `base` la cascada de capas lo pone debajo
+   de `utilities`, que es donde va un reset.
+
+   Las dos excepciones —`color-scheme` y `scrollbar-color`— van fuera de
+   todo layer porque no existe utilidad de Tailwind equivalente: no
+   compiten con nada de la plantilla y sí tienen que vencer a
+   `globals.css`. */
+
+/* Estas dos van FUERA de todo layer, y es deliberado: no existe una
+   utilidad de Tailwind para `color-scheme` ni para `scrollbar-color`,
+   así que no compiten con nada de la plantilla, y sí tienen que vencer
+   a `globals.css`.
+
+   `color-scheme` es la colisión menos obvia de las catorce: sin esto
+   los `<select>`, checkbox e `input[type=date]` de una plantilla clara
+   se renderizan oscuros, y no se arregla con clases. */
+.raiz-plantilla {
+  color-scheme: light;
+  scrollbar-width: auto;
+  scrollbar-color: auto;
+}
+
+/* Las heredables sí van en `base`: cada plantilla las pisa con sus
+   propias clases —`text-neutral-700`, su tipografía— y un reset con
+   especificidad de clase fuera de layer se las comería. */
+@layer base {
+  .raiz-plantilla {
+    color: #111827;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-wrap: initial;
+  }
+}
+
+/* Contra `@layer base { * { border-color: var(--color-hairline) } }` de
+   globals.css:168. Sin esto, todo `border` sin color declarado sale
+   translúcido blanco, que sobre fondo claro es un borde fantasma. */
+@layer base {
+  .raiz-plantilla *,
+  .raiz-plantilla *::before,
+  .raiz-plantilla *::after {
+    border-color: currentColor;
+  }
+}
+
+/* Contra `h1,h2,h3,h4 { font-family: --font-display; color: --color-hi;
+   text-wrap: balance }` de globals.css:200. Es la colisión más
+   agresiva: sin esto los títulos de las nueve plantillas salen en
+   Clash Display color #ededed. */
+@layer base {
+  .raiz-plantilla :is(h1, h2, h3, h4, h5, h6) {
+    font-family: inherit;
+    color: inherit;
+    font-weight: 600;
+    letter-spacing: normal;
+    text-wrap: initial;
+  }
+}
+
+/* Contra `:focus-visible { outline: 2px solid var(--color-violet-500);
+   outline-offset: 3px; border-radius: 4px }` de globals.css:210. El
+   `border-radius` es lo peor: pisa el radio del control mientras tiene
+   foco. Cada plantilla define su propio anillo. */
+@layer base {
+  .raiz-plantilla :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    border-radius: revert;
+  }
+}
+
+/* Contra `::selection` de globals.css:216. */
+@layer base {
+  .raiz-plantilla ::selection {
+    background-color: color-mix(in srgb, currentColor 22%, transparent);
+    color: inherit;
+  }
+}
+
+/* Los controles nativos heredan la tipografía de su contenedor, como en
+   cualquier sitio.
+ *
+ *  Va dentro de `@layer base` a propósito. Sin el layer, el selector
+ *  `.raiz-plantilla :is(button)` tiene especificidad de clase y le gana
+ *  a las utilidades de Tailwind: medido, un `<button class="text-white">`
+ *  salía en el color heredado y no en blanco. Dentro de `base` la
+ *  cascada de capas lo pone por debajo de `utilities`, que es donde
+ *  tiene que estar un reset. */
+@layer base {
+  .raiz-plantilla :is(input, select, textarea, button) {
+    font: inherit;
+    color: inherit;
+    letter-spacing: normal;
+  }
+}

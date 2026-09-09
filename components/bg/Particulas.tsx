@@ -151,6 +151,9 @@ export default function Particulas() {
     <canvas
       ref={canvas}
       aria-hidden="true"
+      // El marcador lo usa `globals.css` para esconder las capas de
+      // fondo dentro de los iframes de plantilla (§16).
+      data-capa-fondo
       className="pointer-events-none fixed inset-0 z-[1] size-full"
     />
   )

@@ -327,6 +327,21 @@ body[data-menu-abierto] [data-flotante] {
   pointer-events: none !important;
 }
 
+/* Documento montado dentro de un iframe de plantilla (PLAN.md §16).
+   ---------------------------------------------------------------
+
+   Las plantillas de muestra viven en rutas bajo `app/`, así que
+   heredan el root layout y con él el cromo del sitio: header, footer,
+   el botón de WhatsApp y las dos capas de fondo. Dentro del iframe eso
+   no corresponde —la plantilla es un sitio ajeno.
+
+   El layout de `(plantillas)` marca el body con un script inline, que
+   corre antes del primer paint: con un `useEffect` se vería un flash
+   del header del sitio dentro del iframe. */
+body[data-plantilla] :is(header, footer, [data-flotante], [data-capa-fondo]) {
+  display: none;
+}
+
 /* ---------------------------------------------------------------
    Halo de la ventana del mockup
    ---------------------------------------------------------------
