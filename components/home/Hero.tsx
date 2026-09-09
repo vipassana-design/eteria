@@ -291,27 +291,33 @@ export default function Hero({ conFondo = true, pantallas = POR_PARTES }: PropsH
         {/* Ventana. Se desborda hacia la derecha: el corte contra el
             borde es parte del efecto, y #capa-sitio lo recorta sin
             generar scroll horizontal. */}
-        <div data-anim data-ventana className="relative lg:w-[118%]">
-          {/* El halo que recorre el borde. Va afuera del marco porque
-              el marco lleva overflow-hidden para recortar el mockup, y
-              ahí adentro quedaría cortado justo en el borde que tiene
-              que iluminar. Definido en globals.css. */}
-          <span className="halo-ventana" aria-hidden="true" />
-          <div className="relative overflow-hidden rounded-(--radius-card) border border-white/10 bg-elevated shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]">
-            <div className="flex items-center gap-2.5 border-b border-white/[0.07] bg-[#211C3D] px-3.5 py-2.5">
-              <span className="flex gap-1.5">
-                <span className="size-2 rounded-full bg-[#4A4370]" />
-                <span className="size-2 rounded-full bg-[#4A4370]" />
-                <span className="size-2 rounded-full bg-[#4A4370]" />
-              </span>
-              <span className="flex-1 truncate rounded-(--radius-pill) bg-black/25 px-3 py-1 text-[11px] leading-none text-low">
-                {esTerminal ? 'eteria — bash' : etapa.url}
-              </span>
-            </div>
+        <div data-anim data-ventana className="lg:w-[118%]">
+          {/* Este div existe para el halo: tiene que abarcar el marco y
+              nada más. Puesto en `data-ventana` se estiraba también
+              sobre el indicador de etapa de abajo y la línea le pasaba
+              por encima de la etiqueta. */}
+          <div className="relative">
+            {/* El halo que recorre el borde. Va afuera del marco porque
+                el marco lleva overflow-hidden para recortar el mockup,
+                y ahí adentro quedaría cortado justo en el borde que
+                tiene que iluminar. Definido en globals.css. */}
+            <span className="halo-ventana" aria-hidden="true" />
+            <div className="relative overflow-hidden rounded-(--radius-card) border border-white/10 bg-elevated shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]">
+              <div className="flex items-center gap-2.5 border-b border-white/[0.07] bg-[#211C3D] px-3.5 py-2.5">
+                <span className="flex gap-1.5">
+                  <span className="size-2 rounded-full bg-[#4A4370]" />
+                  <span className="size-2 rounded-full bg-[#4A4370]" />
+                  <span className="size-2 rounded-full bg-[#4A4370]" />
+                </span>
+                <span className="flex-1 truncate rounded-(--radius-pill) bg-black/25 px-3 py-1 text-[11px] leading-none text-low">
+                  {esTerminal ? 'eteria — bash' : etapa.url}
+                </span>
+              </div>
 
-            {/* Misma caja para las dos clases de etapa. */}
-            <div className="aspect-16/10">
-              {esTerminal ? <SesionTerminal lineas={sesionHero} /> : Pantalla && <Pantalla />}
+              {/* Misma caja para las dos clases de etapa. */}
+              <div className="aspect-16/10">
+                {esTerminal ? <SesionTerminal lineas={sesionHero} /> : Pantalla && <Pantalla />}
+              </div>
             </div>
           </div>
 

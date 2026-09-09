@@ -377,6 +377,8 @@ Es un `conic-gradient` que gira detrás del marco, recortado a una franja de 1,5
 
 Va en el contenedor de afuera, no en el marco: el marco lleva `overflow-hidden` para recortar el mockup, y ahí adentro el halo quedaría cortado justo en el borde que tiene que iluminar.
 
+**Pero en un contenedor que abarca solo el marco.** La primera versión lo puso en `data-ventana`, que incluye el indicador de etapa de abajo —la etiqueta "Ecommerce", "Panel de administración"… y las rayitas—, así que con el `inset` negativo la línea pasaba por encima de esas palabras. Hay un div `relative` intermedio que envuelve el marco y nada más. Medido: el halo excede al marco 1px por lado, el grosor del borde, y la etiqueta arranca 15px más abajo.
+
 Con `prefers-reduced-motion` el bloque global ya detiene la animación, pero eso dejaría el cónico congelado con la luz en una esquina: se reemplaza por un color plano tenue.
 
 **Por ahora solo en la home**, a pedido del cliente, para verlo antes de llevarlo a las landings.
