@@ -47,6 +47,66 @@
   scrollbar-color: auto;
 }
 
+/* El reset de arriba alcanza a `.raiz-plantilla`, pero **no al elemento
+   que scrollea de verdad**: en los paneles one page el documento no se
+   mueve y el scroll vive en un descendiente —la tabla de pedidos, la
+   lista de vehículos—, que hereda el `scrollbar-color` de `html`, no de
+   `.raiz-plantilla`. Medido en `/plantillas/panel` a 390px: una tira
+   violeta sobre negro pegada al borde derecho de la tabla, que en una
+   plantilla clara se ve como un error de render.
+
+   Dos reglas hacen falta porque `globals.css` usa las dos vías: la
+   propiedad estándar en `html` (Firefox y Chrome moderno) y los
+   pseudo-elementos `::-webkit-scrollbar` sin acotar. Los pseudos no
+   heredan, así que hay que volver a pintarlos acá con el `auto` del
+   sistema —de ahí el `initial` en el ancho y el track transparente, que
+   es como se ve una scrollbar nativa clara. */
+.raiz-plantilla * {
+  scrollbar-width: auto;
+  scrollbar-color: auto;
+}
+
+@supports selector(::-webkit-scrollbar) {
+  .raiz-plantilla ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  .raiz-plantilla ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .raiz-plantilla ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.24);
+    border-radius: 8px;
+    /* El borde del color del track deja la barrita flotando en vez de
+       pegada al borde, que es como se ve una scrollbar de sistema. */
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  .raiz-plantilla ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.4);
+    background-clip: content-box;
+  }
+  /* La esquina donde se cruzan las dos barras: sin esto queda del
+     color del track de `globals.css`, o sea negro. */
+  .raiz-plantilla ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
+/* La plantilla oscura necesita el thumb claro: uno negro al 24% sobre
+   `#151C2C` es invisible. Se resuelve con una variable que cada
+   plantilla puede pisar desde su contenedor raíz. */
+@supports selector(::-webkit-scrollbar) {
+  .raiz-plantilla [data-scrollbar="claro"] ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.22);
+    background-clip: content-box;
+  }
+  .raiz-plantilla [data-scrollbar="claro"] ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.34);
+    background-clip: content-box;
+  }
+}
+
 /* Las heredables sí van en `base`: cada plantilla las pisa con sus
    propias clases —`text-neutral-700`, su tipografía— y un reset con
    especificidad de clase fuera de layer se las comería. */

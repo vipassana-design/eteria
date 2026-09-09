@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import Image from 'next/image'
 import { Flip, gsap, useGSAP } from '@/lib/gsap'
 import { bloquearScroll } from '@/lib/lenis'
@@ -87,12 +87,16 @@ export default function EjemplosLanding({ slug }: { slug: LandingSlug }) {
 
   /** El orden importa y es el mismo que en la home: Lenis detenido y la
    *  medición de la card **antes** del re-render. El modal no está en el
-   *  DOM hasta el commit siguiente, así que no puede medir su origen. */
-  const abrirModal = useCallback((indice: number, elemento: HTMLElement | null) => {
+   *  DOM hasta el commit siguiente, así que no puede medir su origen.
+   *
+   *  Sin `useCallback`: no se pasa a ningún hijo memoizado, solo al
+   *  `onClick` de un botón, y envolverla hacía que el compilador de
+   *  React avisara que no puede preservar la memoización. */
+  const abrirModal = (indice: number, elemento: HTMLElement | null) => {
     bloquearScroll(true)
     estadoOrigen.current = elemento ? Flip.getState(elemento) : null
     setAbierto(indice)
-  }, [])
+  }
 
   if (listas.length === 0) return null
 

@@ -39,11 +39,36 @@ interface Props {
 /** El viewBox del esquema. Las coordenadas de los vehículos en
  *  `content/plantillas/flota.ts` están en este sistema. */
 const A = 940
-const AL = 460
+
+/** El alto en el que están dibujadas las calles, las manzanas y las
+ *  coordenadas de los vehículos del contenido. */
+const AL_TRAZA = 460
+
+/** El alto del viewBox. Está elegido para acercarse a la proporción del
+ *  contenedor en desktop (~4:3): con el viewBox apaisado de la traza
+ *  —940×460— y `preserveAspectRatio="meet"`, el esquema entraba completo
+ *  pero dejaba dos franjas muertas de más de 100px arriba y abajo, y el
+ *  mapa quedaba flotando en el medio de la card.
+ *
+ *  El dibujo no se rehace con las coordenadas nuevas: se estira en Y con
+ *  un `transform` sobre el grupo que lo contiene. Así las coordenadas del
+ *  contenido siguen siendo la única fuente de verdad —los vehículos y
+ *  los cruces se ubican en el mismo sistema que las calles— y cambiar la
+ *  proporción de la card es tocar una constante y nada más. */
+const AL = 660
+const ESCALA_Y = AL / AL_TRAZA
 
 export default function Mapa({ elegido, alElegir }: Props) {
   const raiz = useRef<HTMLDivElement>(null)
   const { mapa, lista } = flota
+
+  /** Lleva una `y` del sistema de la traza (940×460) al del viewBox.
+   *
+   *  Los vehículos, los cruces y las etiquetas se ubican con esto en vez
+   *  de ir dentro del grupo estirado: un `scale` en Y sobre un círculo
+   *  lo vuelve un óvalo y sobre el texto lo estira. Escalar solo la
+   *  posición los deja en su lugar sin deformarlos. */
+  const y = (v: number) => v * ESCALA_Y
 
   useGSAP(
     () => {
@@ -129,10 +154,13 @@ export default function Mapa({ elegido, alElegir }: Props) {
 
       <svg
         viewBox={`0 0 ${A} ${AL}`}
-        // `xMidYMid slice` y no `none`: estirar un mapa lo delata al
-        // instante —las calles quedan con ángulos imposibles—. Recortar
-        // es lo que hace un mapa real cuando cambia el contenedor.
-        preserveAspectRatio="xMidYMid slice"
+        // Ni `none` ni `slice`. `none` estira y delata el mapa al
+        // instante —las calles quedan con ángulos imposibles—, y
+        // `slice` recorta por los costados: medido, "Planta Morón"
+        // salía cortada al medio a 1440px. Con `meet` el esquema entra
+        // completo, y el viewBox ya está en la proporción de la card,
+        // así que no quedan franjas muertas.
+        preserveAspectRatio="xMidYMid meet"
         className="h-[260px] w-full flex-1 lg:h-full"
         role="img"
         aria-label={`Mapa esquemático de ${mapa.zona} con ${lista.vehiculos.length} vehículos`}
@@ -143,7 +171,7 @@ export default function Mapa({ elegido, alElegir }: Props) {
             <path
               d="M40 0H0v40"
               fill="none"
-              stroke="rgba(255,255,255,0.032)"
+              stroke="rgba(255,255,255,0.05)"
               strokeWidth="1"
             />
           </pattern>
@@ -152,9 +180,15 @@ export default function Mapa({ elegido, alElegir }: Props) {
         <rect width={A} height={AL} fill="#0C1220" />
         <rect width={A} height={AL} fill="url(#grilla-flota)" />
 
+        {/* La traza —manzanas, calles y avenidas— está dibujada en un
+            sistema de 940×460 y se estira en Y hasta el alto del
+            viewBox. Solo la traza: los vehículos y las etiquetas se
+            posicionan aparte, porque estirarlos deformaría los círculos
+            y la tipografía. */}
+        <g transform={`scale(1 ${ESCALA_Y})`}>
         {/* Las manzanas: rectángulos apenas más claros que el fondo.
             Sin ellas el esquema es solo líneas cruzadas. */}
-        <g fill="rgba(255,255,255,0.022)">
+        <g fill="rgba(255,255,255,0.045)">
           <rect x="60" y="40" width="180" height="120" rx="4" />
           <rect x="270" y="36" width="150" height="86" rx="4" />
           <rect x="450" y="44" width="200" height="110" rx="4" />
@@ -169,7 +203,7 @@ export default function Mapa({ elegido, alElegir }: Props) {
 
         {/* Las calles secundarias: finas y en gris. */}
         <g
-          stroke="rgba(148, 163, 195, 0.16)"
+          stroke="rgba(148, 163, 195, 0.26)"
           strokeWidth="3"
           strokeLinecap="round"
           fill="none"
@@ -188,22 +222,22 @@ export default function Mapa({ elegido, alElegir }: Props) {
         <g fill="none" strokeLinecap="round">
           <path
             d="M30 250 Q 250 210 470 214 T 910 150"
-            stroke="rgba(124, 107, 245, 0.1)"
+            stroke="rgba(124, 107, 245, 0.18)"
             strokeWidth="16"
           />
           <path
             d="M30 250 Q 250 210 470 214 T 910 150"
-            stroke="rgba(148, 163, 195, 0.34)"
+            stroke="rgba(163, 178, 210, 0.5)"
             strokeWidth="6"
           />
           <path
             d="M140 430 Q 380 350 600 300 T 920 300"
-            stroke="rgba(124, 107, 245, 0.1)"
+            stroke="rgba(124, 107, 245, 0.18)"
             strokeWidth="16"
           />
           <path
             d="M140 430 Q 380 350 600 300 T 920 300"
-            stroke="rgba(148, 163, 195, 0.34)"
+            stroke="rgba(163, 178, 210, 0.5)"
             strokeWidth="6"
           />
           {/* Las vías del tren: la línea de guiones cruzada es la marca
@@ -216,15 +250,18 @@ export default function Mapa({ elegido, alElegir }: Props) {
             strokeDasharray="10 7"
           />
         </g>
+        </g>
 
         {/* Los nombres de las avenidas, sobre la traza y con su
-            inclinación. */}
+            inclinación. La `y` se escala a mano —no van dentro del
+            grupo estirado— porque un `scale` en Y sobre texto lo
+            deforma verticalmente. */}
         {mapa.avenidas.map((a) => (
           <text
             key={a.t}
             x={a.x}
-            y={a.y}
-            transform={`rotate(${a.rot} ${a.x} ${a.y})`}
+            y={y(a.y)}
+            transform={`rotate(${a.rot} ${a.x} ${y(a.y)})`}
             fill="rgba(148, 163, 195, 0.55)"
             style={{ fontSize: '11px', letterSpacing: '0.06em' }}
           >
@@ -239,7 +276,7 @@ export default function Mapa({ elegido, alElegir }: Props) {
             {p.base ? (
               <rect
                 x={p.x - 5}
-                y={p.y - 5}
+                y={y(p.y) - 5}
                 width="10"
                 height="10"
                 rx="2"
@@ -249,7 +286,7 @@ export default function Mapa({ elegido, alElegir }: Props) {
             ) : (
               <circle
                 cx={p.x}
-                cy={p.y}
+                cy={y(p.y)}
                 r="3.5"
                 fill="#0C1220"
                 stroke="rgba(148, 163, 195, 0.5)"
@@ -258,7 +295,7 @@ export default function Mapa({ elegido, alElegir }: Props) {
             )}
             <text
               x={p.x + 10}
-              y={p.y + 4}
+              y={y(p.y) + 4}
               fill={p.base ? 'rgba(181, 170, 255, 0.9)' : 'rgba(148, 163, 195, 0.75)'}
               style={{ fontSize: '11px', fontWeight: p.base ? 600 : 400 }}
             >
@@ -274,6 +311,10 @@ export default function Mapa({ elegido, alElegir }: Props) {
           // Cuando hay uno elegido, el resto baja: es lo que hace que
           // el resaltado se note en un mapa con ocho puntos.
           const apagado = elegido !== null && !activo
+          // La posición ya llevada al sistema del viewBox. Se calcula
+          // una vez y se usa en el halo, el anillo, el punto, la flecha
+          // del rumbo y la etiqueta de la patente.
+          const vy = y(v.y)
 
           return (
             <g
@@ -300,7 +341,7 @@ export default function Mapa({ elegido, alElegir }: Props) {
                 <circle
                   data-halo
                   cx={v.x}
-                  cy={v.y}
+                  cy={vy}
                   r="11"
                   fill="none"
                   stroke={est.color}
@@ -312,7 +353,7 @@ export default function Mapa({ elegido, alElegir }: Props) {
               {activo ? (
                 <circle
                   cx={v.x}
-                  cy={v.y}
+                  cy={vy}
                   r="16"
                   fill="rgba(124, 107, 245, 0.14)"
                   stroke="var(--acento)"
@@ -326,7 +367,7 @@ export default function Mapa({ elegido, alElegir }: Props) {
                   va, y en un panel de flota el rumbo es dato. */}
               <circle
                 cx={v.x}
-                cy={v.y}
+                cy={vy}
                 r={activo ? 8 : 7}
                 fill={est.color}
                 stroke="#0C1220"
@@ -340,14 +381,14 @@ export default function Mapa({ elegido, alElegir }: Props) {
               <path
                 d="M0 -3.4 L 2.6 2.2 L 0 1 L -2.6 2.2 Z"
                 fill="#0C1220"
-                transform={`translate(${v.x} ${v.y}) rotate(${v.rumbo})`}
+                transform={`translate(${v.x} ${vy}) rotate(${v.rumbo})`}
                 opacity="0.85"
               />
 
               {/* La patente del elegido, en una etiqueta. Solo del
                   elegido: ocho etiquetas a la vez tapan el mapa. */}
               {activo ? (
-                <g transform={`translate(${v.x} ${v.y - 26})`}>
+                <g transform={`translate(${v.x} ${vy - 26})`}>
                   <rect
                     x="-44"
                     y="-13"

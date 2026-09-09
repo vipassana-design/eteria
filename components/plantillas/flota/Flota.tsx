@@ -76,6 +76,10 @@ export default function Flota() {
         color: 'var(--texto)',
         fontFamily: 'var(--sans)',
       }}
+      // La única plantilla oscura: sus scrollbars internas necesitan el
+      // thumb claro. `plantillas.css` lo resuelve con este atributo,
+      // porque un thumb negro translúcido sobre `#151C2C` no se ve.
+      data-scrollbar="claro"
       className="flex h-[100dvh] overflow-hidden antialiased"
     >
       <Iconos />

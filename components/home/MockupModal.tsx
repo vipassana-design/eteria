@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { Flip, gsap, useGSAP } from '@/lib/gsap'
 import { bloquearScroll } from '@/lib/lenis'
@@ -68,9 +68,15 @@ export default function MockupModal({
   /** A dónde devolver el foco al cerrar: la card que abrió el modal. */
   const volverElFoco = useRef<HTMLElement | null>(null)
 
-  /** El iframe recién se muestra cuando la plantilla cargó y el Flip
-   *  terminó: hasta entonces se ve el preview. */
-  const [cargada, setCargada] = useState(false)
+  /** El iframe recién se muestra cuando la plantilla cargó: hasta
+   *  entonces se ve el preview.
+   *
+   *  Va como ref y no como estado porque el linter avisa —con razón—
+   *  que un `setState` síncrono dentro del efecto de apertura puede
+   *  cascadear renders. Lo único que controla es una opacidad, así que
+   *  se escribe en el DOM directo desde el `onLoad` del iframe, que ya
+   *  corre fuera del render. */
+  const iframe = useRef<HTMLIFrameElement>(null)
 
   const abierto = indice !== null
   const plantilla = indice !== null ? listas[indice] : null
@@ -140,7 +146,6 @@ export default function MockupModal({
   useEffect(() => {
     if (!abierto) {
       previo.current = null
-      setCargada(false)
       return
     }
 
@@ -208,7 +213,7 @@ export default function MockupModal({
       // seguir con Tab arranca desde el principio de la página.
       volverElFoco.current?.focus()
     }
-  }, [abierto, indice, onCerrar, onCambiar])
+  }, [abierto, indice, onCerrar, onCambiar, listas.length])
 
   // Registrar el índice ya procesado, después de que corrió useGSAP.
   useEffect(() => {
@@ -304,15 +309,20 @@ export default function MockupModal({
           />
 
           <iframe
+            ref={iframe}
             key={plantilla.slug}
             src={`/plantillas/${plantilla.slug}`}
             title={`${plantilla.titulo} · ${plantilla.rubro}`}
-            onLoad={() => setCargada(true)}
+            onLoad={() => {
+              // Directo al DOM: es una opacidad y no hay razón para que
+              // pase por un render.
+              if (iframe.current) iframe.current.style.opacity = '1'
+            }}
             // `scrollea: false` son los paneles: son one page y el
             // scroll vive en sus columnas internas, no en el documento.
             scrolling={plantilla.scrollea ? 'yes' : 'no'}
             className="relative size-full border-0 transition-opacity duration-500"
-            style={{ opacity: cargada ? 1 : 0 }}
+            style={{ opacity: 0 }}
           />
         </div>
 

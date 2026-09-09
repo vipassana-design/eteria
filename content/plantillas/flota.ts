@@ -100,7 +100,7 @@ export const flota = {
     /** Nombres sobre el esquema, en los cruces principales. Le dan al
      *  dibujo la lectura de mapa: sin toponimia son solo líneas. */
     puntos: [
-      { t: 'Planta Morón', x: 148, y: 306, base: true },
+      { t: 'Planta Morón', x: 168, y: 306, base: true },
       { t: 'Centro de cruce', x: 470, y: 214, base: true },
       { t: 'Haedo', x: 296, y: 116, base: false },
       { t: 'Ramos Mejía', x: 620, y: 122, base: false },

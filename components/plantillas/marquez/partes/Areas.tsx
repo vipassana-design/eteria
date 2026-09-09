@@ -56,12 +56,15 @@ const TRAZOS: Record<string, React.ReactNode> = {
       <circle cx="16.5" cy="16.5" r="2.5" />
     </>
   ),
-  // Familia: dos figuras unidas.
+  // Familia: dos figuras unidas. El radio de las cabezas es chico
+  // (2.6) para que los dos hombros entren en el viewBox sin recortarse
+  // en el borde inferior.
   familia: (
     <>
-      <circle cx="8" cy="7" r="3" />
-      <circle cx="16" cy="7" r="3" />
-      <path d="M3 21v-2a5 5 0 0 1 10 0v2M13.5 21v-2a5 5 0 0 1 7.5-4.3" />
+      <circle cx="8.5" cy="6.5" r="2.6" />
+      <circle cx="16" cy="8.5" r="2.6" />
+      <path d="M3.5 20.5v-2.2a5 5 0 0 1 10 0v2.2" />
+      <path d="M14.5 20.5v-1.2a4.6 4.6 0 0 1 6-4.4" />
     </>
   ),
   // Sucesiones: el sello sobre el documento.
@@ -73,13 +76,14 @@ const TRAZOS: Record<string, React.ReactNode> = {
       <path d="M9 19h6" />
     </>
   ),
-  // Litigios: el estrado y el expediente. Dos trazos, no una balanza.
+  // Litigios: dos expedientes enfrentados sobre la línea del estrado.
+  // La primera versión dibujaba una balanza y quedó descartada: es el
+  // ícono con el que se reconoce una plantilla legal a la distancia.
   litigios: (
     <>
-      <path d="M12 3v18" />
-      <path d="M4 8h16" />
-      <path d="M7 8l-3 6h6zM17 8l-3 6h6z" />
-      <path d="M7.5 21h9" />
+      <path d="M3 3.5h7v11H3zM14 6.5h7v11h-7" />
+      <path d="M5 7h3M5 10h3M16 10h3M16 13h3" />
+      <path d="M2 21h20" />
     </>
   ),
 }
