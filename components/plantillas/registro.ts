@@ -1,6 +1,14 @@
 import type { ComponentType } from 'react'
 import type { SlugPlantilla } from '@/types'
 import Atelier from './atelier/Atelier'
+import Clinica from './clinica/Clinica'
+import Terrazas from './terrazas/Terrazas'
+import Marquez from './marquez/Marquez'
+import Vertice from './vertice/Vertice'
+import Feria from './feria/Feria'
+import Panel from './panel/Panel'
+import Flota from './flota/Flota'
+import Legajos from './legajos/Legajos'
 
 /** Registro de las nueve plantillas (PLAN.md §16).
  *
@@ -12,11 +20,19 @@ import Atelier from './atelier/Atelier'
  *  su propia ruta, así que Next ya las separa en chunks por página. Un
  *  `dynamic()` acá sumaría un estado de carga sin ahorrar nada.
  *
- *  Las que faltan se van sumando por etapa. `PLANTILLAS` es parcial a
- *  propósito mientras eso pase: la ruta hace `notFound()` con los slugs
- *  que todavía no tienen componente, que es preferible a un stub vacío
- *  que se vería como una plantilla arruinada.
+ *  Es parcial mientras se van sumando: el carrusel, el modal y el
+ *  módulo de las landings filtran por las que existen, y la ruta hace
+ *  `notFound()` con las que no —preferible a un stub vacío que se vería
+ *  como una plantilla arruinada.
  */
 export const PLANTILLAS: Partial<Record<SlugPlantilla, ComponentType>> = {
   atelier: Atelier,
+  clinica: Clinica,
+  terrazas: Terrazas,
+  marquez: Marquez,
+  vertice: Vertice,
+  feria: Feria,
+  panel: Panel,
+  flota: Flota,
+  legajos: Legajos,
 }

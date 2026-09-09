@@ -279,7 +279,7 @@ export default function LandingHero({ landing }: { landing: Landing }) {
                 <span className="size-2 rounded-full bg-[#4A4370]" />
                 <span className="size-2 rounded-full bg-[#4A4370]" />
               </span>
-              <span className="flex-1 truncate rounded-(--radius-pill) bg-black/25 px-3 py-1 text-[11px] leading-none text-low">
+              <span className="min-h-[1.375rem] flex-1 truncate rounded-(--radius-pill) bg-black/25 px-3 py-1 text-[11px] leading-none text-low">
                 {esTerminal ? urls.terminal : urls.pantalla}
               </span>
             </div>

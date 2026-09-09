@@ -107,19 +107,19 @@ export const sesionTerminalCorta = [
 export const etapasVentana = [
   {
     pantalla: 'tienda' as const,
-    url: 'tienda-atelier.com',
+    url: '',
     etiqueta: 'Ecommerce',
     partes: ['barra', 'hero', 'grilla', 'carrito'],
   },
   {
     pantalla: 'panel' as const,
-    url: 'app.gestion.com/panel',
+    url: '',
     etiqueta: 'Panel de administración',
     partes: ['barra', 'metricas', 'grafico', 'tabla'],
   },
   {
     pantalla: 'corporativo' as const,
-    url: 'norvex.com',
+    url: '',
     etiqueta: 'Sitio institucional',
     partes: ['barra', 'hero', 'datos', 'prensa'],
   },

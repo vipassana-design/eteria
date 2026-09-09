@@ -27,7 +27,7 @@ export const mockups: Mockup[] = [
     titulo: 'Tienda online',
     rubro: 'Ecommerce de nicho',
     pantalla: 'vinos',
-    url: 'bodega-vinos.com',
+    url: '',
     alt: 'Tienda de vinos con filtros por varietal y catálogo de etiquetas',
   },
   {
@@ -35,7 +35,7 @@ export const mockups: Mockup[] = [
     titulo: 'Sitio corporativo',
     rubro: 'Institucional',
     pantalla: 'corporativo',
-    url: 'norvex.com',
+    url: '',
     alt: 'Sitio corporativo con hero institucional, datos de la compañía y prensa',
   },
   {
@@ -43,7 +43,7 @@ export const mockups: Mockup[] = [
     titulo: 'Landing de producto SaaS',
     rubro: 'Startup',
     pantalla: 'saas',
-    url: 'fluxo.app',
+    url: '',
     alt: 'Landing de producto SaaS con planes de precios y prueba gratuita',
   },
   {
@@ -51,7 +51,7 @@ export const mockups: Mockup[] = [
     titulo: 'Tienda de retail',
     rubro: 'Ecommerce',
     pantalla: 'tienda',
-    url: 'tienda-indumentaria.com',
+    url: '',
     alt: 'Tienda online de indumentaria con grilla de productos y carrito',
   },
   {
@@ -59,7 +59,7 @@ export const mockups: Mockup[] = [
     titulo: 'Panel de administración',
     rubro: 'Webapp',
     pantalla: 'panel',
-    url: 'app.gestion.com/panel',
+    url: '',
     alt: 'Panel de administración con métricas, gráfico de ventas y tabla de pedidos',
   },
   {
@@ -67,7 +67,7 @@ export const mockups: Mockup[] = [
     titulo: 'Estudio de servicios profesionales',
     rubro: 'Institucional',
     pantalla: 'sitio',
-    url: 'estudio-legal.com',
+    url: '',
     alt: 'Sitio de un estudio profesional con áreas de servicio y formulario de consulta',
   },
 ]

@@ -46,7 +46,7 @@ export const landings: Record<LandingSlug, Landing> = {
       },
     ],
     mockup: {
-      url: 'tienda-atelier.com/campera-lino',
+      url: '',
       alt: 'Ficha de producto de una tienda online: galería, precio, talles, cálculo de envío y checkout en tres pasos',
     },
     meta: {
@@ -93,7 +93,7 @@ export const landings: Record<LandingSlug, Landing> = {
       },
     ],
     mockup: {
-      url: 'norvex.com/panel/novedades',
+      url: '',
       alt: 'Panel de contenido de un sitio institucional: árbol de secciones, editor de texto, campos de búsqueda, biblioteca de imágenes y barra de publicación',
     },
     meta: {
@@ -140,7 +140,7 @@ export const landings: Record<LandingSlug, Landing> = {
       },
     ],
     mockup: {
-      url: 'app.gestion.com/pedidos/4821',
+      url: '',
       alt: 'Detalle de un pedido en un sistema de gestión: línea de tiempo del estado, integraciones con facturación, stock y logística, y registro de actividad',
     },
     meta: {

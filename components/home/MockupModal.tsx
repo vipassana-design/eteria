@@ -7,9 +7,11 @@ import { bloquearScroll } from '@/lib/lenis'
 import { prefiereMenosMovimiento } from '@/lib/motion'
 import { plantillas, seccionSoluciones } from '@/content/plantillas'
 import { PLANTILLAS } from '@/components/plantillas/registro'
+import type { Plantilla } from '@/types'
 
-/** Las que ya tienen componente: el modal navega solo entre esas. */
-const listas = plantillas.filter((p) => PLANTILLAS[p.slug])
+/** Las que ya tienen componente. Es el conjunto por defecto: el de la
+ *  home. Las landings pasan su propio subconjunto por `lista`. */
+const TODAS = plantillas.filter((p) => PLANTILLAS[p.slug])
 
 interface Props {
   /** Índice de la plantilla abierta, o null si el modal está cerrado. */
@@ -20,6 +22,12 @@ interface Props {
    *  Tiene que venir de afuera: el modal no está en el DOM mientras
    *  está cerrado, así que no puede medir la posición de partida. */
   estadoOrigen: React.RefObject<Flip.FlipState | null>
+  /** Sobre qué conjunto navegan las flechas y el contador.
+   *
+   *  La home pasa las nueve; cada landing de servicio pasa las tres de
+   *  su línea, así el modal recorre el conjunto que el visitante está
+   *  mirando y el contador dice "2 de 3" y no "5 de 9". */
+  lista?: Plantilla[]
 }
 
 /** Modal de previsualización (PLAN.md §4.6 y §16).
@@ -44,7 +52,14 @@ interface Props {
  *    con `transform` mientras carga produce un reflow interno visible,
  *    y de paso esto tapa cualquier destello de carga.
  */
-export default function MockupModal({ indice, onCerrar, onCambiar, estadoOrigen }: Props) {
+export default function MockupModal({
+  indice,
+  onCerrar,
+  onCambiar,
+  estadoOrigen,
+  lista,
+}: Props) {
+  const listas = lista ?? TODAS
   const raiz = useRef<HTMLDivElement>(null)
   const marco = useRef<HTMLDivElement>(null)
   const fondo = useRef<HTMLDivElement>(null)
@@ -248,7 +263,7 @@ export default function MockupModal({ indice, onCerrar, onCambiar, estadoOrigen 
             <span className="size-2 rounded-full bg-[#4A4370]" />
             <span className="size-2 rounded-full bg-[#4A4370]" />
           </span>
-          <span className="flex-1 truncate rounded-(--radius-pill) bg-black/25 px-3 py-1 text-[11px] leading-none text-low">
+          <span className="min-h-[1.375rem] flex-1 truncate rounded-(--radius-pill) bg-black/25 px-3 py-1 text-[11px] leading-none text-low">
             {plantilla.url}
           </span>
           <button

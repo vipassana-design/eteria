@@ -34,17 +34,17 @@ export const hero = {
 export const etapasHero = [
   {
     pantalla: 'tienda' as const,
-    url: 'tienda-atelier.com/mujer',
+    url: '',
     etiqueta: 'Ecommerce',
   },
   {
     pantalla: 'panel' as const,
-    url: 'app.gestion.com/resumen',
+    url: '',
     etiqueta: 'Panel de administración',
   },
   {
     pantalla: 'corporativo' as const,
-    url: 'norvex.com',
+    url: '',
     etiqueta: 'Sitio institucional',
   },
 ]
