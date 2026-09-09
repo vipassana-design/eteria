@@ -367,7 +367,7 @@ body[data-menu-abierto] [data-flotante] {
      marco de color.
 
      Va en una variable porque lo comparten la línea nítida y el
-     resplandor de abajo: así el mismo ángulo mueve a los dos y no se
+     resplandor: así el mismo ángulo mueve a los dos y no se
      desfasan. */
   --halo-luz: conic-gradient(
     from var(--halo-giro),
@@ -388,29 +388,35 @@ body[data-menu-abierto] [data-flotante] {
   animation: halo-vuelta 5.5s linear infinite;
 }
 
-/* El resplandor: el mismo degradé, desenfocado y sangrando hacia
-   afuera del marco.
-
-   Lleva un borde más grueso que la línea para que el blur tenga de
-   dónde sangrar —con 1,5px el desenfoque se come la luz y no queda
-   nada— y va a opacidad baja: es el halo alrededor del filo, no una
-   segunda línea.
-
-   El mix-blend-mode screen es lo que permite ponerlo por delante sin
-   apagar la línea nítida: suma luz en lugar de pintar encima. Con
-   z-index -1 quedaba detrás del marco, que es opaco, y no se veía
-   —medido con una captura del borde, salía gris. */
+/* El resplandor que irradia desde el trazo.
+ *
+ * Es una copia del contorno —misma extensión que la línea, no más
+ * larga— con un borde algo más grueso, proyectada hacia afuera con
+ * drop-shadow en dos radios. El drop-shadow toma la silueta ya
+ * recortada por la máscara, o sea solo el tramo encendido del
+ * cónico, y la reproyecta difusa: la luz sale del trazo en lugar de
+ * ser una capa translúcida apoyada encima.
+ *
+ * Dos intentos antes de este. El primero fue blur +
+ * mix-blend-mode: screen, y no se veía: medido píxel a píxel afuera
+ * del marco, el violeta daba 5-11 sobre un fondo de 5-7, porque
+ * screen sobre #040103 devuelve el mismo color. El segundo fue un
+ * anillo difuso completo sin máscara de contorno, que sí se veía
+ * pero alargaba el halo: se leía como un borde grueso y no como un
+ * trazo que brilla. */
 .halo-ventana::after {
   content: '';
   position: absolute;
-  inset: -5px;
-  border-radius: calc(var(--radius-card) + 5px);
-  padding: 7px;
+  inset: -1px;
+  border-radius: calc(var(--radius-card) + 2px);
+  padding: 3px;
   background: var(--halo-luz);
-  opacity: 0.5;
-  filter: blur(6px);
-  mix-blend-mode: screen;
   pointer-events: none;
+  opacity: 0.9;
+  filter:
+    blur(1.5px)
+    drop-shadow(0 0 4px var(--color-acento-2))
+    drop-shadow(0 0 10px color-mix(in srgb, var(--color-acento-2) 80%, transparent));
   -webkit-mask:
     linear-gradient(#000 0 0) content-box exclude,
     linear-gradient(#000 0 0);

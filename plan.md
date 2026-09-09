@@ -379,16 +379,20 @@ Va en el contenedor de afuera, no en el marco: el marco lleva `overflow-hidden` 
 
 **Pero en un contenedor que abarca solo el marco.** La primera versión lo puso en `data-ventana`, que incluye el indicador de etapa de abajo —la etiqueta "Ecommerce", "Panel de administración"… y las rayitas—, así que con el `inset` negativo la línea pasaba por encima de esas palabras. Hay un div `relative` intermedio que envuelve el marco y nada más. Medido: el halo excede al marco 1px por lado, el grosor del borde, y la etiqueta arranca 15px más abajo.
 
-**Y un resplandor detrás del filo.** El mismo degradé en un `::after`, con el borde más grueso (7px contra 1,5) para que el `blur(6px)` tenga de dónde sangrar —con el ancho de la línea el desenfoque se come la luz y no queda nada— a opacidad 0,5. El degradé está factorizado en `--halo-luz` para que la línea y el resplandor compartan el mismo ángulo y no se desfasen.
+**Y un resplandor que irradia desde el trazo.** Un `::after` que copia el contorno —la misma extensión que la línea, no más ancho— proyectado hacia afuera con `drop-shadow` en dos radios, 4px y 10px. El `drop-shadow` toma la silueta ya recortada por la máscara, o sea solo el tramo encendido del cónico, y la reproyecta difusa: la luz sale del trazo en lugar de ser una capa apoyada encima. El degradé está factorizado en `--halo-luz`, que comparten las dos capas, para que el giro no las desfase.
 
-Va **por delante** con `mix-blend-mode: screen`, que suma luz en lugar de pintar encima. La primera versión usó `z-index: -1` para meterlo detrás de la línea, y eso lo mandaba detrás del marco, que es opaco: medido con una captura del borde, salía gris sin nada de violeta.
+Costó dos intentos fallidos, los dos medidos:
 
-Con `prefers-reduced-motion` el bloque global ya detiene la animación, pero eso dejaría el cónico congelado con la luz en una esquina: se reemplaza por un color plano tenue, línea y resplandor.
+| Intento | Qué pasó |
+|---|---|
+| `blur` + `mix-blend-mode: screen` | No se veía. Píxel a píxel afuera del marco el violeta daba 5-11 sobre un fondo de 5-7: `screen` sobre `#040103` devuelve el mismo color, no amplifica |
+| Anillo difuso completo sin máscara de contorno | Se veía, pero **alargaba** el halo: se leía como un borde grueso y no como un trazo que brilla |
 
-Medido con el resplandor puesto: **60 fps en escritorio y 56 con la CPU 4× más lenta.** Un `blur` sobre una capa que gira es de lo más caro que se le puede pedir al navegador, así que ese número confirma que el `@property` mantiene el trabajo en el compositor.
+Con `prefers-reduced-motion` el bloque global ya detiene la animación, pero eso dejaría el cónico congelado con la luz en una esquina: se reemplaza por un color plano tenue.
 
-**Por ahora solo en la home**, a pedido del cliente, para verlo antes de llevarlo a las landings.
+**Está en la home y en las tres landings.** En las landings el halo cuelga directo de `data-ventana`, que ahí contiene solo el marco; en el hero de la home hay un div `relative` intermedio porque ese contenedor incluye también el indicador de etapa, y sin el div la línea pasaba por encima de la etiqueta —lo marcó el cliente. Verificado en las cuatro páginas: el halo excede el marco 2px, el `drop-shadow` resuelve a `rgb(139, 92, 246)` y la animación corre.
 
+Medido con el resplandor puesto: **60 fps en escritorio y 56-57 con la CPU 4× más lenta**, los mismos números que antes de agregarlo. Un `blur` sobre una capa que gira es de lo más caro que se le puede pedir al navegador, así que eso confirma que el `@property` mantiene el trabajo en el compositor. Y son ~2,7 KB de CSS con 0 de JavaScript.
 ### Mapa de capacidades
 
 A la derecha del texto. Es la **única pieza del sitio que no es una pantalla**: los nueve mockups son capturas de producto, esto es el mapa de lo que el equipo abarca. Un nodo central —"El sistema / a medida", las dos líneas al mismo tamaño— y seis alrededor unidos por radios que se dibujan:

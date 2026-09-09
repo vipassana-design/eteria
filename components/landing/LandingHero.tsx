@@ -260,8 +260,19 @@ export default function LandingHero({ landing }: { landing: Landing }) {
         {/* Ventana alineada, del mismo tamaño que la del hero de la home:
             se desborda hacia la derecha y #capa-sitio recorta lo que
             asoma, sin generar scroll horizontal. */}
-        <div data-anim data-ventana className="lg:w-[118%]">
-          <div className="overflow-hidden rounded-(--radius-card) border border-white/10 bg-elevated shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]">
+        <div data-anim data-ventana className="relative lg:w-[118%]">
+          {/* El halo que recorre el borde, definido en globals.css.
+
+              Va afuera del marco porque el marco lleva overflow-hidden
+              para recortar el mockup, y ahí adentro quedaría cortado
+              justo en el borde que tiene que iluminar.
+
+              Acá cuelga directo de `data-ventana`, que contiene solo el
+              marco. En el hero de la home hay un div intermedio porque
+              allá ese contenedor incluye también el indicador de etapa
+              y el halo le pasaba por encima de la etiqueta. */}
+          <span className="halo-ventana" aria-hidden="true" />
+          <div className="relative overflow-hidden rounded-(--radius-card) border border-white/10 bg-elevated shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]">
             <div className="flex items-center gap-2.5 border-b border-white/[0.07] bg-[#211C3D] px-3.5 py-2.5">
               <span className="flex gap-1.5">
                 <span className="size-2 rounded-full bg-[#4A4370]" />
