@@ -100,12 +100,24 @@ export function SitioEstudio() {
       {/* ── Hero: foto a la izquierda, texto a la derecha.
              Al revés que el del hero del sitio, que tiene la foto a la
              derecha: así los dos mockups no se leen como el mismo
-             layout con otro color. ── */}
+             layout con otro color.
+ 
+             La foto arranca en x=32, la misma grilla que el logo (34) y
+             las cards de áreas (32). Antes iba a sangre desde x=0 y
+             quedaba pegada al borde, desalineada de todo lo demás. ── */}
       <g data-parte="hero">
-        <Foto id="estHero" href="/mockups/estudio-hero.webp" x={0} y={53} w={300} h={200} rx={0} />
+        <Foto
+          id="estHero"
+          href="/mockups/estudio-hero.webp"
+          x={32}
+          y={73}
+          w={268}
+          h={180}
+          rx={3}
+        />
         {/* Velo verde sobre la foto: la ata a la paleta del sitio y le
             baja el contraste para que el texto de al lado gane peso. */}
-        <rect x={0} y={53} width={300} height={200} fill={VERDE} opacity={0.28} />
+        <rect x={32} y={73} width={268} height={180} rx={3} fill={VERDE} opacity={0.28} />
 
         <g data-item>
           <rect x={332} y={78} width={26} height={2} fill={DORADO} />

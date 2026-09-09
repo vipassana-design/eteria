@@ -6,6 +6,7 @@ import { gsap, useGSAP } from '@/lib/gsap'
 import TituloSeccion from '@/components/ui/TituloSeccion'
 import Boton from '@/components/ui/Boton'
 import { seccionServicios, servicios } from '@/content/servicios'
+import { CicloPantalla } from './CicloPantalla'
 import { PANTALLAS_SERVICIO } from './PantallasServicio'
 
 /** Sección "Servicios" — cards apiladas (PLAN.md §4.4).
@@ -198,12 +199,17 @@ export default function Servicios() {
                   <span
                     role="img"
                     aria-label={s.pantallaAlt}
-                    // El fondo cubre la celda entera: el SVG es 16:10 y
-                    // la celda no, así que `object-cover` recorta arriba
-                    // y abajo en lugar de dejar franjas.
+                    // El fondo cubre la celda entera: el lienzo de las
+                    // cards es 720×538, la misma proporción que la
+                    // celda, así que no quedan franjas.
                     className="block size-full min-h-56 bg-[#F7F6FB] lg:min-h-0"
                   >
-                    <Pantalla />
+                    {/* El mockup se arma por partes en loop, como la
+                        ventana del hero. Arranca al entrar en viewport
+                        y se suspende al salir. */}
+                    <CicloPantalla>
+                      <Pantalla />
+                    </CicloPantalla>
                   </span>
                 </Link>
               </div>

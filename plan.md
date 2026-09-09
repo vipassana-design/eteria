@@ -411,6 +411,16 @@ Los 78px extra **se llenaron con contenido**, no moviendo los bloques hacia abaj
 
 Verificado en las tres: SVG 574×430 en celda de 575×430 (**franja vertical 0**), `maxY` exactamente 538, nada fuera del viewBox, y 7/6/5 partes con 29/21/28 ítems de stagger.
 
+**La foto del hero del estudio se alineó a la grilla.** Iba a sangre desde `x=0` mientras el logo está en 34 y las cards de áreas en 32: era lo único pegado al borde y el cliente lo marcó. Ahora arranca en 32 con `rx=3`, como las cards. Medido, la x mínima de cada parte del mockup: barra 34, hero 32, áreas 32, equipo 32, notas 32, foto 32.
+
+**Los tres se arman en loop (`CicloPantalla`).** Es el mismo armado que la ventana del hero —cada `data-parte` entra con fade y `y`, los `data-item` caen con stagger, los `data-trazo` se dibujan— pero acá la pantalla es una sola y el ciclo la rearma en lugar de avanzar a la siguiente etapa: una card tiene su mockup y nada más. Compás: 0,34s entre partes y 3,2s de sostén con la pantalla completa, que es largo a propósito —el mockup tiene datos que se leen, y desarmarlo enseguida lo vuelve una animación en vez de una captura.
+
+El armado corre **solo cuando la card está a la vista**, con `onEnter`/`onLeave` en lugar de `once`: las tres están bien abajo de la página, un loop desde la carga gasta frames sobre algo que nadie ve y el visitante se perdería el armado. Al volver retoma donde quedó (`onEnterBack: play`, no `restart`) para que scrollear hacia arriba y abajo no dispare el armado de nuevo cada vez.
+
+El envoltorio es lo único que anima: los mockups siguen siendo SVG estáticos con marcadores, sin `'use client'`. Uno montado sin `CicloPantalla` se ve completo y quieto, que es un estado válido —y es lo que muestra `prefers-reduced-motion`.
+
+Verificado con el apilado sticky, que es donde podía fallar: las tres disparan su trigger a distintas alturas de scroll (+0, +400 y +1200 desde el inicio de la sección) y las tres ciclan.
+
 **Jerarquía del texto (revisión del cliente).** Son tres niveles: el **nombre del servicio** como título (`--text-h3`, lleva el enlace a la landing), un **subtítulo** en `--text-cuerpo-lg` sobre `--text-mid`, y la **descripción** en `--text-cuerpo` sobre `--text-low`.
 
 Estaba al revés: el nombre del servicio iba como label chico en `--text-low` y el subtítulo ocupaba el `h3`. El dato más importante de la card quedaba como metadato.

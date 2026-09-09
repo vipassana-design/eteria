@@ -74,6 +74,7 @@ Cuando actualices un archivo, editá la parte que corresponde. No lo reescribas 
 - Al cambiar de ruta, `useGSAP` mata los tweens pero los ScrollTrigger quedan registrados con las medidas de la página anterior. `PageTransition` hace `ScrollTrigger.refresh()` después de cada navegación; si se agrega otra animación dependiente de medidas, verificar la ida y vuelta entre rutas, no solo que la página cargue.
 - Los nombres de componentes, props, variables y archivos de contenido van en español, igual que el copy.
 - Antes de cerrar una fase con trabajo visual, mirar el resultado en el navegador. Que compile no es que se vea bien.
+- Un mockup SVG no anima solo: es contenido estático con marcadores (`data-parte`, `data-item`, `data-trazo`) y lo mueve el envoltorio que lo monta —`CicloPantalla` en las cards de servicios, el ciclo del hero en la ventana. Montado sin envoltorio se ve completo y quieto, que es también lo que corresponde con `prefers-reduced-motion`. El detalle está en el skill `mockups-animados`.
 - Las capturas sirven para verificar cosas objetivas: layout, desbordes, contraste, estados de un componente. No las uses para mostrar animaciones ni timing: eso lo evalúa el cliente en el navegador. Si algo se juzga mirándolo correr, terminalo y avisá; no armes herramientas para capturarlo.
 - Para ocultar o mostrar un `Boton` por breakpoint, envolverlo en un div con la clase de display. Pasarle `hidden` por `className` no funciona: compite con el `inline-flex` de sus clases base y gana el orden de la hoja generada, no el del atributo.
 

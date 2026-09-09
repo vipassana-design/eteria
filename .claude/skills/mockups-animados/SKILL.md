@@ -77,6 +77,31 @@ x=680-688. Menos que eso se ve pegado al marco.
 
 ## Los marcadores que espera el timeline
 
+**El mockup no anima solo.** Es contenido estático; lo mueve el
+envoltorio que lo monta:
+
+| Dónde | Quién anima |
+|---|---|
+| ventana del hero | el ciclo de `Hero.tsx` (avanza entre etapas) |
+| cards de servicios | `CicloPantalla` (rearma la misma pantalla en loop) |
+| landings | el ciclo de `LandingHero.tsx` |
+
+Montado sin envoltorio se ve completo y quieto, que es un estado
+válido: es lo que corresponde con `prefers-reduced-motion`.
+
+`CicloPantalla` sirve para cualquier mockup nuevo que vaya en una
+sección de la página:
+
+```jsx
+<CicloPantalla>
+  <MiMockup />
+</CicloPantalla>
+```
+
+Arranca al entrar en viewport y se suspende al salir. **No uses `once`
+para esto:** volver a la sección tiene que volver a mostrar el armado,
+que es lo único que el efecto tiene para ofrecer.
+
 El componente que lo monta anima estos atributos. Sin ellos el mockup
 aparece de golpe.
 
