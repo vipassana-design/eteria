@@ -9,10 +9,16 @@ import { ILUSTRACIONES } from './IlustracionesProceso'
 
 /** Sección "Proceso" (PLAN.md §4.5).
  *
- *  Cuatro cards con una línea conectora que cruza por detrás. La línea
- *  se dibuja de izquierda a derecha con strokeDashoffset al entrar en
- *  viewport, y las cards entran desde abajo siguiéndola: la línea es la
- *  guía, no un fade genérico.
+ *  Cuatro etapas con una línea conectora que cruza por detrás. La
+ *  línea avanza **con el scroll** —no de una vez al entrar en
+ *  viewport— y cada etapa se enciende cuando la línea la alcanza: el
+ *  proceso se explica solo mientras se lee.
+ *
+ *  El encendido está atado al **progreso de la línea**, no a un
+ *  ScrollTrigger por etapa: en desktop las cuatro están a la misma
+ *  altura, así que sus triggers se disparaban casi juntos y las cuatro
+ *  se prendían de una vez. Leyendo el progreso, la etapa i se enciende
+ *  cuando la línea pasó su posición —que es literalmente lo que se ve.
  *
  *  En mobile la línea pasa a vertical del lado izquierdo.
  */
@@ -23,38 +29,78 @@ export default function Proceso() {
     () => {
       const mm = gsap.matchMedia()
 
+      // Sin movimiento: todo visible y la línea completa.
       mm.add('(prefers-reduced-motion: reduce)', () => {
-        gsap.from('[data-etapa]', {
-          opacity: 0,
-          duration: dur.fast,
-          stagger: 0.05,
-          ease: 'none',
-          scrollTrigger: { trigger: raiz.current, start: 'top 80%', once: true },
-        })
+        gsap.set('[data-etapa]', { opacity: 1, y: 0 })
+        gsap.set('[data-punto]', { scale: 1 })
+        gsap.set('[data-linea]', { strokeDashoffset: 0 })
       })
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
+        const etapas = gsap.utils.toArray<HTMLElement>('[data-etapa]', raiz.current)
         const lineas = gsap.utils.toArray<SVGPathElement>('[data-linea]', raiz.current)
-        const tl = gsap.timeline({
-          scrollTrigger: { trigger: raiz.current, start: 'top 75%', once: true },
+        const tweens: gsap.core.Tween[] = []
+
+        // ── Estado apagado ──
+        gsap.set(etapas, { opacity: 0.22, y: 26 })
+        gsap.set('[data-punto]', { scale: 0.4 })
+
+        // Cada etapa tiene su tween de encendido, en pausa. Se dispara
+        // desde el progreso de la línea, así el orden es el del trazo.
+        const encendidos = etapas.map((etapa) => {
+          const punto = etapa.querySelector('[data-punto]')
+          const tl = gsap.timeline({ paused: true })
+          tl.to(etapa, { opacity: 1, y: 0, duration: dur.base, ease: ease.out })
+          if (punto) {
+            tl.to(punto, { scale: 1, duration: 0.42, ease: 'back.out(2.6)' }, 0.04)
+          }
+          return tl
         })
 
-        // La línea se dibuja primero y las cards la siguen.
+        // ── La línea avanza con el scroll y va prendiendo etapas ──
+        //
+        // El rango termina en `bottom 85%` y no en `bottom top`: la
+        // línea tiene que completarse cuando la cuarta etapa está a la
+        // vista, no cuando la sección ya salió por arriba.
         for (const linea of lineas) {
           const largo = linea.getTotalLength()
           gsap.set(linea, { strokeDasharray: largo, strokeDashoffset: largo })
-          tl.to(linea, { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, 0)
+
+          tweens.push(
+            gsap.to(linea, {
+              strokeDashoffset: 0,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: raiz.current,
+                start: 'top 62%',
+                end: 'bottom 85%',
+                // `scrub: 0.4` en vez de `true`: el 0.4 le da una
+                // inercia corta, así el trazo no salta con la rueda.
+                scrub: 0.4,
+                onUpdate: (self) => {
+                  // La etapa i se enciende cuando el trazo pasó su
+                  // posición. El umbral arranca antes de la fracción
+                  // exacta para que el punto se prenda justo cuando la
+                  // línea lo toca, no después.
+                  encendidos.forEach((tl, i) => {
+                    const umbral = i / encendidos.length + 0.04
+                    if (self.progress >= umbral) {
+                      if (!tl.isActive() && tl.progress() === 0) tl.play()
+                    }
+                  })
+                },
+              },
+            }),
+          )
         }
 
-        tl.from(
-          '[data-etapa]',
-          { opacity: 0, y: 32, duration: dur.base, stagger: 0.14, ease: ease.out },
-          0.25,
-        ).from(
-          '[data-punto]',
-          { scale: 0, duration: 0.4, stagger: 0.14, ease: 'back.out(2.5)' },
-          0.3,
-        )
+        return () => {
+          for (const tl of encendidos) tl.kill()
+          for (const t of tweens) {
+            t.scrollTrigger?.kill()
+            t.kill()
+          }
+        }
       })
     },
     { scope: raiz },
@@ -119,7 +165,9 @@ export default function Proceso() {
                   data-etapa
                   className="group relative pl-9 lg:pl-0 lg:pt-0"
                 >
-                  {/* Punto sobre la línea */}
+                  {/* Punto sobre la línea. Crece al encenderse, y el
+                      anillo del color del fondo lo separa de la línea
+                      que pasa por detrás. */}
                   <span
                     data-punto
                     className="absolute left-0 top-2.5 size-[7px] rounded-full bg-violet-500 shadow-[0_0_0_4px_var(--color-base)] lg:left-0 lg:top-0"
