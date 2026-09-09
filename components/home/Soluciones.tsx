@@ -4,8 +4,9 @@ import { useCallback, useRef, useState } from 'react'
 import { Draggable, Flip, gsap, useGSAP } from '@/lib/gsap'
 import { bloquearScroll } from '@/lib/lenis'
 import TituloSeccion from '@/components/ui/TituloSeccion'
-import { mockups, seccionSoluciones } from '@/content/mockups'
-import { PANTALLAS } from './PantallasMockup'
+import Image from 'next/image'
+import { plantillas, seccionSoluciones } from '@/content/plantillas'
+import { PLANTILLAS } from '@/components/plantillas/registro'
 import MockupModal from './MockupModal'
 import Glow from '@/components/bg/Glow'
 
@@ -31,6 +32,13 @@ const PAUSA_TRAS_SOLTAR = 1600
 /** Estado apagado de las cards: el hover las devuelve a color pleno. */
 const APAGADO = 'grayscale(0.7) brightness(0.62)'
 const ENCENDIDO = 'grayscale(0) brightness(1)'
+
+/** Las plantillas que ya tienen componente.
+ *
+ *  El carrusel se va poblando por etapa: mostrar una card cuya ruta
+ *  devuelve 404 sería peor que no mostrarla. Cuando las nueve estén,
+ *  esto es `plantillas` completo. */
+const listas = plantillas.filter((p) => PLANTILLAS[p.slug])
 
 export default function Soluciones() {
   const raiz = useRef<HTMLElement>(null)
@@ -214,7 +222,7 @@ export default function Soluciones() {
 
   const { ui } = seccionSoluciones
   // El segundo set es lo que hace que el loop no muestre el corte.
-  const fila = [...mockups, ...mockups]
+  const fila = [...listas, ...listas]
 
   return (
     <>
@@ -236,13 +244,12 @@ export default function Soluciones() {
         <div className="mt-8 overflow-hidden py-6 lg:mt-10">
           <div ref={pista} className="flex w-max gap-5 lg:gap-6">
             {fila.map((m, i) => {
-              const Pantalla = PANTALLAS[m.pantalla]
-              const indiceReal = i % mockups.length
-              const esDuplicado = i >= mockups.length
+              const indiceReal = i % listas.length
+              const esDuplicado = i >= listas.length
 
               return (
                 <article
-                  key={`${m.id}-${i}`}
+                  key={`${m.slug}-${i}`}
                   data-card
                   ref={(el) => {
                     cards.current[i] = el
@@ -278,12 +285,19 @@ export default function Soluciones() {
                         </span>
                       </div>
 
-                      <div
-                        role="img"
-                        aria-label={esDuplicado ? undefined : m.alt}
-                        className="aspect-16/10 overflow-hidden"
-                      >
-                        <Pantalla />
+                      {/* El preview es una captura y no la plantilla
+                          real: el carrusel muestra 12 celdas a la vez, y
+                          montar 12 iframes —o 12 árboles React con sus
+                          ScrollTrigger— arruinaría el rendimiento de la
+                          home. La plantilla entera se ve al abrir. */}
+                      <div className="relative aspect-16/10 overflow-hidden">
+                        <Image
+                          src={`/plantillas/${m.slug}/preview.webp`}
+                          alt={esDuplicado ? '' : m.alt}
+                          fill
+                          sizes="(min-width: 1024px) 36rem, 80vw"
+                          className="object-cover object-top"
+                        />
                       </div>
                     </div>
 

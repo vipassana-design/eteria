@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import MarcaBody from '@/components/plantillas/MarcaBody'
 import './plantillas.css'
 
 /** Layout de las plantillas de muestra (PLAN.md §16).
@@ -19,13 +20,8 @@ import './plantillas.css'
  *
  *  - `plantillas.css` corta las propiedades heredables y el
  *    `color-scheme` sobre `.raiz-plantilla`.
- *  - El `<script>` inline marca `body[data-plantilla]`, y una regla en
- *    `globals.css` esconde el cromo del sitio —header, footer, el FAB y
+ *  - `MarcaBody` esconde el cromo del sitio —header, footer, el FAB y
  *    las capas de fondo— que el root renderiza igual.
- *
- *  El script va inline y no en un `useEffect` para que corra antes del
- *  primer paint: con `useEffect` se vería un flash del header del sitio
- *  dentro del iframe. Es el mismo patrón que `app/layout.tsx:85-89`.
  */
 export const metadata: Metadata = {
   // Las plantillas no son contenido a indexar: son material de
@@ -40,13 +36,7 @@ export default function LayoutPlantillas({
 }) {
   return (
     <>
-      <script
-        // Marca el body para que `globals.css` esconda el cromo del
-        // sitio. El string es literal, no entrada de usuario.
-        dangerouslySetInnerHTML={{
-          __html: `document.body.dataset.plantilla='true'`,
-        }}
-      />
+      <MarcaBody />
       <div className="raiz-plantilla">{children}</div>
     </>
   )

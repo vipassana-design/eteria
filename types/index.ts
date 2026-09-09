@@ -67,6 +67,40 @@ export interface Mockup {
   alt: string
 }
 
+/** Las nueve plantillas de muestra (PLAN.md §16).
+ *
+ *  Tres por línea de negocio. Se abren desde el carrusel de Soluciones
+ *  en un iframe, así que cada una es un sitio completo con su propia
+ *  paleta y tipografía. */
+export type SlugPlantilla =
+  // Ecommerce
+  | 'atelier'
+  | 'vertice'
+  | 'feria'
+  // Institucionales
+  | 'clinica'
+  | 'terrazas'
+  | 'marquez'
+  // Software a medida
+  | 'panel'
+  | 'flota'
+  | 'legajos'
+
+export interface Plantilla {
+  slug: SlugPlantilla
+  /** Nombre del sitio ficticio, el que se ve bajo la card. */
+  titulo: string
+  rubro: string
+  /** Qué línea de negocio demuestra. */
+  linea: 'Ecommerce' | 'Institucional' | 'Software a medida'
+  /** Texto de la barra de direcciones del marco de navegador. */
+  url: string
+  alt: string
+  /** `false` en los paneles: son one page y el modal no ofrece scroll
+   *  de documento, solo el de sus paneles internos. */
+  scrollea: boolean
+}
+
 /** Tecnología del grid de stack.
  *  Los logos son SVG inline (no archivos en /public) para poder animar
  *  el paso de monocromo a color en hover con currentColor. */

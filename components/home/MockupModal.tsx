@@ -1,14 +1,18 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import { Flip, gsap, useGSAP } from '@/lib/gsap'
 import { bloquearScroll } from '@/lib/lenis'
 import { prefiereMenosMovimiento } from '@/lib/motion'
-import { mockups, seccionSoluciones } from '@/content/mockups'
-import { PANTALLAS } from './PantallasMockup'
+import { plantillas, seccionSoluciones } from '@/content/plantillas'
+import { PLANTILLAS } from '@/components/plantillas/registro'
+
+/** Las que ya tienen componente: el modal navega solo entre esas. */
+const listas = plantillas.filter((p) => PLANTILLAS[p.slug])
 
 interface Props {
-  /** Índice del mockup abierto, o null si el modal está cerrado. */
+  /** Índice de la plantilla abierta, o null si el modal está cerrado. */
   indice: number | null
   onCerrar: () => void
   onCambiar: (indice: number) => void
@@ -18,11 +22,27 @@ interface Props {
   estadoOrigen: React.RefObject<Flip.FlipState | null>
 }
 
-/** Modal de previsualización (PLAN.md §4.6).
+/** Modal de previsualización (PLAN.md §4.6 y §16).
  *
  *  La card se expande al centro con Flip desde su posición real. Flechas
- *  laterales para pasar al siguiente sin cerrar, cierre con Esc, click
+ *  laterales para pasar a la siguiente sin cerrar, cierre con Esc, click
  *  fuera o botón, focus trap y aria-modal.
+ *
+ *  **Dentro va un iframe con la plantilla completa.** El Flip sigue
+ *  funcionando sin cambios porque opera sobre el marco de navegador,
+ *  que vive en este documento; el iframe es hijo del marco y se escala
+ *  con él sin enterarse.
+ *
+ *  Dos cosas que el iframe obliga a resolver:
+ *
+ *  - **El teclado no cruza el borde del documento.** Las teclas
+ *    presionadas dentro de la plantilla no llegan al `keydown` de acá,
+ *    así que `MarcoPlantilla` las reenvía por `postMessage` y este
+ *    componente las escucha.
+ *  - **El iframe entra con `opacity: 0` y aparece al terminar el
+ *    Flip**, con el preview visible mientras dura. Escalar un iframe
+ *    con `transform` mientras carga produce un reflow interno visible,
+ *    y de paso esto tapa cualquier destello de carga.
  */
 export default function MockupModal({ indice, onCerrar, onCambiar, estadoOrigen }: Props) {
   const raiz = useRef<HTMLDivElement>(null)
@@ -30,9 +50,15 @@ export default function MockupModal({ indice, onCerrar, onCambiar, estadoOrigen 
   const fondo = useRef<HTMLDivElement>(null)
   /** Guarda el índice anterior para saber si es apertura o cambio. */
   const previo = useRef<number | null>(null)
+  /** A dónde devolver el foco al cerrar: la card que abrió el modal. */
+  const volverElFoco = useRef<HTMLElement | null>(null)
+
+  /** El iframe recién se muestra cuando la plantilla cargó y el Flip
+   *  terminó: hasta entonces se ve el preview. */
+  const [cargada, setCargada] = useState(false)
 
   const abierto = indice !== null
-  const mockup = indice !== null ? mockups[indice] : null
+  const plantilla = indice !== null ? listas[indice] : null
 
   useGSAP(
     () => {
@@ -79,7 +105,9 @@ export default function MockupModal({ indice, onCerrar, onCambiar, estadoOrigen 
         return
       }
 
-      // --- Cambio de mockup sin cerrar ---
+      // --- Cambio de plantilla sin cerrar ---
+      // El flag se baja acá y no en el render: en el render correría en
+      // cada pasada y el iframe nunca llegaría a mostrarse.
       if (abierto && previo.current !== null && previo.current !== indice) {
         gsap.fromTo(
           caja.querySelector('[data-pantalla]'),
@@ -97,10 +125,15 @@ export default function MockupModal({ indice, onCerrar, onCambiar, estadoOrigen 
   useEffect(() => {
     if (!abierto) {
       previo.current = null
+      setCargada(false)
       return
     }
 
     bloquearScroll(true)
+    // Se guarda antes de mover el foco al modal.
+    if (document.activeElement instanceof HTMLElement) {
+      volverElFoco.current = document.activeElement
+    }
 
     const alTeclado = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -108,11 +141,11 @@ export default function MockupModal({ indice, onCerrar, onCambiar, estadoOrigen 
         return
       }
       if (e.key === 'ArrowRight') {
-        onCambiar((indice + 1) % mockups.length)
+        onCambiar((indice + 1) % listas.length)
         return
       }
       if (e.key === 'ArrowLeft') {
-        onCambiar((indice - 1 + mockups.length) % mockups.length)
+        onCambiar((indice - 1 + listas.length) % listas.length)
         return
       }
       if (e.key !== 'Tab') return
@@ -133,12 +166,32 @@ export default function MockupModal({ indice, onCerrar, onCambiar, estadoOrigen 
       }
     }
 
+    // El teclado del iframe: `MarcoPlantilla` reenvía Escape y las
+    // flechas por `postMessage`, porque las teclas presionadas dentro
+    // de la plantilla no llegan al `keydown` de este documento.
+    const alMensaje = (e: MessageEvent) => {
+      // Solo del propio origen: un mensaje de cualquier otra página no
+      // tiene por qué manejar este modal.
+      if (e.origin !== window.location.origin) return
+      const d = e.data
+      if (!d || d.fuente !== 'plantilla') return
+
+      if (d.tipo === 'cerrar') onCerrar()
+      else if (d.tipo === 'siguiente') onCambiar((indice + 1) % listas.length)
+      else if (d.tipo === 'anterior') onCambiar((indice - 1 + listas.length) % listas.length)
+    }
+
     document.addEventListener('keydown', alTeclado)
+    window.addEventListener('message', alMensaje)
     raiz.current?.querySelector<HTMLElement>('button')?.focus()
 
     return () => {
       document.removeEventListener('keydown', alTeclado)
+      window.removeEventListener('message', alMensaje)
       bloquearScroll(false)
+      // El foco vuelve a donde estaba: sin esto queda en el body y
+      // seguir con Tab arranca desde el principio de la página.
+      volverElFoco.current?.focus()
     }
   }, [abierto, indice, onCerrar, onCambiar])
 
@@ -147,11 +200,10 @@ export default function MockupModal({ indice, onCerrar, onCambiar, estadoOrigen 
     previo.current = indice
   })
 
-  if (!mockup || indice === null) {
+  if (!plantilla || indice === null) {
     return null
   }
 
-  const Pantalla = PANTALLAS[mockup.pantalla]
   const { ui } = seccionSoluciones
 
   return (
@@ -159,7 +211,7 @@ export default function MockupModal({ indice, onCerrar, onCambiar, estadoOrigen 
       ref={raiz}
       role="dialog"
       aria-modal="true"
-      aria-label={mockup.titulo}
+      aria-label={plantilla.titulo}
       className="fixed inset-0 z-60 flex items-center justify-center p-4 lg:p-10"
     >
       {/* Fondo con blur. El click cierra. */}
@@ -172,7 +224,7 @@ export default function MockupModal({ indice, onCerrar, onCambiar, estadoOrigen 
       {/* Flecha anterior */}
       <button
         type="button"
-        onClick={() => onCambiar((indice - 1 + mockups.length) % mockups.length)}
+        onClick={() => onCambiar((indice - 1 + listas.length) % listas.length)}
         aria-label={ui.anterior}
         className="absolute left-2 z-10 flex size-11 items-center justify-center rounded-(--radius-pill) border border-hairline bg-elevated/80 text-hi backdrop-blur transition-colors duration-300 hover:border-hairline-hover lg:left-6"
       >
@@ -182,7 +234,13 @@ export default function MockupModal({ indice, onCerrar, onCambiar, estadoOrigen 
       {/* Marco de navegador */}
       <div
         ref={marco}
-        className="relative z-[1] flex max-h-full w-full max-w-4xl flex-col overflow-hidden rounded-(--radius-card) border border-white/10 bg-elevated shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)]"
+        // El alto es explícito, no `max-h-full` a secas: con el SVG
+        // viejo el marco se ajustaba a la altura de la pantalla, pero un
+        // iframe no tiene alto intrínseco y el marco colapsaba al alto
+        // de la barra y el pie —medido, 273px, la plantilla se veía por
+        // una rendija. `h-full` sobre el contenedor `p-10` da todo el
+        // viewport menos el margen.
+        className="relative z-[1] flex h-full max-h-full w-full max-w-6xl flex-col overflow-hidden rounded-(--radius-card) border border-white/10 bg-elevated shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)]"
       >
         <div className="flex items-center gap-2.5 border-b border-white/[0.07] bg-[#211C3D] px-3.5 py-2.5">
           <span className="flex gap-1.5">
@@ -191,7 +249,7 @@ export default function MockupModal({ indice, onCerrar, onCambiar, estadoOrigen 
             <span className="size-2 rounded-full bg-[#4A4370]" />
           </span>
           <span className="flex-1 truncate rounded-(--radius-pill) bg-black/25 px-3 py-1 text-[11px] leading-none text-low">
-            {mockup.url}
+            {plantilla.url}
           </span>
           <button
             type="button"
@@ -205,24 +263,57 @@ export default function MockupModal({ indice, onCerrar, onCambiar, estadoOrigen 
           </button>
         </div>
 
-        {/* La pantalla, con scroll propio si no entra. */}
-        <div data-pantalla className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-          <Pantalla />
+        {/* La plantilla, en un iframe.
+
+            El scroll es del documento embebido, así que la rueda del
+            mouse no burbujea al padre y no hace falta que Lenis lo
+            ignore. Igual lleva `data-lenis-prevent`: es gratis y la
+            regla del proyecto lo pide para todo contenedor con scroll
+            propio.
+
+            El preview queda debajo mientras la plantilla carga. Sin eso
+            se ve el marco vacío durante el Flip, y escalar un iframe que
+            todavía está montando produce un reflow visible. */}
+        <div
+          data-pantalla
+          data-lenis-prevent
+          className="relative min-h-0 flex-1 overflow-hidden bg-[#F7F6FB]"
+        >
+          <Image
+            src={`/plantillas/${plantilla.slug}/preview.webp`}
+            alt=""
+            fill
+            sizes="(min-width: 1024px) 72rem, 100vw"
+            className="object-cover object-top"
+            aria-hidden="true"
+          />
+
+          <iframe
+            key={plantilla.slug}
+            src={`/plantillas/${plantilla.slug}`}
+            title={`${plantilla.titulo} · ${plantilla.rubro}`}
+            onLoad={() => setCargada(true)}
+            // `scrollea: false` son los paneles: son one page y el
+            // scroll vive en sus columnas internas, no en el documento.
+            scrolling={plantilla.scrollea ? 'yes' : 'no'}
+            className="relative size-full border-0 transition-opacity duration-500"
+            style={{ opacity: cargada ? 1 : 0 }}
+          />
         </div>
 
         <div className="flex items-center justify-between border-t border-white/[0.07] px-5 py-3">
           <div>
-            <p className="text-cuerpo text-hi">{mockup.titulo}</p>
-            <p className="text-label text-low">{mockup.rubro}</p>
+            <p className="text-cuerpo text-hi">{plantilla.titulo}</p>
+            <p className="text-label text-low">{plantilla.rubro}</p>
           </div>
-          <p className="text-label text-low">{ui.contador(indice + 1, mockups.length)}</p>
+          <p className="text-label text-low">{ui.contador(indice + 1, listas.length)}</p>
         </div>
       </div>
 
       {/* Flecha siguiente */}
       <button
         type="button"
-        onClick={() => onCambiar((indice + 1) % mockups.length)}
+        onClick={() => onCambiar((indice + 1) % listas.length)}
         aria-label={ui.siguiente}
         className="absolute right-2 z-10 flex size-11 items-center justify-center rounded-(--radius-pill) border border-hairline bg-elevated/80 text-hi backdrop-blur transition-colors duration-300 hover:border-hairline-hover lg:right-6"
       >

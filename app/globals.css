@@ -335,10 +335,12 @@ body[data-menu-abierto] [data-flotante] {
    el botón de WhatsApp y las dos capas de fondo. Dentro del iframe eso
    no corresponde —la plantilla es un sitio ajeno.
 
-   El layout de `(plantillas)` marca el body con un script inline, que
-   corre antes del primer paint: con un `useEffect` se vería un flash
-   del header del sitio dentro del iframe. */
-body[data-plantilla] :is(header, footer, [data-flotante], [data-capa-fondo]) {
+   El `:not(.raiz-plantilla *)` es imprescindible: sin él el selector
+   de descendiente atrapa también el `<header>` y el `<footer>` **de la
+   plantilla**, que es justo lo que hay que mostrar. Medido: la barra de
+   Atelier salía con `display: none` y 0px de alto. */
+body[data-plantilla]
+  :is(header, footer, [data-flotante], [data-capa-fondo]):not(.raiz-plantilla *) {
   display: none;
 }
 
