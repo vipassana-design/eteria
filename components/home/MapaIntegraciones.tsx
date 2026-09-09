@@ -4,13 +4,13 @@ import { useRef } from 'react'
 import { gsap, useGSAP } from '@/lib/gsap'
 import { integraciones, mapaUi } from '@/content/integraciones'
 
-/** Mapa de integraciones, a la derecha de "Sobre nosotros".
+/** Mapa de capacidades, a la derecha de "Sobre nosotros".
  *
  *  Es la única pieza del sitio que **no es una pantalla**: los nueve
- *  mockups son capturas de producto, esto es el plano de cómo se
- *  conecta lo que se construye. Dice el argumento de la sección sin
- *  texto —entendemos con qué se integra tu operación— que es la
- *  traducción visual del párrafo que está al lado.
+ *  mockups son capturas de producto, esto es el mapa de lo que el
+ *  equipo abarca. Dice el argumento de la sección sin texto, y llega
+ *  hasta soporte y mantenimiento, que es lo que sostiene el párrafo
+ *  que tiene al lado: quien construyó es quien mantiene.
  *
  *  Se anima al entrar en viewport y una sola vez, no con el scroll: la
  *  sección de Proceso ya tiene una línea scroll-driven, y dos seguidas
@@ -24,8 +24,13 @@ import { integraciones, mapaUi } from '@/content/integraciones'
 /** La caja del SVG. Cuadrada: los nodos se distribuyen en un círculo. */
 const CAJA = 420
 const CENTRO = CAJA / 2
-/** Radio del círculo de nodos. Deja lugar para las etiquetas. */
-const RADIO = 148
+/** Radio del círculo de nodos.
+ *
+ *  Se acortó de 148 a 132 al pasar a las capacidades: "Infraestructura"
+ *  y "Mantenimiento" son bastante más largas que "Stock" o "CRM", y
+ *  con el radio anterior las etiquetas de los costados se salían de la
+ *  caja. */
+const RADIO = 132
 
 /** Posición de cada nodo sobre el círculo.
  *
@@ -121,8 +126,8 @@ export default function MapaIntegraciones() {
       <svg viewBox={`0 0 ${CAJA} ${CAJA}`} className="size-full overflow-visible">
         <defs>
           {/* El degradé de los radios: más presente cerca del centro y
-              apagándose hacia afuera, así la lectura va del sistema a
-              las integraciones y no al revés. */}
+              apagándose hacia afuera, así la lectura va del centro a
+              las capacidades y no al revés. */}
           <radialGradient id="radioMapa">
             <stop
               offset="0%"
@@ -208,25 +213,21 @@ export default function MapaIntegraciones() {
             stroke="var(--color-violet-500)"
             strokeWidth={1.6}
           />
-          <text
-            x={CENTRO}
-            y={CENTRO - 4}
-            textAnchor="middle"
-            fontSize={13}
-            fontWeight={600}
-            fill="var(--color-hi)"
-          >
-            {mapaUi.centro}
-          </text>
-          <text
-            x={CENTRO}
-            y={CENTRO + 13}
-            textAnchor="middle"
-            fontSize={10.5}
-            fill="var(--color-low)"
-          >
-            {mapaUi.centroNota}
-          </text>
+          {/* Las dos líneas al mismo tamaño y peso: "a medida" es
+              parte del nombre, no una nota al pie. */}
+          {mapaUi.centro.map((linea, i) => (
+            <text
+              key={linea}
+              x={CENTRO}
+              y={CENTRO + (i === 0 ? -3 : 14)}
+              textAnchor="middle"
+              fontSize={13}
+              fontWeight={600}
+              fill="var(--color-hi)"
+            >
+              {linea}
+            </text>
+          ))}
         </g>
       </svg>
     </div>

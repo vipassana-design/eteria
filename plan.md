@@ -355,11 +355,17 @@ Quedan dos menciones de "plantilla" en `designSystem.ts` y `heros.ts`, pero son 
 
 **Segunda pasada de los datos (cliente).** Los tres pasaron a `+20 años acompañando clientes`, `End to end` y `Soporte`. Con esto se resuelve el pendiente que había: las dos cifras sin verificar (`+100 proyectos` y `9 de 10 clientes siguen con nosotros`) ya no están, y los datos describen el alcance del trabajo en lugar de afirmar volumen. El flag `esTexto` de `DatoHero`, que había quedado sin uso, vuelve a usarse en los dos últimos.
 
-### Mapa de integraciones
+### Mapa de capacidades
 
-A la derecha del texto. Es la **única pieza del sitio que no es una pantalla**: los nueve mockups son capturas de producto, esto es el plano de cómo se conecta lo que se construye. Un nodo central con el sistema y seis alrededor —Facturación, Pagos, Stock, Logística, CRM, Planillas— unidos por radios que se dibujan.
+A la derecha del texto. Es la **única pieza del sitio que no es una pantalla**: los nueve mockups son capturas de producto, esto es el mapa de lo que el equipo abarca. Un nodo central —"El sistema / a medida", las dos líneas al mismo tamaño— y seis alrededor unidos por radios que se dibujan:
 
-Dice el argumento de la sección sin texto: *entendemos con qué se integra tu operación*, que es la traducción visual del párrafo que tiene al lado. Los nombres salen del copy que ya está en las landings.
+**Desarrollo · Arquitectura · Integraciones · Infraestructura · Mantenimiento · Soporte**
+
+La primera versión nombraba los sistemas externos con los que se integra —facturación, pagos, stock— y decía "así encaja tu operación". El cliente lo pasó a las capacidades del equipo: dice "esto abarcamos", que es más directo aunque pierda especificidad técnica. `Integraciones` recupera lo anterior en una palabra.
+
+`Soporte` y `Mantenimiento` son el único lugar visual donde aparece el argumento del párrafo que tiene al lado: quien construyó es quien mantiene.
+
+Se descartaron "Soluciones" —la palabra más genérica del rubro—, "Web" —deja afuera todo lo que no es un sitio— y "Diseño", que no se menciona en ninguna parte del copy. El radio del círculo bajó de 148 a 132: "Infraestructura" y "Mantenimiento" son bastante más largas que "Stock" o "CRM".
 
 **Se descartó una foto.** Las opciones eran equipo (no hay), oficina (no comunica desarrollo) o stock de gente frente a monitores, que es justamente lo que hace que un sitio se lea como plantilla. Acabábamos de sacar el copy genérico; una foto de stock reintroducía el problema por otra vía.
 
@@ -524,13 +530,9 @@ Dos columnas. Izquierda el texto y los datos, derecha el formulario.
 - El honeypot se posiciona fuera de pantalla en vez de `display:none`, que algunos bots detectan.
 - La validación vive en `/lib/validarConsulta.ts`, aparte del componente, para que el endpoint la reutilice cuando exista.
 
-**Dos piezas nuevas en la columna izquierda (§15).**
+**Sin plazo comprometido (revisión del cliente).** La bajada decía "respondemos en menos de 24 horas con una primera devolución sobre el alcance" y la confirmación repetía las 24 horas. Prometer un plazo fijo obliga a cumplirlo con cualquier carga de trabajo, así que las dos pasaron a "nos ponemos en contacto a la brevedad": es amplio y sigue siendo una respuesta.
 
-**Estado de disponibilidad.** Un punto y una línea que dicen si hay alguien: "Respondemos en el día" con el punto verde pulsando en horario, "Te respondemos mañana a primera hora" fuera de él, "el lunes" el fin de semana. Es lo primero que quiere saber alguien que va a delegar un sistema; un formulario sin esto es un buzón.
-
-El cálculo usa el reloj del visitante. Es una aproximación —no sabemos su huso— pero el mensaje nunca promete más de lo que dice el horario publicado. Se monta con `dynamic` sin SSR: renderizarlo en el servidor daría un HTML calculado en otro huso que después habría que reconciliar. Mientras carga se muestra el horario a secas, que es verdadero siempre y ocupa el mismo alto.
-
-**Qué sigue.** Tres pasos numerados: leemos la consulta, escribimos o llamamos para entender el alcance, enviamos una propuesta con precio y plazo. Van **antes** del formulario y no después: el que duda de llenarlo es el que necesita saber a qué se compromete.
+Se probaron y descartaron dos piezas: un indicador de disponibilidad calculado con el reloj del visitante ("te respondemos mañana a primera hora" no suena profesional) y una lista de tres pasos de qué pasa después de enviar (redundante: si te contactan, es obvio que van a llamar y presupuestar).
 ### 4.9 Footer
 
 ```

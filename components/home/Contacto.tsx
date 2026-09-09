@@ -16,7 +16,6 @@ import Boton from '@/components/ui/Boton'
 import Campo from '@/components/ui/Campo'
 import Reveal from '@/components/ui/Reveal'
 import TituloSeccion from '@/components/ui/TituloSeccion'
-import MontarDisponibilidad from './MontarDisponibilidad'
 import Glow from '@/components/bg/Glow'
 
 type Estado = 'normal' | 'enviando' | 'enviado'
@@ -158,29 +157,7 @@ export default function Contacto({ tipoPreseleccionado, conTitulo = true }: Prop
               >
                 {marca.whatsappVisible}
               </a>
-              <div className="mt-2">
-                <MontarDisponibilidad />
-              </div>
-            </div>
-
-            {/* Qué pasa después de enviar. Va antes del formulario y no
-                después: el que duda de llenarlo es el que necesita
-                saber a qué se compromete. */}
-            <div className="border-l border-hairline pl-6">
-              <p className="text-label text-low">{txt.despues.titulo}</p>
-              <ol className="mt-3 flex flex-col gap-2.5">
-                {txt.despues.pasos.map((paso, i) => (
-                  <li key={paso} className="text-cuerpo flex gap-3 text-mid">
-                    <span
-                      aria-hidden="true"
-                      className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-hairline text-[10px] font-semibold text-low"
-                    >
-                      {i + 1}
-                    </span>
-                    {paso}
-                  </li>
-                ))}
-              </ol>
+              <p className="text-label mt-1 text-low">{txt.directo.notaWhatsapp}</p>
             </div>
           </Reveal>
         </div>
