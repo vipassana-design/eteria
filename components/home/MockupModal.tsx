@@ -80,8 +80,14 @@ export default function MockupModal({
    *  qué contrastar. */
   const [vista, setVista] = useState<'escritorio' | 'mobile'>('escritorio')
 
-  /** El poster que cubre el marco hasta que la plantilla carga. */
+  /** El poster que cubre el marco durante el Flip. */
   const poster = useRef<HTMLImageElement>(null)
+  /** El indicador de carga entre el poster y la plantilla. */
+  const cargando = useRef<HTMLDivElement>(null)
+  /** Cuándo empezó la apertura, para sostener el mínimo del indicador. */
+  const abrioEn = useRef(0)
+  /** Evita que `onLoad` y el temporizador revelen dos veces. */
+  const revelado = useRef(false)
 
   /** El iframe recién se muestra cuando la plantilla cargó: hasta
    *  entonces se ve el preview.
@@ -95,6 +101,26 @@ export default function MockupModal({
 
   const abierto = indice !== null
   const plantilla = indice !== null ? listas[indice] : null
+
+  /** Muestra la plantilla y apaga el indicador.
+   *
+   *  Sostiene un mínimo de 1,2 s desde la apertura aunque el iframe ya
+   *  esté listo: un indicador que parpadea 100 ms se lee peor que una
+   *  espera corta y deliberada, y acá además le da tiempo al Flip a
+   *  terminar antes de que el contenido cambie.
+   *
+   *  Todo va por GSAP y no por estado: un render en medio del Flip lo
+   *  interrumpiría. */
+  const revelar = () => {
+    if (revelado.current) return
+    revelado.current = true
+
+    const falta = Math.max(0, 1200 - (Date.now() - abrioEn.current))
+    window.setTimeout(() => {
+      gsap.to(cargando.current, { opacity: 0, duration: 0.3, ease: 'power2.in' })
+      gsap.to(iframe.current, { opacity: 1, duration: 0.45, ease: 'power2.out' })
+    }, falta)
+  }
 
   /** Cierra y devuelve la vista a escritorio.
    *
@@ -119,6 +145,14 @@ export default function MockupModal({
         // durante el render tampoco se permite. Mientras el modal está
         // cerrado el valor no se lee, así que resetear al abrir alcanza.
         setVista('escritorio')
+
+        // El reloj del mínimo del indicador, y el estado de partida:
+        // poster visible y sin desenfoque, plantilla oculta.
+        abrioEn.current = Date.now()
+        revelado.current = false
+        gsap.set(poster.current, { opacity: 1, filter: 'blur(0px)' })
+        gsap.set(iframe.current, { opacity: 0 })
+        gsap.set(cargando.current, { opacity: 0 })
 
         const estado = estadoOrigen.current
 
@@ -147,6 +181,23 @@ export default function MockupModal({
         const partida = Flip.getState(caja)
         gsap.set(caja, { clearProps: 'transform,width,height' })
 
+        // El poster se va mientras el marco se expande, con un
+        // desenfoque creciente: su proporción no coincide con la del
+        // destino y el blur disimula esa diferencia mucho mejor que un
+        // fade solo.
+        gsap.to(poster.current, {
+          opacity: 0,
+          filter: 'blur(14px)',
+          duration: 0.5,
+          ease: 'power2.in',
+          delay: 0.12,
+        })
+        gsap.fromTo(
+          cargando.current,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.3, ease: 'power2.out', delay: 0.35 },
+        )
+
         Flip.from(partida, {
           targets: caja,
           duration: 0.55,
@@ -161,9 +212,15 @@ export default function MockupModal({
       // El flag se baja acá y no en el render: en el render correría en
       // cada pasada y el iframe nunca llegaría a mostrarse.
       if (abierto && previo.current !== null && previo.current !== indice) {
-        // El poster vuelve: el iframe nuevo tarda en cargar y sin esto
-        // se vería el marco vacío.
-        if (poster.current) poster.current.style.opacity = '1'
+        // El iframe recarga con el `key` nuevo, así que `onLoad` vuelve
+        // a dispararse: se rearma el ciclo completo. El poster no vuelve
+        // —sería el de la plantilla anterior, ya cambiado por React— y
+        // en su lugar el indicador cubre la espera.
+        abrioEn.current = Date.now()
+        revelado.current = false
+        gsap.set(poster.current, { opacity: 0 })
+        gsap.set(iframe.current, { opacity: 0 })
+        gsap.to(cargando.current, { opacity: 1, duration: 0.2 })
         gsap.fromTo(
           caja.querySelector('[data-pantalla]'),
           { opacity: 0, x: 24 },
@@ -266,7 +323,7 @@ export default function MockupModal({
       role="dialog"
       aria-modal="true"
       aria-label={plantilla.titulo}
-      className="fixed inset-0 z-60 flex items-center justify-center p-4 lg:p-6"
+      className="fixed inset-0 z-60 flex items-center justify-center p-4 lg:p-8"
     >
       {/* Fondo con blur. El click cierra. */}
       <div
@@ -297,13 +354,17 @@ export default function MockupModal({
         // El ancho es relativo al viewport con tope, no un `max-w`
         // fijo: `max-w-6xl` daba 1152px y en los paneles —sidebar de
         // 240 más tabla más columna de actividad— las tres columnas
-        // quedaban comprimidas. Con 94vw/1600px un monitor de 1920 da
-        // 1600 y uno de 1440 da ~1354.
+        // quedaban comprimidas.
         //
-        // No es pantalla completa a propósito: el fondo con blur sigue
-        // visible por los bordes y el modal se lee como una ventana
-        // sobre el sitio, que es lo que el Flip desde la card cuenta.
-        className="relative z-[1] flex h-full max-h-full w-full max-w-[94vw] flex-col overflow-hidden rounded-(--radius-card) border border-white/10 bg-elevated shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)] lg:max-w-[min(94vw,1600px)]"
+        // El tope es 1240 y no 1600, que fue la primera versión: a 1600
+        // el modal quedaba demasiado extenso y perdía el carácter de
+        // ventana sobre el sitio. 1240 queda apenas por encima del
+        // original —los paneles respiran— sin comerse la pantalla.
+        //
+        // El fondo con blur tiene que seguir visible por los bordes: es
+        // lo que hace que el Flip desde la card se lea como una card
+        // que se expande y no como una navegación.
+        className="relative z-[1] flex h-full max-h-full w-full max-w-[94vw] flex-col overflow-hidden rounded-(--radius-card) border border-white/10 bg-elevated shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)] lg:max-w-[min(94vw,1240px)]"
       >
         <div className="flex items-center gap-2.5 border-b border-white/[0.07] bg-[#211C3D] px-3.5 py-2.5">
           <span className="flex gap-1.5">
@@ -364,17 +425,50 @@ export default function MockupModal({
               mobile. La plantilla es responsiva, así que responde con
               sus propios breakpoints: lo que se ve es la versión mobile
               real, no una simulación. */}
+          {/* El indicador de carga: sostiene el hueco entre el poster
+              que se desvanece y la plantilla que aparece.
+
+              Es un anillo girando, dibujado: un spinner de librería
+              sería una dependencia nueva para doce líneas de SVG. La
+              animación va por CSS y no por GSAP porque no tiene que
+              coordinarse con nada —y con `prefers-reduced-motion` el
+              bloque global de `globals.css` la detiene, dejando el
+              anillo quieto, que sigue leyéndose como "esperá". */}
+          <div
+            ref={cargando}
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 grid place-items-center opacity-0"
+          >
+            <span className="flex flex-col items-center gap-3">
+              <svg viewBox="0 0 40 40" className="size-9 animate-spin" style={{ animationDuration: '900ms' }}>
+                <circle
+                  cx="20"
+                  cy="20"
+                  r="16"
+                  fill="none"
+                  stroke="var(--color-hairline)"
+                  strokeWidth="2.5"
+                />
+                {/* El arco corto es lo que hace visible el giro: un
+                    anillo entero girando se ve quieto. */}
+                <path
+                  d="M20 4a16 16 0 0 1 16 16"
+                  fill="none"
+                  stroke="var(--color-acento-2)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <span className="text-label text-low">{ui.cargando}</span>
+            </span>
+          </div>
+
           <iframe
             ref={iframe}
             key={plantilla.slug}
             src={`/plantillas/${plantilla.slug}`}
             title={`${plantilla.titulo} · ${plantilla.rubro}`}
-            onLoad={() => {
-              // Directo al DOM: son dos opacidades y no hay razón para
-              // que pasen por un render.
-              if (iframe.current) iframe.current.style.opacity = '1'
-              if (poster.current) poster.current.style.opacity = '0'
-            }}
+            onLoad={() => revelar()}
             // `scrollea: false` son los paneles: son one page y el
             // scroll vive en sus columnas internas, no en el documento.
             scrolling={plantilla.scrollea ? 'yes' : 'no'}

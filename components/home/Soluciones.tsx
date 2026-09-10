@@ -145,15 +145,25 @@ export default function Soluciones() {
           inertia: true,
           cursor: 'grab',
           activeCursor: 'grabbing',
+          /** El wrap va en `liveSnap` y no en `onDrag`.
+           *
+           *  `liveSnap` transforma el valor **antes** de que el
+           *  Draggable lo escriba y lo guarde, así lo pintado y su
+           *  `this.x` interno son siempre el mismo número.
+           *
+           *  La versión anterior hacía `gsap.set(contenedor, { x:
+           *  envolver(this.x) })` desde `onDrag` y dejaba `this.x` sin
+           *  envolver. Con el mouse en movimiento el callback repinta en
+           *  cada frame y no se nota, pero al detenerse —sin soltar— el
+           *  Draggable re-sincroniza el elemento con su valor interno y
+           *  la pista saltaba a la posición sin envolver, o sea a donde
+           *  estaba al empezar el arrastre. Con inercia fuerte tampoco
+           *  se veía porque `onThrowUpdate` seguía repintando: el bug
+           *  aparecía justo cuando el movimiento se frenaba. */
+          liveSnap: (valor: number) => envolver(valor),
           onPressInit() {
             marcha.current?.pause()
             if (temporizador.current) window.clearTimeout(temporizador.current)
-          },
-          onDrag() {
-            gsap.set(contenedor, { x: envolver(this.x) })
-          },
-          onThrowUpdate() {
-            gsap.set(contenedor, { x: envolver(this.x) })
           },
           // La pausa se cuenta desde que dejó de moverse: si hubo
           // inercia, desde que la inercia terminó.

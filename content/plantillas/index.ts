@@ -17,6 +17,8 @@ export const seccionSoluciones = {
     abrir: 'Ver en detalle',
     cerrar: 'Cerrar',
     pista: 'Arrastrá para ver más',
+    /** Mientras la plantilla carga dentro del iframe. */
+    cargando: 'Cargando la propuesta',
     contador: (actual: number, total: number) => `${actual} de ${total}`,
     /** El switch de vista del modal.
      *
