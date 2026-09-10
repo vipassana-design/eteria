@@ -54,5 +54,19 @@ export default function MarcaBody() {
     }
   }, [])
 
-  return <style dangerouslySetInnerHTML={{ __html: OCULTAR }} />
+  return (
+    <style
+      // Las extensiones de modo oscuro le agregan una clase a los
+      // `<style>` del documento antes de que React hidrate —vista en
+      // producción como `native-dark-class-modified`—, y React avisa
+      // que el árbol no coincide con su HTML.
+      //
+      // No es un bug del sitio y no hay forma de evitar que la
+      // extensión lo toque; `suppressHydrationWarning` existe para
+      // exactamente este caso. Solo silencia este nodo: cualquier otro
+      // mismatch real sigue apareciendo.
+      suppressHydrationWarning
+      dangerouslySetInnerHTML={{ __html: OCULTAR }}
+    />
+  )
 }
