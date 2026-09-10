@@ -4,7 +4,7 @@ import { useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { gsap, ScrollTrigger, useGSAP } from '@/lib/gsap'
-import { scrollearA } from '@/lib/lenis'
+import { irArriba, scrollearA } from '@/lib/lenis'
 import { contacto, navegacion, ui } from '@/content/marca'
 import type { EnlaceNav } from '@/types'
 import Boton from '@/components/ui/Boton'
@@ -45,6 +45,29 @@ export default function Header() {
     return () => st.kill()
   })
 
+  /** El logo en la home sube al tope en vez de re-navegar.
+   *
+   *  Navegar a "/" estando en "/" dispararía la transición de página
+   *  entera —fade out, fade in, `ScrollTrigger.refresh()`— para
+   *  terminar en la misma página. El scroll suave dice lo mismo y se
+   *  entiende mejor: el usuario ve el camino de vuelta.
+   *
+   *  Fuera de la home no se toca: ahí el logo es lo que parece, un
+   *  enlace a la home. */
+  const alClickEnLogo = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname !== '/') return
+
+    e.preventDefault()
+    irArriba(true)
+
+    // El hash que haya dejado un ancla se limpia: si queda `#servicios`
+    // en la URL, recargar o compartir el enlace devuelve a esa sección
+    // y no al tope, que es donde el usuario acaba de pedir estar.
+    if (window.location.hash) {
+      history.pushState(null, '', window.location.pathname + window.location.search)
+    }
+  }
+
   /** Los enlaces del header son anclas a secciones de la home. Si ya
    *  estamos en la home, se intercepta para scrollear con Lenis; si no,
    *  se deja navegar y el ancla la resuelve el navegador. */
@@ -74,7 +97,7 @@ export default function Header() {
         }`}
       >
         <div className="contenedor flex h-20 items-center justify-between gap-8">
-          <Logo />
+          <Logo onClick={alClickEnLogo} />
 
           <nav aria-label={ui.navegacionPrincipal} className="hidden lg:block">
             <ul className="flex items-center gap-8">

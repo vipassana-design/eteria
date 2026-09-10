@@ -46,15 +46,34 @@ export function scrollearA(selector: string): boolean {
   return true
 }
 
-/** Lleva el scroll al tope, sin animación.
- *  Lo usa la transición de página: al cambiar de ruta el scroll vuelve
- *  arriba antes del fade in (§6). */
-export function irArriba() {
+/** Lleva el scroll al tope.
+ *
+ *  Con `suave` recorre el camino en vez de saltar. Los dos casos son
+ *  distintos a propósito: la transición de página necesita el salto
+ *  —al cambiar de ruta el contenido es otro y animar el scroll sobre
+ *  la página que se va no significa nada—, y el logo del header
+ *  necesita el recorrido, porque ahí el usuario se queda en la misma
+ *  página y el movimiento es lo que le dice qué pasó.
+ */
+export function irArriba(suave = false) {
   if (typeof window === 'undefined') return
 
+  // Con reduced-motion no hay recorrido posible, sea quien sea el que
+  // llame: se salta.
+  const sinMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const animar = suave && !sinMovimiento
+
   if (instancia) {
-    instancia.scrollTo(0, { immediate: true })
+    instancia.scrollTo(0, { immediate: !animar })
+    // Lenis anima sobre el scroll nativo, así que el `window.scrollTo`
+    // de abajo cortaría la animación apenas empieza.
+    if (animar) return
+  } else if (animar) {
+    // Sin Lenis (mobile): el scroll suave nativo hace el mismo trabajo.
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return
   }
+
   // También el scroll nativo: en mobile Lenis no está corriendo, y en
   // desktop hace falta para que el navegador no restaure la posición.
   window.scrollTo(0, 0)
