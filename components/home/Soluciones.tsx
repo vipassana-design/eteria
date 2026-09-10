@@ -53,6 +53,14 @@ const listas = plantillas.filter((p) => PLANTILLAS[p.slug])
 export default function Soluciones() {
   const raiz = useRef<HTMLElement>(null)
   const pista = useRef<HTMLDivElement>(null)
+  /** Lo que el Draggable arrastra.
+   *
+   *  Un div fuera del flujo que nunca se ve: su `x` crece sin límite
+   *  mientras la pista se posiciona a partir de ella pasada por el
+   *  wrap. Sin esta separación el Draggable y el wrap pelean por el
+   *  mismo elemento —uno quiere una posición que crece, el otro la
+   *  quiere acotada— y el arrastre salta. */
+  const arrastre = useRef<HTMLDivElement>(null)
   const cards = useRef<(HTMLElement | null)[]>([])
   const [abierto, setAbierto] = useState<number | null>(null)
   const estadoOrigen = useRef<Flip.FlipState | null>(null)
@@ -78,11 +86,21 @@ export default function Soluciones() {
       // muestran a color pleno.
       mm.add('(prefers-reduced-motion: reduce)', () => {
         gsap.set(gsap.utils.toArray('[data-ventana]', contenedor), { filter: 'none' })
-        const d = Draggable.create(contenedor, {
+
+        // El arrastre sigue siendo infinito con reduced-motion: es
+        // navegación, no decoración. Cada rama calcula su propio ciclo
+        // porque son cierres distintos.
+        const envolver = gsap.utils.wrap(-contenedor.scrollWidth / 2, 0)
+
+        const d = Draggable.create(arrastre.current, {
           type: 'x',
           inertia: false,
+          trigger: contenedor,
           cursor: 'grab',
           activeCursor: 'grabbing',
+          onDrag() {
+            gsap.set(contenedor, { x: envolver(this.x) })
+          },
         })
         return () => d[0]?.kill()
       })
@@ -140,28 +158,48 @@ export default function Soluciones() {
         }
 
         // --- Arrastre infinito, sin topes ---
-        const d = Draggable.create(contenedor, {
+        const d = Draggable.create(arrastre.current, {
           type: 'x',
           inertia: true,
+          // El gesto se toma sobre la pista, pero lo que se mueve es el
+          // proxy: así el arrastre se siente sobre las cards y el wrap
+          // no interfiere con la posición interna del Draggable.
+          trigger: contenedor,
           cursor: 'grab',
           activeCursor: 'grabbing',
-          /** El wrap va en `liveSnap` y no en `onDrag`.
+          /** El proxy se arrastra libre y la pista lo sigue envuelta.
            *
-           *  `liveSnap` transforma el valor **antes** de que el
-           *  Draggable lo escriba y lo guarde, así lo pintado y su
-           *  `this.x` interno son siempre el mismo número.
+           *  Dos intentos anteriores fallaron por la misma razón de
+           *  fondo —el Draggable y el wrap peleando por el mismo
+           *  elemento:
            *
-           *  La versión anterior hacía `gsap.set(contenedor, { x:
-           *  envolver(this.x) })` desde `onDrag` y dejaba `this.x` sin
-           *  envolver. Con el mouse en movimiento el callback repinta en
-           *  cada frame y no se nota, pero al detenerse —sin soltar— el
-           *  Draggable re-sincroniza el elemento con su valor interno y
-           *  la pista saltaba a la posición sin envolver, o sea a donde
-           *  estaba al empezar el arrastre. Con inercia fuerte tampoco
-           *  se veía porque `onThrowUpdate` seguía repintando: el bug
-           *  aparecía justo cuando el movimiento se frenaba. */
-          liveSnap: (valor: number) => envolver(valor),
+           *  1. `gsap.set` desde `onDrag` dejaba el `this.x` interno
+           *     sin envolver, y al detenerse sin soltar el Draggable
+           *     re-sincronizaba y la pista saltaba a donde estaba al
+           *     empezar el gesto.
+           *  2. `liveSnap` mantenía los dos valores iguales, pero
+           *     **anima** hacia el valor que devuelve: cuando el wrap
+           *     salta de un extremo al otro, interpolaba todo el
+           *     recorrido —un giro completo del carrusel hacia el lado
+           *     contrario.
+           *
+           *  Con el proxy cada uno tiene su posición: la del Draggable
+           *  crece sin límite y nadie la toca, y la de la pista se
+           *  deriva de ella. */
+          onDrag() {
+            gsap.set(contenedor, { x: envolver(this.x) })
+          },
+          onThrowUpdate() {
+            gsap.set(contenedor, { x: envolver(this.x) })
+          },
           onPressInit() {
+            // El proxy arranca cada gesto desde la posición actual de la
+            // pista: si conservara la del gesto anterior, el primer
+            // frame saltaría esa diferencia.
+            gsap.set(arrastre.current, {
+              x: (gsap.getProperty(contenedor, 'x') as number) || 0,
+            })
+            this.update()
             marcha.current?.pause()
             if (temporizador.current) window.clearTimeout(temporizador.current)
           },
@@ -261,6 +299,11 @@ export default function Soluciones() {
         {/* El riel recorta a los costados pero necesita aire arriba y
             abajo: la card en hover escala y sube 10px, y sin el padding
             el overflow la corta por el borde superior. */}
+        {/* El proxy del arrastre: nunca se ve. El Draggable lo mueve
+            a él y la pista lo sigue pasada por el wrap, así el gesto y
+            el loop no pelean por la posición del mismo elemento. */}
+        <div ref={arrastre} aria-hidden="true" className="pointer-events-none fixed size-0" />
+
         <div className="mt-8 overflow-hidden py-6 lg:mt-10">
           <div ref={pista} className="flex w-max gap-5 lg:gap-6">
             {fila.map((m, i) => {
