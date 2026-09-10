@@ -104,7 +104,7 @@ export const clinica = {
       { t: 'Cardiología', d: 'ECG, ergometría, holter y presurometría' },
     ],
     foto: '/plantillas/clinica/lab.webp',
-    fotoAlt: 'Laboratorio de análisis clínicos',
+    fotoAlt: 'Bioquímica pipeteando una muestra en el laboratorio',
   },
 
   equipo: {
