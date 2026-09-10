@@ -207,6 +207,22 @@
   }
 
   /* Focus visible en todos los interactivos (§8.6) */
+  /* Un `<button>` no cambia el cursor por defecto —eso es solo de los
+     enlaces—, así que sin esto nada indica que una card, una flecha o
+     el botón de cerrar se pueden accionar. Medido: los cinco controles
+     del modal y las cards del carrusel estaban en `default`.
+
+     Los deshabilitados quedan afuera: ahí el cursor tiene que decir
+     que no se puede, no lo contrario. Y no lleva `!important`, para
+     que un caso puntual —el riel del carrusel, que Draggable pinta con
+     `grab`— pueda pisarlo. */
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  summary,
+  label:has(input:not(:disabled)) {
+    cursor: pointer;
+  }
+
   :focus-visible {
     outline: 2px solid var(--color-violet-500);
     outline-offset: 3px;

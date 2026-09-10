@@ -284,7 +284,11 @@ export default function Soluciones() {
                     onClick={() => abrirModal(indiceReal, cards.current[i] ?? null)}
                     aria-label={`${m.titulo}. ${ui.abrir}`}
                     tabIndex={esDuplicado ? -1 : 0}
-                    className="group block w-full text-left"
+                    // El `!` pisa el `cursor: grab` que Draggable
+                    // escribe inline sobre la pista: sobre una card el
+                    // cursor tiene que decir "clickeable", y sobre el
+                    // riel vacío sigue diciendo "arrastrable".
+                    className="group block w-full cursor-pointer! text-left"
                   >
                     {/* El filtro va acá y no en el article: sobre el
                         article también alcanzaría al título, que lleva
